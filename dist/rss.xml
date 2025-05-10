@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New One</description><link>https://thrinisty.github.io/</link><language>en</language><item><title>自学第一月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第二月份总结&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New One</description><link>https://thrinisty.github.io/</link><language>en</language><item><title>自学第二月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第二月份总结&lt;/h1&gt;
 &lt;p&gt;​	在学习Java后端开发的第二个月中，用10天的时间为Java语言基础收了个尾，结束了反射，多线程基础，IO流的学习&lt;/p&gt;
 &lt;p&gt;​	学习完成Java部分的内容后又花了5天的时间回顾了MySQL数据库基础，巩固了一些数据库使用上的细节（存储引擎，事务，隔离级别等）。2天的时间完成了Java8一些新特性的学习，理解了Lambda表达式的使用，Stream API的概念以及使用方式，Optional类的学习&lt;/p&gt;
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
@@ -10,6 +10,186 @@
 &lt;p&gt;​	从计划而言，原先的Java30天速成的计划可能得向后延期了，因为我发现，除了我原先想的知识以外，还有很多实用的Java外知识等着我去学习，如MySQL数据库，SQL注入，JDBC，正规式等要学完这一些，得再加上15天的时间，哎，总之继续努力吧。&lt;/p&gt;
 &lt;p&gt;​	在课余上，买了把吉他，天天都会把自己折磨的有点手疼，进步也是蛮快的，15天左右了，练了些基础上的内容，拿着变调夹也可以弹一些简单的安河桥之类的，晴天前奏（学会扫弦还不大可能）&lt;/p&gt;
 &lt;p&gt;​	感觉还是非常充实的一个月，收获很大，也有按时吃早餐，但是早睡是不可能的，最起码得留点时间给辛苦一天自己玩。&lt;/p&gt;
+</content:encoded></item><item><title>面试小结</title><link>https://thrinisty.github.io/posts/%E9%9D%A2%E8%AF%95%E5%B0%8F%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E9%9D%A2%E8%AF%95%E5%B0%8F%E7%BB%93/</guid><description>字节跳动面试总结</description><pubDate>Thu, 27 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;面试小结&lt;/h1&gt;
+&lt;p&gt;这一次面试没有想象中的那么压力山大，面试官也没有去死咬着某个知识点去提问，而是通过投递的简历来提问，其中计算机操作系统相关的题目较多，而我有对计算机系统方面的线程进程问题又比较了解，在这个部分表现得还算过得去，但是在于存储的方面我确实没有一个很好的实践积累，回答的大多都是在理论上的知识点，还有设备IO方面，我知道的也不是很多，面试官看我不是很清楚也就没有深挖。计算机网络相关的基础没有问到，不知道是不是看我的简历上有一两个网络编程的经验就跳过了。&lt;/p&gt;
+&lt;p&gt;缺少知识点：多线程相关的细节，Mysql，Redis，哈希表，红黑树&lt;/p&gt;
+&lt;p&gt;面试除了基础知识的提问，还考察了在设计项目上的思路，例如操作系统上如何去降低一个响应的时间：我除了进程之外也懂得不多，我就回答的是可以优化进程调度的一个策略，例如调整时间片大小，在线程之下创建亚线程。内存我直接不管了，另外加多CPU支持并行，多的我面试的时候也没有想到。&lt;/p&gt;
+&lt;p&gt;以下是AI生成的其他回答&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; I/O优化
+异步I/O：用非阻塞I/O（如epoll、io_uring）替代同步阻塞调用。
+
+缓冲和批处理：合并小I/O请求为大操作（如磁盘写合并）。
+
+SSD/高速存储：替换机械硬盘，降低I/O延迟。
+
+内核参数调优
+调整调度器：如Linux的CFS（完全公平调度器）参数或改用实时调度策略（SCHED_FIFO）。
+
+中断优化：启用中断负载均衡（irqbalance），或绑定中断到特定CPU。
+
+亚线程/协程：将任务拆分为更轻量级的单元（如协程、用户态线程），减少阻塞。
+
+CPU绑定（Affinity）：将关键进程绑定到特定CPU核心，避免缓存失效和迁移开销。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;网络相关场景题&lt;/h3&gt;
+&lt;p&gt;还有在网络繁忙的时候该如何解决大量访问的问题，这里我回答的是一个限流，以下是常见的限流算法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;令牌桶（Token Bucket）：
+
+固定速率生成令牌，请求需消耗令牌（突发流量允许一定峰值）。
+
+实现工具：Nginx limit_req、Redis + Lua脚本。
+
+漏桶（Leaky Bucket）：
+
+请求以恒定速率处理（平滑流量，严格限制突发）。
+
+固定窗口/滑动窗口计数：
+
+统计单位时间内的请求数（如每分钟100次），滑动窗口更精确但开销略高。
+
+自适应限流：
+
+根据系统负载动态调整阈值（如CPU、队列长度），如Netflix的Hystrix。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下是AI回答&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;流量整形与负载均衡
+队列缓冲：用消息队列（Kafka、RabbitMQ）异步处理请求，削峰填谷。
+
+负载均衡：
+
+横向扩展：增加服务实例，通过LB（如Nginx、HAProxy）分发流量。
+
+智能路由：根据服务器负载动态分配请求（如Least Connections算法）。
+
+服务降级与熔断
+降级：关闭非核心功能（如推荐服务），返回缓存或默认值。
+
+熔断：当错误率超过阈值时，短暂拒绝请求（如Hystrix、Resilience4j）。
+
+服务隔离：将关键服务与非关键服务分离（如线程池隔离）。
+
+缓存优化
+多级缓存：
+
+客户端缓存 → CDN → 服务端缓存（Redis）→ 数据库缓存。
+
+热点数据预加载：提前缓存高频访问数据（如秒杀商品库存）。
+
+弹性伸缩与云原生方案
+自动扩缩容：Kubernetes HPA、AWS Auto Scaling。
+
+Serverless：突发流量由无服务函数（如AWS Lambda）处理。
+
+协议与连接优化
+长连接复用：减少TCP握手开销（如HTTP/2、gRPC）。
+
+压缩数据：减小传输体积（如Gzip、Protobuf）。
+
+快速失败：设置超时时间（如TCP SYN队列调优）。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;哈希表和红黑树&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;问题&lt;/strong&gt;：&lt;em&gt;“哈希表和红黑树有什么区别？如何选择？”&lt;/em&gt;
+&lt;strong&gt;回答模板&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;先对比核心特性&lt;/strong&gt;：
+“哈希表基于哈希函数，理想情况下查询是&lt;code&gt;O(1)&lt;/code&gt;，但可能因冲突退化；红黑树是自平衡二叉搜索树，稳定在&lt;code&gt;O(log n)&lt;/code&gt;，且支持有序遍历。”&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提优缺点&lt;/strong&gt;：
+“哈希表内存占用大但查询快，适合字典类场景；红黑树更省内存且有序，适合范围查询。”&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;举例应用&lt;/strong&gt;：
+“比如Java的&lt;code&gt;HashMap&lt;/code&gt;用哈希表实现快速查找，而&lt;code&gt;TreeMap&lt;/code&gt;用红黑树保证键的有序性。”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;哈希表如何解决冲突？&lt;/strong&gt;
+→ 拉链法（链表+红黑树，如Java 8的&lt;code&gt;HashMap&lt;/code&gt;）、开放寻址法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;红黑树 vs AVL树？&lt;/strong&gt;
+→ 红黑树牺牲严格平衡性换取更少的旋转操作，适合频繁插入删除的场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;算法题目&lt;/h3&gt;
+&lt;p&gt;有思路的，可惜没有写出来，以下是题目样例，具体的输入我想不起来了&lt;/p&gt;
+&lt;p&gt;我理解的这是一种压缩的方式：&lt;/p&gt;
+&lt;p&gt;例如字符串 ab[avv]{2}dd 代表的是 abavvavvdd，要求写一个算法输入字符串，输出对应的字符串，这一道题我的理解是将 [ 放入栈结构里面，记录右侧下表，遇到]时候弹栈，读取后面的循环次数（限制为2-9，不然更麻烦了），循环输出，但是这里有个重点是这样一个[ ] 是要求可以嵌套使用的，最后写出来的只能处理不嵌套的一种样式，以下是 AI生成的算法，学学看吧&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.algorithm;
+import java.util.Stack;
+
+public class Interview {
+    public static void main(String[] args) {
+        String s1 = &quot;ab[avv]{2}dd&quot;;
+        System.out.println(decodeString(s1));  // 输出: abavvavvdd
+
+        String s2 = &quot;a[b[c]{2}]{3}d&quot;;
+        System.out.println(decodeString(s2));  // 输出: abccbccbccd
+    }
+
+    // 手动实现的字符串重复方法（兼容 Java 8）
+    public static String repeat(String str, int times) {
+        if (times &amp;lt;= 0) {
+            return &quot;&quot;;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i &amp;lt; times; i++) {
+            sb.append(str);
+        }
+        return sb.toString();
+    }
+
+    public static String decodeString(String s) {
+        Stack&amp;lt;StringBuilder&amp;gt; strStack = new Stack&amp;lt;&amp;gt;();
+        Stack&amp;lt;Integer&amp;gt; numStack = new Stack&amp;lt;&amp;gt;();
+        StringBuilder currentStr = new StringBuilder();
+        int i = 0;
+        int n = s.length();
+
+        while (i &amp;lt; n) {
+            char c = s.charAt(i);
+            if (c == &apos;[&apos;) {
+                // 遇到 &apos;[&apos;, 压栈当前状态
+                strStack.push(currentStr);
+                currentStr = new StringBuilder();
+                i++;
+            } else if (c == &apos;]&apos;) {
+                // 遇到 &apos;]&apos;, 准备读取 &apos;{n}&apos;
+                i++;  // 跳过 &apos;]&apos;
+                if (i &amp;lt; n &amp;amp;&amp;amp; s.charAt(i) == &apos;{&apos;) {
+                    i++;  // 跳过 &apos;{&apos;
+                    if (i &amp;lt; n &amp;amp;&amp;amp; Character.isDigit(s.charAt(i))) {
+                        int repeatTimes = s.charAt(i) - &apos;0&apos;;
+                        i++;  // 跳过数字
+                        if (i &amp;lt; n &amp;amp;&amp;amp; s.charAt(i) == &apos;}&apos;) {
+                            i++;  // 跳过 &apos;}&apos;
+                        }
+                        // 弹出栈顶状态并使用自定义的repeat方法
+                        StringBuilder prevStr = strStack.pop();
+                        String repeatedStr = repeat(currentStr.toString(), repeatTimes);  // 使用自定义repeat
+                        prevStr.append(repeatedStr);
+                        currentStr = prevStr;
+                    }
+                }
+            } else {
+                // 普通字符，直接追加
+                currentStr.append(c);
+                i++;
+            }
+        }
+
+        return currentStr.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其实看起来还是有点困难的，主要还是我Java还没有学习到字符串相关的常用类String那里，哎，慢慢学吧&lt;/p&gt;
+</content:encoded></item><item><title>项目标准开发流程</title><link>https://thrinisty.github.io/posts/%E9%A1%B9%E7%9B%AE%E6%A0%87%E5%87%86%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E9%A1%B9%E7%9B%AE%E6%A0%87%E5%87%86%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/</guid><description>企业标准开发流程</description><pubDate>Mon, 17 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目开发流程&lt;/h1&gt;
+&lt;p&gt;需求分析---设计阶段---编码实现---测试阶段---实施阶段&lt;/p&gt;
+&lt;h2&gt;1.需求分析（需求分析师）&lt;/h2&gt;
+&lt;p&gt;目的是产出一个需求分析报告，包含客户具体要求，项目功能&lt;/p&gt;
+&lt;h2&gt;2.设计阶段（架构师/项目经理）&lt;/h2&gt;
+&lt;p&gt;设计工作UML类图，流程图，模块设计，数据库，架构，原型开发 组建团队&lt;/p&gt;
+&lt;h2&gt;3.实现阶段（程序员/码农）&lt;/h2&gt;
+&lt;p&gt;完成架构师的模块功能，测试自己的模块&lt;/p&gt;
+&lt;h2&gt;4.测试阶段（测试工程师）&lt;/h2&gt;
+&lt;p&gt;单元测试，测试用例，白盒测试，黑盒测试，集成测试&lt;/p&gt;
+&lt;h2&gt;5.实施阶段（实施工程师）&lt;/h2&gt;
+&lt;p&gt;将项目部署到客户的平台，保证运行正常，要求对环境的部署能力要高&lt;/p&gt;
+&lt;h2&gt;6.维护阶段（不固定人员）&lt;/h2&gt;
+&lt;p&gt;Debug，项目升级，发现bug&lt;/p&gt;
 </content:encoded></item><item><title>关于 Git</title><link>https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</guid><description>Git 学习笔记</description><pubDate>Wed, 15 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;git的功能相当于一个游戏的存档功能，可用以代码的管理，正确使用git即可提高编码的效率以及存储安全，&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/30.png&quot; alt=&quot;30&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;在VScode之中可以通过GUI进行快速的配置与github的git链接，首先用默认的浏览器注册一个GitHub账号，保持账号的登陆状态，按照网络上的教程安装git（详细可参照各大博客上的相关教程）&lt;/p&gt;
@@ -20,6 +200,46 @@
 &lt;p&gt;&lt;img src=&quot;../images/32.png&quot; alt=&quot;32&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;上述我们通过了在本地的初始化建立git仓库，默认提交到了github中，当然我们也可以在GitHub中先建立仓库，然后再远程建立连接，我们先在源代码管理界面的右侧找到三个点...的选项，选择远程，添加远程库，如果你登陆了github账号的话即可自动查找github中的仓库，选取并在后续选择私有或者公有即可&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/33.png&quot; alt=&quot;33&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>虚拟机代理</title><link>https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</guid><description>VMware虚拟机代理</description><pubDate>Fri, 15 Nov 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;第一份正式的博客内容&lt;/h3&gt;
+&lt;p&gt;这算是我写的第一份博客，大学时光已经过半，我也想在有限的时间里面留下点什么，希望这一篇推文可以帮助到你:happy:&lt;/p&gt;
+&lt;h4&gt;序言&lt;/h4&gt;
+&lt;p&gt;和大多数人一样，我在linux安装各种软件包的时候，想到的第一个方法应该是换源，换一个学术的源平台去下载各种各样的包或者软件之类的，但是有的时候镜像资源难免会出现一些缺漏，导致了没有办法正确的找到依赖，而通过代理的方式可以在linux虚拟机下安装各式各样的软件一劳永逸，接下来是我从网络上找寻到的一种方式&lt;/p&gt;
+&lt;h4&gt;解决方式（需要主机拥有代理软件）&lt;/h4&gt;
+&lt;h5&gt;第一种解决方式：用图形化界面手动设置&lt;/h5&gt;
+&lt;p&gt;第一：设置虚拟机（我这里运用的是VMware虚拟机，Ubuntu版本为22.04）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/7.png&quot; alt=&quot;7&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如图我们将其中的网络适配器网络连接方式更改成为NAT桥接模式，使虚拟机与宿主机共享同样的的IP地址&lt;/p&gt;
+&lt;p&gt;第二：记录主机的IP地址&lt;/p&gt;
+&lt;p&gt;在主机上打开终端，键入  ipconfig 查看，其中会打印出很多的网络配置信息，我们重点聚焦于主机的IP地址
+&lt;img src=&quot;../images/4.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中以太网适配器中的IPv4是我们所需的，将其记录下来：192.168.9.1&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/6.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;第三：开启代理软件获取其端口号（以clash举例，多的我也没有）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/5.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中7890就是我们所需要的内容，将其记录下来&lt;/p&gt;
+&lt;p&gt;第四：启动linux虚拟机设置并开启网络代理&lt;/p&gt;
+&lt;p&gt;在网络代理设置中点击手动（默认为已禁用），此时不更改网络代理的数据的时候是无法正常上网的&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/8.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;下一步为设置两个代理，以及Socks主机&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/9.png&quot; alt=&quot;9&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中前一个为IP地址：填入主机IP，后一个端口号填入代理端口，保存即可完成虚拟机共享主机代理的设置&lt;/p&gt;
+&lt;p&gt;第五：验证代理是否成功&lt;/p&gt;
+&lt;p&gt;发现可以正常访问学术网站，linux虚拟机代理成功，同时也可以解决rustc软件包安装失效的问题&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/10.png&quot; alt=&quot;10&quot; /&gt;&lt;/p&gt;
+&lt;h5&gt;第二种解决方式：通过命令行配置代理&lt;/h5&gt;
+&lt;p&gt;第一：配置代理&lt;/p&gt;
+&lt;p&gt;在终端中输入以下指令（ip地址为你自己的，端口号为代理软件的，同第一种解决方式中的一样）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export https_proxy=http://192.168.9.1:7890
+export http_proxy=http://192.168.9.1:7890
+export ftp_proxy=http://192.168.9.1:7890
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二：配置生效&lt;/p&gt;
+&lt;p&gt;安装完成后，我们可以重新打开一个终端来让之前设置的环境变量生效。&lt;/p&gt;
+&lt;p&gt;我们也可以手动将环境变量设置应用到当前终端（非永久生效，仅限于当前终端），输入以下命令：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;source $HOME/.cargo/env
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;结语&lt;/h4&gt;
+&lt;p&gt;真诚地希望你的问题在这里得到解决，以上是我写的有关linux虚拟机代理的解决方法&lt;/p&gt;
 </content:encoded></item><item><title>Markdown Extended Features</title><link>https://thrinisty.github.io/posts/markdown-extended/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/markdown-extended/</guid><description>Read more about Markdown features in Fuwari</description><pubDate>Wed, 01 May 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;GitHub Repository Cards&lt;/h2&gt;
 &lt;p&gt;You can add dynamic cards that link to GitHub repositories, on page load, the repository information is pulled from the GitHub API.&lt;/p&gt;
 &lt;p&gt;::github{repo=&quot;Fabrizz/MMM-OnSpotify&quot;}&lt;/p&gt;

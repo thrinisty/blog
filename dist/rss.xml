@@ -1,9 +1,2789 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New One</description><link>https://thrinisty.github.io/</link><language>en</language><item><title>自学第二月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第二月份总结&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New One</description><link>https://thrinisty.github.io/</link><language>en</language><item><title>JavaWeb笔记(JSP)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</guid><description>JSP</description><pubDate>Thu, 08 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;JSP&lt;/h2&gt;
+&lt;h3&gt;初步介绍&lt;/h3&gt;
+&lt;p&gt;JSP全称为Java Server Pages，java的服务器页面，主要作用为替Servlet程序回传html页面的数据，因为Servlet程序回传html页面数据是一件非常繁琐的事情，开发成本和维护成本都很高&lt;/p&gt;
+&lt;p&gt;我们在使用Servlet程序回传html需要通过回传流需要一行一行地将html页面的数据传回，要会传完整一个html页面需要大量的代码使用write写入返回到客户端地浏览器&lt;/p&gt;
+&lt;p&gt;以下是一个代码示例，可见非常的繁琐&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/test&quot;)
+public class TestServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //通过响应的回传流回传html页面数据
+        // 设置响应内容类型为HTML
+        resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+
+        // 获取响应输出流
+        PrintWriter out = resp.getWriter();
+
+        // 构建HTML页面内容
+        out.println(&quot;&amp;lt;!DOCTYPE html&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;html&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;head&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;title&amp;gt;Servlet生成的页面&amp;lt;/title&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;style&amp;gt;&quot;);
+        out.println(&quot;        body { font-family: Arial, sans-serif; margin: 40px; }&quot;);
+        out.println(&quot;        h1 { color: #3366cc; }&quot;);
+        out.println(&quot;    &amp;lt;/style&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;/head&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;body&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;h1&amp;gt;这是由TestServlet动态生成的页面&amp;lt;/h1&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;p&amp;gt;当前时间: &quot; + new java.util.Date() + &quot;&amp;lt;/p&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;p&amp;gt;请求方法: &quot; + req.getMethod() + &quot;&amp;lt;/p&amp;gt;&quot;);
+        out.println(&quot;    &amp;lt;p&amp;gt;Servlet路径: &quot; + req.getServletPath() + &quot;&amp;lt;/p&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;/body&amp;gt;&quot;);
+        out.println(&quot;&amp;lt;/html&amp;gt;&quot;);
+
+        // 关闭输出流
+        out.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;与此同时JSP可以很好的解决这个问题，代替了Servlet程序回传html页面的数据，注意JSP页面要通过服务器端进行解析，需要先运行Tomcat服务器后才可以显示动态生成出来，而不是像html一样可以直接通过本地的浏览器一样解析&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    JSP JSP JSP
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;JSP页面本质上是一个Servlet程序，当我们第一次访问JSP页面的时候，Tomcat服务器会帮我们将jsp页面翻译为一个java源文件，并且将其编译为class字节码程序&lt;/p&gt;
+&lt;p&gt;生成的Servlet继承自HttpJspBase，所以 JSP 本质上就是一个Servlet，生成的Servlet程序生成的html页面也是通过write输出流生成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;      out.write(&quot;\r\n&quot;);
+      out.write(&quot;\r\n&quot;);
+      out.write(&quot;&amp;lt;html&amp;gt;\r\n&quot;);
+      out.write(&quot;&amp;lt;head&amp;gt;\r\n&quot;);
+      out.write(&quot;    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;\r\n&quot;);
+      out.write(&quot;&amp;lt;/head&amp;gt;\r\n&quot;);
+      out.write(&quot;&amp;lt;body&amp;gt;\r\n&quot;);
+      out.write(&quot;    JSP JSP JSP\r\n&quot;);
+      out.write(&quot;&amp;lt;/body&amp;gt;\r\n&quot;);
+      out.write(&quot;&amp;lt;/html&amp;gt;\r\n&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;JSP page&lt;/h3&gt;
+&lt;p&gt;jsp的page指令可以修改jsp页面中的一些重要属性或者行为&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下是一些常见的可以修改的属性&lt;/p&gt;
+&lt;p&gt;language 属性：表示jsp翻译后是什么语言文件，暂时只支持java&lt;/p&gt;
+&lt;p&gt;contentType 属性：表示jsp返回的数据类型是什么，也是源码中response.setContentType设置的编码类型（一般都是UTF-8）&lt;/p&gt;
+&lt;p&gt;pageEncoding 属性：表示当前jsp页面文件本身的字符集（一般都是UTF-8）&lt;/p&gt;
+&lt;p&gt;import 属性：和Java一致，导入包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page import=&quot;java.util&quot; %&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;autoFlush 属性：设置当out输出流缓冲区满了后，是否自动刷新缓冲区，默认为true&lt;/p&gt;
+&lt;p&gt;buffer 属性：设置out输出缓冲区大小，默认为8kb&lt;/p&gt;
+&lt;p&gt;errorPage 属性：设置当jsp页面运行出错的时候，会自动跳转的错误页面&lt;/p&gt;
+&lt;p&gt;isErrorPage 属性：设置当前jsp页面是否是错误信息页面，默认为false，如果是true可以获取异常信息&lt;/p&gt;
+&lt;p&gt;session 属性：设置访问当前jsp页面，是否会创建HttpSession对象，默认是true&lt;/p&gt;
+&lt;p&gt;extends 属性：设置jsp翻译出来的java类默认继承谁&lt;/p&gt;
+&lt;h3&gt;JSP脚本&lt;/h3&gt;
+&lt;h4&gt;声明脚本&lt;/h4&gt;
+&lt;p&gt;可以给JSP翻译出来的java类定义属性和方法，甚至是静态代码块和方法，定义的声明会生成到对应的Java源文件和class文件中&lt;/p&gt;
+&lt;p&gt;格式为&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%!
+	Java声明语句
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;声明类属性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%!
+    private Integer id;
+    private String name;
+    private static Map&amp;lt;String,Object&amp;gt; map;
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;声明static静态代码块&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%!
+    static {
+        map = new HashMap&amp;lt;String,String&amp;gt;();
+        map.put(&quot;key1&quot;, &quot;v1&quot;);
+        map.put(&quot;key2&quot;, &quot;v2&quot;);
+        map.put(&quot;key3&quot;, &quot;v3&quot;);
+        map.put(&quot;key4&quot;, &quot;v4&quot;);
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;声明类方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%!
+    public int function(){
+        return 12;
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;声明内部类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%!
+    public static class Student{
+        private String name = &quot;Jack&quot;;
+        private int age = 10;
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;表达式脚本&lt;/h4&gt;
+&lt;p&gt;作用：在jsp页面上输出数据&lt;/p&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%=表达式%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%=12 %&amp;gt;&amp;lt;br&amp;gt;
+&amp;lt;%=name %&amp;gt;&amp;lt;br&amp;gt;
+&amp;lt;%=&quot;字符串测试&quot; %&amp;gt;&amp;lt;br&amp;gt;
+&amp;lt;%=map %&amp;gt;&amp;lt;br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输出内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;JSP JSP JSP 12
+TestString
+字符串测试
+{key1=v1, key2=v2, key3=v3, key4=v4}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;特点&lt;/p&gt;
+&lt;p&gt;所有的表达式脚本都会被翻译到_jspService方法中&lt;/p&gt;
+&lt;p&gt;所有的表达式脚本都会被翻译成为out.print输出到页面上&lt;/p&gt;
+&lt;p&gt;由于表达式脚本翻译的内容都在_jspService方法中，所以jspService方法中的对象都可以直接使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%=request.getParameter(&quot;name&quot;)%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;http://localhost:8080/JSPTest/Test.jsp?name=1234&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1234
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;表达式内容不可以 ; 结束&lt;/p&gt;
+&lt;h4&gt;代码脚本&lt;/h4&gt;
+&lt;p&gt;作用：可以在jsp页面中，编写我们自己需要的功能（java语句）&lt;/p&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%
+	java语句
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%
+    int i = 12;
+    if(i == 12) {
+        System.out.println(i);
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码脚本特点&lt;/p&gt;
+&lt;p&gt;1.代码脚本翻译之后都在_jspServive方法中&lt;/p&gt;
+&lt;p&gt;2.代码脚本中可以直接使用_jspService方法中的对象&lt;/p&gt;
+&lt;p&gt;3.代码脚本还可以由多个代码脚本块组合完成一个Java语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%
+    int i = 12;
+    for (int j = 0; j &amp;lt; i; j++) {   
+%&amp;gt;
+&amp;lt;%
+        System.out.println(&quot;j&quot;);
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.代码脚本还可以与表达式脚本组合使用在JSP页面打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%
+    int i = 12;
+    for (int j = 0; j &amp;lt; i; j++) {
+%&amp;gt;
+    &amp;lt;%=j%&amp;gt;&amp;lt;br&amp;gt;
+&amp;lt;%
+    }
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当然也不建议这么使用，太过于混乱了，现在基本上都是直接使用框架了，这么些可维护性差&lt;/p&gt;
+&lt;h4&gt;JSP注释&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;!--html注释--&amp;gt;
+    &amp;lt;%
+        //Java注释
+        /*会被翻译到Java源代码中*/
+    %&amp;gt;
+    &amp;lt;%--JSP注释（时JSP中真正的注释）--%&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;内置对象&lt;/h3&gt;
+&lt;p&gt;JSP中的内置对象，指的是Tomcat在翻译JSP页面为Servlet源代码后，内部提供的九大对象称为内置对象&lt;/p&gt;
+&lt;p&gt;request：请求对象&lt;/p&gt;
+&lt;p&gt;response：响应对象&lt;/p&gt;
+&lt;p&gt;pageContext：jsp上下文对象&lt;/p&gt;
+&lt;p&gt;session：会话对象&lt;/p&gt;
+&lt;p&gt;application：ServletContext对象&lt;/p&gt;
+&lt;p&gt;config：ServletConfig对象&lt;/p&gt;
+&lt;p&gt;out：jsp输出流对象&lt;/p&gt;
+&lt;p&gt;page：指向当前jsp的对象&lt;/p&gt;
+&lt;p&gt;exception：异常对象（当页面异常isErrorPage开启时创建异常对象）&lt;/p&gt;
+&lt;h4&gt;四个域对象&lt;/h4&gt;
+&lt;p&gt;pageContext（PageContextImpl类）当前jsp页面范围内有效&lt;/p&gt;
+&lt;p&gt;request（HttpServletRequest类）一次请求内有效（请求转发不会丢失request数据）&lt;/p&gt;
+&lt;p&gt;session（HttpSession类）一个会话范围内有效（打开浏览器访问服务器，直到关闭浏览器）&lt;/p&gt;
+&lt;p&gt;application（ServletContext类）整个Web工程范围内都有效（Web停止后销毁）&lt;/p&gt;
+&lt;p&gt;域对象是可以像Map一样存取数据的对象，四个域对象的功能一样，不同的是特们对于数据的存取范围&lt;/p&gt;
+&lt;p&gt;我在这里遇到了pageContext无法解析set/getAttribute方法，应该是缺少 JSP API 依赖导致的&lt;/p&gt;
+&lt;p&gt;你的依赖中没有明确包含 &lt;code&gt;jsp-api&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这会导致 IDEA 无法解析 &lt;code&gt;pageContext&lt;/code&gt; 的方法&lt;/p&gt;
+&lt;p&gt;添加如下的依赖配置即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;javax.servlet.jsp&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;javax.servlet.jsp-api&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.3.3&amp;lt;/version&amp;gt;
+    &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;JSP标题&amp;lt;/h1&amp;gt;
+    &amp;lt;%
+        pageContext.setAttribute(&quot;key1&quot;, &quot;pageContext&quot;);
+        request.setAttribute(&quot;key2&quot;, &quot;Request&quot;);
+        session.setAttribute(&quot;key3&quot;, &quot;Session&quot;);
+        application.setAttribute(&quot;key4&quot;, &quot;Application&quot;);
+    %&amp;gt;
+    &amp;lt;%=pageContext.getAttribute(&quot;key1&quot;)%&amp;gt;
+    &amp;lt;%=request.getAttribute(&quot;key2&quot;)%&amp;gt;
+    &amp;lt;%=session.getAttribute(&quot;key3&quot;)%&amp;gt;
+    &amp;lt;%=application.getAttribute(&quot;key4&quot;)%&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然都可以存取顺序，但是有使用优先顺序，最好在使用条件允许下使用小的范围&lt;/p&gt;
+&lt;h3&gt;输出的细节&lt;/h3&gt;
+&lt;h4&gt;out与getWriter&lt;/h4&gt;
+&lt;p&gt;response中表示响应，经常用于设置返回给客户端的内容（输出）&lt;/p&gt;
+&lt;p&gt;out也是给用户做输出使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;JSP输出&amp;lt;/h1&amp;gt;
+    &amp;lt;%
+        response.getWriter().write(&quot;输出一&quot;);
+        out.write(&quot;输出二&quot;);
+    %&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输出结果：我们发现response的write输出在标题的上边，和预期有些不符&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/151.png&quot; alt=&quot;151&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;JSP 引擎先处理模板文本 &lt;code&gt;&amp;lt;h1&amp;gt;JSP输出&amp;lt;/h1&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;遇到脚本片段时：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;response.getWriter().write()&lt;/code&gt; 立即输出到客户端&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;out.write()&lt;/code&gt; 写入缓冲区&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;最后 JSP 引擎刷新缓冲区，&lt;code&gt;out.write()&lt;/code&gt; 的内容才真正输出&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;一般在使用中统一使用out输出，避免打乱顺序&lt;/p&gt;
+&lt;h4&gt;out.print与out.write&lt;/h4&gt;
+&lt;p&gt;print会将内容逐个转为字符再通过write输出，而write输出整形数据会出现问题，会将内容转为字符串（并非单个字符转化）&lt;/p&gt;
+&lt;p&gt;所以在实际使用的时候输出数字用print完成（或者直接统一使用print）&lt;/p&gt;
+&lt;h3&gt;常用标签&lt;/h3&gt;
+&lt;h4&gt;静态包含&lt;/h4&gt;
+&lt;p&gt;有的时候我们将一个页面分为数个部分显示，为了保证页面的灵活性，我们可以将单个部分提取出来编写，方便随时替换或者修改&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;常用标签&amp;lt;/h1&amp;gt;
+    头部信息&amp;lt;br&amp;gt;
+    主体信息&amp;lt;br&amp;gt;
+    页脚信息&amp;lt;br&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们将页脚信息提取出来&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;页脚&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    页脚内容(静态包含)&amp;lt;br&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用jsp页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;常用标签&amp;lt;/h1&amp;gt;
+    头部信息&amp;lt;br&amp;gt;
+    主体信息&amp;lt;br&amp;gt;
+    &amp;lt;%@ include file=&quot;/foot.jsp&quot;%&amp;gt;&amp;lt;br&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;静态包含的特点：不会翻译被包含的jsp页面，而是将被包含的jsp页面拷贝到包含的位置输出&lt;/p&gt;
+&lt;h4&gt;动态包含&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;常用标签&amp;lt;/h1&amp;gt;
+    头部信息&amp;lt;br&amp;gt;
+    主体信息&amp;lt;br&amp;gt;
+    &amp;lt;jsp:include page=&quot;foot.jsp&quot;&amp;gt;&amp;lt;/jsp:include&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;效果上和静态包含效果上差别不大，动态包含会把包含的jsp页面也翻译为java代码，动态包含底层调用了include方法调用被包含的页面进行输出（将被包含的页面的对象给包含页面进行使用）&lt;/p&gt;
+&lt;p&gt;工程上一般使用静态代码&lt;/p&gt;
+&lt;h4&gt;请求转发&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;JSP生成的页面&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;h1&amp;gt;请求转发&amp;lt;/h1&amp;gt;
+    &amp;lt;jsp:forward page=&quot;/servlet&quot;&amp;gt;&amp;lt;/jsp:forward&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Listener监听器&lt;/h3&gt;
+&lt;p&gt;Listener监听器时JavaWeb的三大组件之一（Servler程序、Filter过滤器、Listener监听器）&lt;/p&gt;
+&lt;p&gt;是JavaEE的规范，即接口，作用为监听某种事物的变化，通过回调函数，反馈给客户（程序）做一些处理&lt;/p&gt;
+&lt;h4&gt;ServletContextListener&lt;/h4&gt;
+&lt;p&gt;可以监听ServletContext对象的创建和销毁（ServletContext对象在Web工程启动的时候创建，在Web工程停止的时候销毁）&lt;/p&gt;
+&lt;p&gt;监听到创建和销毁之后都会分别调用ServletContextListener监听器的方法反馈，这两个方法分别是contextInitialized和contextDestroyed，其中传入了ServletContextEvent对象&lt;/p&gt;
+&lt;p&gt;使用方式&lt;/p&gt;
+&lt;p&gt;1.编写一个类实现ServletContextListener&lt;/p&gt;
+&lt;p&gt;2.实现两个回调方法&lt;/p&gt;
+&lt;p&gt;3.配置web.xml监听器（配置注解@WebListener）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.listener;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import java.awt.event.ActionListener;
+
+@WebListener
+public class ListenerTest implements ServletContextListener {
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println(&quot;contextDestroyed&quot;);
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println(&quot;contextInitialized&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这两天忙着准备面试+编译原理实验（最恶心的一个）+线性代数考试复习，暂时抽不出时间，等10号之后再开始EL表达式的学习&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记(Servlet)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0servletservletrequestservletresponse%E9%87%8D%E5%AE%9A%E5%90%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0servletservletrequestservletresponse%E9%87%8D%E5%AE%9A%E5%90%91/</guid><description>ServletRequest，ServletResponse，重定向</description><pubDate>Wed, 07 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;p&gt;今天完成Servlet剩余部分的学习，JavaWeb部分的实战项目我就不练了，我打算这一个部分的练手等到学习完开发框架之后做成一整个项目&lt;/p&gt;
+&lt;p&gt;今天发现自己的Servlet程序没有办法打印出中文字符，去网络上搜索了以下，回答的都是处理请求头的编码处理，但想想直接打印也是乱码，应该是Tomcat的配置出了问题，以下是解决方式：在Tomcat运行设置里的虚拟机选项填入以下内容（修改运行配置）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-Dfile.encoding=UTF-8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;HttpServletRequest&lt;/h2&gt;
+&lt;p&gt;作用：每次只要有请求进入Tomcat服务器，Tomcat服务器就会把请求过来的HTTP协议信息解析好封装到Request对象中，然后传递到service方法，在doGet和doPost方法中给我们使用，我们可以通过HttpServletRequest对象，获取到所有的请求信息&lt;/p&gt;
+&lt;p&gt;http://localhost:8080/ServletTest/test?username=2022302546&amp;amp;password=123455&amp;amp;hobby=cpp&amp;amp;hobby=java&lt;/p&gt;
+&lt;h3&gt;常用方法&lt;/h3&gt;
+&lt;h4&gt;getRequestURI&lt;/h4&gt;
+&lt;p&gt;获取请求资源路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getRequestURI());
+///ServletRequests/test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getRequestURL&lt;/h4&gt;
+&lt;p&gt;获取请求的统一资源定位符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getRequestURL());
+//http://localhost:8080/ServletRequests/test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getRemoteHost&lt;/h4&gt;
+&lt;p&gt;获取客户端的ip地址&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getRemoteHost());
+//0:0:0:0:0:0:0:1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getHeader&lt;/h4&gt;
+&lt;p&gt;获取请求头&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getHeader(&quot;Accept-Language&quot;));
+//zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6 取决你想要访问的头
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getMethod&lt;/h4&gt;
+&lt;p&gt;获取请求的方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getMethod());
+//GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getParameter&lt;/h4&gt;
+&lt;p&gt;获取请求参数&lt;/p&gt;
+&lt;p&gt;我们先加入一个html页面，其中设置一个表单，名称填为18288763320，可以在doGet中通过req参数获取到username参数对应的表单项值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form action=&quot;http://localhost:8080/ServletTest/test&quot; method=&quot;get&quot;&amp;gt;
+        名称&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        密码&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;/&amp;gt;&amp;lt;br/&amp;gt;
+        爱好
+        &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;cpp&quot;&amp;gt;C++
+        &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;java&quot;&amp;gt;Java
+        &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;python&quot;&amp;gt;python
+        &amp;lt;input type=&quot;submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(req.getParameter(&quot;username&quot;));
+//18288763320
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getParameterValues&lt;/h4&gt;
+&lt;p&gt;获取请求的参数（多个值时使用，如使用勾选框的时候）返回一个数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String[] hobbies = req.getParameterValues(&quot;hobby&quot;);
+for (String hobby : hobbies) {
+    System.out.print(hobby + &quot; &quot;);
+}//cpp java 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;setCharacterEncoding&lt;/h4&gt;
+&lt;p&gt;在Post请求中没法正确获取到表单中的中文字符（乱码）可通过在doPost中设置字符集解决，注意在打印请求前设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;request.setCharacterEncoding(&quot;UTF-8&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;setAttribute&lt;/h4&gt;
+&lt;p&gt;设置域数据&lt;/p&gt;
+&lt;h4&gt;getAttribute&lt;/h4&gt;
+&lt;p&gt;获取域数据&lt;/p&gt;
+&lt;p&gt;和Map集合类似，这里不再过多说明&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;req.setAttribute(&quot;test&quot;, &quot;test&quot;);
+String test = (String)req.getAttribute(&quot;test&quot;);
+System.out.println(test);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;转发请求&lt;/h3&gt;
+&lt;h4&gt;getRequestDispatcher&lt;/h4&gt;
+&lt;p&gt;获取转发请求&lt;/p&gt;
+&lt;p&gt;在第一个Servlet程序中完成请求的转发，并填入一个域数据，用以被第二个Servlet程序获取处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/test1&quot;)
+public class Servlet1 extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;doGetServlet1&quot;);
+        req.setAttribute(&quot;function&quot;, &quot;target&quot;);
+        //添加域数据
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(&quot;/test2&quot;);
+        //获取到访问地址
+        requestDispatcher.forward(req, resp);
+        //访问目标地址，并转发请求req
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二个Servlet程序，由于也传入了req访问请求参数，可以获取到其中的信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/test2&quot;)
+public class Servlet2 extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;doGetServlet2&quot;);
+        System.out.println(&quot;获取到了&quot; + req.getAttribute(&quot;function&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;转发请求的特点&lt;/h4&gt;
+&lt;p&gt;1.浏览器地址栏没有变化&lt;/p&gt;
+&lt;p&gt;2.他们是一次请求&lt;/p&gt;
+&lt;p&gt;3.可以共享Request域数据&lt;/p&gt;
+&lt;p&gt;4.可以转发到WEB-INF目录下（直接通过浏览器地址栏没法访问）&lt;/p&gt;
+&lt;h2&gt;base标签&lt;/h2&gt;
+&lt;p&gt;我们有如下一个场景，两个页面相互跳转，通过a标签设置链接完成&lt;/p&gt;
+&lt;p&gt;index.html&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;a href=&quot;a/b/c.html&quot;&amp;gt;跳转页面&amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/ServletTest/Servlet&quot;&amp;gt;通过servlet跳转页面&amp;lt;/a&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;c.html&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;a href=&quot;../../index.html&quot;&amp;gt;跳转回index页面&amp;lt;/a&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以正常跳转，没有问题，我们现在通过Servlet转发实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;a href=&quot;http://localhost:8080/ServletTest/Servlet&quot;&amp;gt;通过servlet跳转页面&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/Servlet&quot;)
+public class Servlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;转发&quot;);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(&quot;/a/b/c.html&quot;);
+        //获取到访问地址
+        requestDispatcher.forward(req, resp);
+        //访问目标地址，并转发请求req
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在index页面中可以正常跳转到c.html页面下，但是没有办法跳转回来，因为当前的地址为 http://localhost:8080/ServletTest/Servlet （转发的时候不会跳转地址） 回溯路径是 ../../index.html 而在8080工作路径下没有c.html&lt;/p&gt;
+&lt;p&gt;我们这个时候可以使用到base标签：设置当前页面中所有的相对路径工作时，参照哪一个路径进行跳转&lt;/p&gt;
+&lt;p&gt;更改c.html 设置base标签，标注在当前c.html跳转时参照 http://localhost:8080/ServletTest/a/b/ 进行跳转&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;
+    &amp;lt;base href=&quot;http://localhost:8080/ServletTest/a/b/&quot;&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;a href=&quot;../../index.html&quot;&amp;gt;跳转回index页面&amp;lt;/a&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样就没有问题了，可以正常跳回index页面&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/149.png&quot; alt=&quot;149&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;HttpServletResponse&lt;/h2&gt;
+&lt;p&gt;​	HttpServletResponse类和HttpServletRequest类一样，每一次请求都会创建一个Response对线传递给Servlet程序使用，HttpServletRequest表示请求过来的信息，而HttpServletResponse表示所有响应的信息&lt;/p&gt;
+&lt;p&gt;​	如果我们需要设置返回给客户端的信息，都可以通过HttpServletResponse对象来进行设置&lt;/p&gt;
+&lt;h3&gt;两个输出流&lt;/h3&gt;
+&lt;p&gt;二者只能使用其一&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/Servlet&quot;)
+public class Servlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setCharacterEncoding(&quot;UTF-8&quot;);
+        //设置响应字符集为UTF-8，除此之外还要设置浏览器字符集
+        resp.setHeader(&quot;Content-Type&quot;, &quot;text/html;charset=UTF-8&quot;);
+        //设置浏览器字符集
+        
+        //resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+        //同时设置以上的响应和服务器字符集，选其中之一即可（注意设置后再获取流对象）
+        
+        PrintWriter writer = resp.getWriter();
+//        ServletOutputStream outputStream = resp.getOutputStream();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;字节流&lt;/h4&gt;
+&lt;p&gt;getOutputStream&lt;/p&gt;
+&lt;p&gt;常用于下载&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ServletOutputStream outputStream = resp.getOutputStream();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;字符流&lt;/h4&gt;
+&lt;p&gt;getWriter&lt;/p&gt;
+&lt;p&gt;常用于回传字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PrintWriter writer = resp.getWriter();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;PrintWriter writer = resp.getWriter();
+writer.write(&quot;response&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;请求重定向&lt;/h3&gt;
+&lt;p&gt;请求重定向：是指客户端给服务器发送请求，然后服务器告诉客户端说，给与新地址以访问（之前的地址可能被废弃）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/150.png&quot; alt=&quot;150&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;第一个访问的Servlet程序，访问第二个Servlet程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.servlet;
+
+@WebServlet(&quot;/index.html&quot;)
+public class Servlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setStatus(302);
+        resp.setHeader(&quot;Location&quot;, &quot;http://localhost:8080/ServletTest/another&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二个Servlet程序，告诉用户新的资源地址&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.servlet;
+
+@WebServlet(&quot;/another&quot;)
+public class Response extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+        PrintWriter writer = resp.getWriter();
+        writer.write(&quot;服务暂停，可以跳转至新的页面http://localhost:8080/ServletTest/new.html&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意事项：&lt;/p&gt;
+&lt;p&gt;1.浏览器地址发送变化&lt;/p&gt;
+&lt;p&gt;2.两次请求&lt;/p&gt;
+&lt;p&gt;3.不可以访问Request域数据&lt;/p&gt;
+&lt;p&gt;4.不可以访问WEB-INF下资源&lt;/p&gt;
+&lt;p&gt;5.可以访问工程外的资源&lt;/p&gt;
+&lt;p&gt;或者直接调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/index.html&quot;)
+public class Servlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendRedirect(&quot;http://localhost:8080/ServletTest/new.html&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>JavaWeb笔记(Servlet)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0servletservlethttp%E5%8D%8F%E8%AE%AE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0servletservlethttp%E5%8D%8F%E8%AE%AE/</guid><description>Servlet（Servlet，HTTP协议）</description><pubDate>Tue, 06 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;p&gt;之前Maven没有配置好导致了JavaWeb的环境配置比较困难，去大概了解了一下Maven构建的相关知识，现在可以快速通过坐标导入相关的jar包了，马上开始Servlet的学习&lt;/p&gt;
+&lt;h2&gt;Servlet&lt;/h2&gt;
+&lt;h3&gt;入门使用&lt;/h3&gt;
+&lt;p&gt;我使用的是Maven构建的Servlet程序，不需要web.xml进行注册，只需要使用@WebServlet注解完成绑定即可访问使用&lt;/p&gt;
+&lt;p&gt;新建一个类，实现Servlet的接口方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/hello&quot;)//使用该注解可以绑定访问/hello地址的时候调用Servlet服务
+public class HelloServlet implements Servlet
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void init(ServletConfig servletConfig) throws ServletException {
+
+}
+
+@Override
+public ServletConfig getServletConfig() {
+    return null;
+}
+
+@Override
+public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+	//该方法在调用Servlet服务的时候会被调用
+    System.out.println(&quot;Hello Servlet&quot;);
+}
+
+@Override
+public String getServletInfo() {
+    return &quot;&quot;;
+}
+
+@Override
+public void destroy() {
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意：在Maven构建的Servlet程序中，index.jsp要放在src/main/webapp目录下，才可以被默认访问到&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/142.png&quot; alt=&quot;142&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;配置完毕的时候，我们运用浏览器访问 http://localhost:8080/ServletTest/hello 即可调用实现servlet接口的实现类中的相关方法&lt;/p&gt;
+&lt;h3&gt;运行流程&lt;/h3&gt;
+&lt;p&gt;以下是一个调用的流程图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/143.png&quot; alt=&quot;143&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;1.执行Servlet构造方法&lt;/p&gt;
+&lt;p&gt;2.执行init初始化方法&lt;/p&gt;
+&lt;p&gt;3.执行&lt;/p&gt;
+&lt;p&gt;4.执行destroy销毁方法&lt;/p&gt;
+&lt;p&gt;前两个方法在初次时调用，第二次访问/hello时，只调用service方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;create Servlet
+init Servlet
+Servlet Running
+Servlet Running
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;sevice方法&lt;/h3&gt;
+&lt;p&gt;用一个html页面运用submit提交，跳转到对应的路径下也会被Servlet捕获并且调用相关方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;Test&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form action=&quot;http://localhost:8080/ServletTest/hello&quot; method=&quot;post&quot;&amp;gt;
+        &amp;lt;input type=&quot;submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    System.out.println(&quot;Servlet Running&quot;);
+    HttpServletRequest Request = (HttpServletRequest) servletRequest;
+    String method = Request.getMethod();
+    System.out.println(method);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过ServletRequest servletRequest的子类型的getMethod方法可以得到请求的类型（Post/Get）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Servlet Running
+GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一般而言，我们在处理两种不同的请求类型的时候进行方法化处理，分别调用不同的处理操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    System.out.println(&quot;Servlet Running&quot;);
+    HttpServletRequest Request = (HttpServletRequest) servletRequest;
+    String method = Request.getMethod();
+    switch (method) {
+        case &quot;GET&quot;:
+            System.out.println(&quot;GET Method&quot;);
+            doGet();//处理get请求的方法
+            break;
+        case &quot;POST&quot;:
+            System.out.println(&quot;POST Method&quot;);
+            doPost();//处理post请求的方法
+            break;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;HttpServlet实现&lt;/h3&gt;
+&lt;p&gt;在实际的开发中，很少通过实现servlet接口实现servlet程序，而是继承其子类HttpServlet来实现&lt;/p&gt;
+&lt;p&gt;1.编写一个类去集成HttpServlet类&lt;/p&gt;
+&lt;p&gt;2.根据业务需要重写doGet或者doPost方法&lt;/p&gt;
+&lt;p&gt;3.到web.xml配置Servlet程序的访问地址（我通过@WebServlet(&quot;/test&quot;)完成）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/test&quot;)
+public class ServletTest extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;Servlet Get Called&quot;);
+        super.doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;Servlet Post Called&quot;);
+        super.doPost(req, resp);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;继承关系&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/144.png&quot; alt=&quot;144&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;GenericServlet实现了Servlet接口，并做了一些空实现，持有一个ServletConfig类的引用，并对ServletConfig的使用做一些方法&lt;/p&gt;
+&lt;p&gt;HttpServlet抽取类实现了service方法，并实现了请求的分发处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String method = req.getMethod();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而其中调用的doGet和doPost默认抛出异常，不支持请求，我们在实际使用的时候根据需要重写方法实现业务逻辑即可&lt;/p&gt;
+&lt;h3&gt;ServletConfig类&lt;/h3&gt;
+&lt;h4&gt;注解Servlet&lt;/h4&gt;
+&lt;p&gt;首先运用注解设置访问地址以及初始化参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(
+        urlPatterns = &quot;/hello&quot;,  // 访问路径
+        initParams = {
+                @WebInitParam(name = &quot;name&quot;, value = &quot;John&quot;), 
+                @WebInitParam(name = &quot;age&quot;, value = &quot;25&quot;)      
+        }
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从类名来看，是Servlet程序的配置信息类&lt;/p&gt;
+&lt;p&gt;Servlet程序和ServletConfig对象都是由Tomcat负责创建，我们负责使用&lt;/p&gt;
+&lt;p&gt;Servlet程序默认是第一次访问的时候创建，ServletConfig是每个Servlet程序创建的时候，就创建一个ServletConfig对象（其中封装了一些信息）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface ServletConfig {
+    String getServletName();
+    ServletContext getServletContext();
+    String getInitParameter(String var1);
+    Enumeration&amp;lt;String&amp;gt; getInitParameterNames();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;三大作用&lt;/h4&gt;
+&lt;p&gt;1.可以获取Servlet程序的别名servlet-name的值&lt;/p&gt;
+&lt;p&gt;2.获取初始化参数init-param&lt;/p&gt;
+&lt;p&gt;3.获取ServletContext对象&lt;/p&gt;
+&lt;p&gt;传递初始化参数的init方法，以及ServletConfig的使用方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void init(ServletConfig servletConfig) throws ServletException {
+    //1.可以获取Servlet程序的别名servlet-name的值
+    System.out.println(servletConfig.getServletName());
+    //com.servlet.HelloServlet
+    //2.获取初始化参数init-param
+    System.out.println(servletConfig.getInitParameter(&quot;name&quot;));
+    //John
+    //3.获取ServletContext对象
+    System.out.println(servletConfig.getServletContext());
+    //org.apache.catalina.core.ApplicationContextFacade@15f00bcd
+    System.out.println(&quot;init Servlet&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;注意要点&lt;/h4&gt;
+&lt;p&gt;HttpServlet在重写init方法的时候需要调用super.init去获取到父类的config类，否则会发生空指针异常&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    System.out.println(config.getServletName());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;因为HttpServlet的config没有被赋予GenericServlet的config信息，指向为空&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void init(ServletConfig config) throws ServletException {
+    this.config = config;
+    this.init();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;ServletContext类&lt;/h3&gt;
+&lt;h4&gt;定义&lt;/h4&gt;
+&lt;p&gt;是一个接口，表示Servlet上下文对象&lt;/p&gt;
+&lt;p&gt;一个Web工程，只有一个ServletContext对象实例&lt;/p&gt;
+&lt;p&gt;ServletContext是一个域对象（可以像Map一样存取数据的对象，域指的是存取数据的操作范围）&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;比较&lt;/th&gt;
+&lt;th&gt;存数&lt;/th&gt;
+&lt;th&gt;取数&lt;/th&gt;
+&lt;th&gt;删除数据&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Map&lt;/td&gt;
+&lt;td&gt;put&lt;/td&gt;
+&lt;td&gt;get&lt;/td&gt;
+&lt;td&gt;remove&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;域对象&lt;/td&gt;
+&lt;td&gt;setAttribute&lt;/td&gt;
+&lt;td&gt;getAttribute&lt;/td&gt;
+&lt;td&gt;removeAttribute&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;ServletContext是在Web工程部署启动的时候创建的，在Web工程停止的时候销毁&lt;/p&gt;
+&lt;h4&gt;作用&lt;/h4&gt;
+&lt;p&gt;1.获取web.xml中配置的上下文参数context-param&lt;/p&gt;
+&lt;p&gt;2.获取当前的工作路径，格式：/工程路径&lt;/p&gt;
+&lt;p&gt;3.获取工程部署后在服务器硬盘上的绝对路径&lt;/p&gt;
+&lt;p&gt;4.像Map一样存取数据&lt;/p&gt;
+&lt;h4&gt;实际使用&lt;/h4&gt;
+&lt;p&gt;由于我的Servlet程序没有设置web.xml，全局上下文变量是通过一个WebListener完成的，其中存储了一个global和一个version&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.listener;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+@WebListener
+public class ContextListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        sce.getServletContext().setAttribute(&quot;global&quot;, &quot;Hello World&quot;);
+        sce.getServletContext().setAttribute(&quot;version&quot;, &quot;1.0.0&quot;);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println(&quot;contextDestroyed&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而要在Servlet程序中调用，则通过getServletContext获取到上下文，再通过getAttribute类似map一样的操作取出对应的值&lt;/p&gt;
+&lt;p&gt;以下是HttpServlet的实现类，其中有一个getServletContext的封装方法以调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/new&quot;)
+public class NewServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String global = (String)getServletContext().getAttribute(&quot;global&quot;);
+        String version = (String)getServletContext().getAttribute(&quot;version&quot;);
+        System.out.println(&quot;Servlet Get Called&quot; + global + &quot; &quot; + version);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们还可以通过Context获取工作路径与部署绝对路径&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意事项&lt;/strong&gt;：getRealPath方法在一些 &lt;strong&gt;非文件系统部署（比如 WAR 包部署到云服务器）中可能返回 null&lt;/strong&gt;，因此用需要额外小心&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    String contextPath = getServletContext().getContextPath();
+    String realPath = getServletContext().getRealPath(&quot;/&quot;);
+    System.out.println(contextPath);
+    System.out.println(realPath);
+    //ServletTest
+    //C:\Users\71460\Desktop\Java\Maven\Servlet\target\Servlet-1.0-SNAPSHOT\
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;HTTP协议&lt;/h3&gt;
+&lt;p&gt;指客户端和服务端通信时发送数据需要遵守的规则，HTTP协议中的数据称为报文，其中的请求分为GET请求和POST请求&lt;/p&gt;
+&lt;h4&gt;GET请求&lt;/h4&gt;
+&lt;p&gt;1.请求行：请求的方式，请求的资源路径，请求的协议和版本号&lt;/p&gt;
+&lt;p&gt;2.请求头： key:value 组成，不同的键值对表示不同的含义&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/145.png&quot; alt=&quot;145&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;Post请求&lt;/h4&gt;
+&lt;p&gt;1.请求行：请求的方式，请求的资源路径，请求的协议和版本号&lt;/p&gt;
+&lt;p&gt;2.请求头： key:value 组成，不同的键值对表示不同的含义&lt;/p&gt;
+&lt;p&gt;空行：请求头和请求体之间有空行&lt;/p&gt;
+&lt;p&gt;3.请求体：===&amp;gt;&amp;gt;&amp;gt;就是发送给服务器的数据&lt;/p&gt;
+&lt;p&gt;这里表单中有隐藏数据login username，将这两个信息发送给服务器&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/146.png&quot; alt=&quot;146&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;常见的请求头&lt;/h4&gt;
+&lt;p&gt;Accept：告诉服务器，客户端可以接收的数据类型&lt;/p&gt;
+&lt;p&gt;Accept-Language：告诉服务器客户端可以接收的语言类型，zh_CN、zh_ENG&lt;/p&gt;
+&lt;p&gt;User-Agent：浏览器的信息&lt;/p&gt;
+&lt;p&gt;Accept-Encoding：告诉服务器，客户端可以接收的数据编码（压缩）格式&lt;/p&gt;
+&lt;p&gt;Host：表示请求的服务器ip和端口号&lt;/p&gt;
+&lt;p&gt;Connection：告诉服务器当前连接如何处理，常见的有两种，Keep-Alive和Closed&lt;/p&gt;
+&lt;p&gt;Referer：表示请求发起时，浏览器地址栏中的地址从哪里来&lt;/p&gt;
+&lt;p&gt;Content-Type：表示发送的数据类型（图中的表示多段数据提交，以流形式提交）&lt;/p&gt;
+&lt;p&gt;Content-Length：发送的数据长度&lt;/p&gt;
+&lt;p&gt;Cache-Control：表示如何控制缓存，no-cache表示不缓存&lt;/p&gt;
+&lt;h4&gt;Get请求和Post请求区分&lt;/h4&gt;
+&lt;p&gt;Get：&lt;/p&gt;
+&lt;p&gt;form method=get  a标签  link标签引入css  script引入js文件  img标签引入图片  iframe引入html页面  在浏览器地址栏中输入访问地址回车&lt;/p&gt;
+&lt;p&gt;Post：&lt;/p&gt;
+&lt;p&gt;form method=post&lt;/p&gt;
+&lt;h3&gt;响应HTTP协议格式&lt;/h3&gt;
+&lt;h4&gt;格式&lt;/h4&gt;
+&lt;p&gt;1.响应行：响应的协议与版本号  响应状态码  响应状态描述符&lt;/p&gt;
+&lt;p&gt;2.响应头： key:value 不同的响应头，有不同的含义&lt;/p&gt;
+&lt;p&gt;空行&lt;/p&gt;
+&lt;p&gt;3.响应体：---&amp;gt;&amp;gt;&amp;gt;回传给客户端的数据&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/147.png&quot; alt=&quot;147&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;常见响应码&lt;/h4&gt;
+&lt;p&gt;200：表示请求成功&lt;/p&gt;
+&lt;p&gt;302：表示请求重定向&lt;/p&gt;
+&lt;p&gt;404：表示请求被服务器收到，但是预期数据不存在（请求地址出错）&lt;/p&gt;
+&lt;p&gt;500：表示服务器已经收到请求，但是服务器内部错误（代码错误，发生不可预期的错误）&lt;/p&gt;
+&lt;h3&gt;MIME&lt;/h3&gt;
+&lt;p&gt;MIME是HTTP协议中的数据类型，全称为多功能internet邮件扩充服务，MIME类型的格式是“大类型/小类型”，并与某一种文件的扩展名相对应&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/148.png&quot; alt=&quot;148&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>自学第二月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%8C%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第二月份总结&lt;/h1&gt;
 &lt;p&gt;​	在学习Java后端开发的第二个月中，用10天的时间为Java语言基础收了个尾，结束了反射，多线程基础，IO流的学习&lt;/p&gt;
 &lt;p&gt;​	学习完成Java部分的内容后又花了5天的时间回顾了MySQL数据库基础，巩固了一些数据库使用上的细节（存储引擎，事务，隔离级别等）。2天的时间完成了Java8一些新特性的学习，理解了Lambda表达式的使用，Stream API的概念以及使用方式，Optional类的学习&lt;/p&gt;
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;Tomcat&lt;/h2&gt;
+&lt;p&gt;JavaWeb：所用通过Java语言编写可以通过浏览器访问的程序的总称，基于请求和响应来开发的&lt;/p&gt;
+&lt;p&gt;Web资源：根据资源实现的技术和呈现的效果不同，分为静态资源和动态资源&lt;/p&gt;
+&lt;p&gt;静态资源：html，css，js，txt，mp4，jpg&lt;/p&gt;
+&lt;p&gt;动态资源：jsp页面，Servlet程序&lt;/p&gt;
+&lt;p&gt;常见的服务器：Tomcat，Jboss，GlassFish，Resin，WebLogic&lt;/p&gt;
+&lt;h3&gt;安装启动&lt;/h3&gt;
+&lt;p&gt;版本对应&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/138.png&quot; alt=&quot;138&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我使用的是tomcat9.0+Servlet4.0+JDK8&lt;/p&gt;
+&lt;p&gt;将Tomcat解压到你想要的路径下&lt;/p&gt;
+&lt;p&gt;在安装的bin目录下双击startup启动tomcat服务器，在浏览器中输入以下网址开启Tomcat服务页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://localhost:8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/139.png&quot; alt=&quot;139&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如果在启动的时候出现黑框立马闪退，有可能是没有设置系统变量&lt;/p&gt;
+&lt;p&gt;变量：JAVA_HOME   值：安装的JDK目录&lt;/p&gt;
+&lt;p&gt;关闭：双击shutdown.bat关闭&lt;/p&gt;
+&lt;p&gt;在config目录下有一个server.xml配置文件，在其中可以修改端口号8080，可以改为一个你想要用的其他端口号替换，再重启Tomcat服务器即可完成修改&lt;/p&gt;
+&lt;h3&gt;部署Web&lt;/h3&gt;
+&lt;h4&gt;第一种方式&lt;/h4&gt;
+&lt;p&gt;是需要把Web工程目录放入Tomcat的webapps目录下即可，这种方式比较方便&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://localhost:8080/test/123.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输入路径即可访问，其中的 http://localhost:8080 代表的就是webapps目录&lt;/p&gt;
+&lt;p&gt;在其他的设备通过输入部署的网络IP地址可以远程访问Web页面，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://192.168.104.29:8080/test/123.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;第二种方式&lt;/h4&gt;
+&lt;p&gt;找到Tomcat下的conf目录apache-tomcat-9.0.104\conf\Catalina\localhost，创建配置文件，在其中设置路径即可访问对应路径下的Web工程，这种方式较为灵活&lt;/p&gt;
+&lt;p&gt;访问服务器的时候，只填入网址端口默认访问ROOT工程，没有地址名，访问index.html&lt;/p&gt;
+&lt;h3&gt;动态web工程&lt;/h3&gt;
+&lt;p&gt;使用详见&lt;/p&gt;
+&lt;p&gt;https://blog.csdn.net/weixin_45791445/article/details/104574239&lt;/p&gt;
+&lt;p&gt;可以在IDEA上创建动态的Web项目，并使用Tomcat部署Web服务&lt;/p&gt;
+&lt;h2&gt;Maven&lt;/h2&gt;
+&lt;p&gt;推荐教程：可以快速上手，理解Maven相关概念以及使用方式&lt;/p&gt;
+&lt;p&gt;【一小时Maven教程】https://www.bilibili.com/video/BV1uApMeWErY?p=12&amp;amp;vd_source=586d101621a2629c1796f59df9143dff&lt;/p&gt;
+&lt;p&gt;Maven是一个依赖管理工具&lt;/p&gt;
+&lt;p&gt;通过Maven可以实现批量编译，组织文件结构，批量复制jar包&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/140.png&quot; alt=&quot;140&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;依赖管理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Maven可以管理项目依赖，包括自动下载依赖库，自动下载依赖之间没有冲突，以来版本管理，用户只需要编写配置即可&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;构建管理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;项目构建是将源代码，配置文件，资源文件等转化为能够运行或者部署的应用程序或库的过程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/141.png&quot; alt=&quot;141&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Package定义规则&lt;/p&gt;
+&lt;p&gt;jar：代表普通的java工程，打包为jar结尾的文件&lt;/p&gt;
+&lt;p&gt;war：代表java的web工程&lt;/p&gt;
+&lt;p&gt;porn：代表不会打包，用以做继承的父工程&lt;/p&gt;
+&lt;p&gt;而maven通过pom.xml配置执行打包以及构建，其中仓库存放jar包（仓库又分为本地仓库，私服仓库，中央仓库）&lt;/p&gt;
+&lt;p&gt;setting.xml配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;settings&amp;gt;
+  &amp;lt;!-- 原有镜像配置保持不变 --&amp;gt;
+  &amp;lt;mirrors&amp;gt;
+    &amp;lt;mirror&amp;gt;
+      &amp;lt;id&amp;gt;aliyunmaven&amp;lt;/id&amp;gt;
+      &amp;lt;url&amp;gt;https://maven.aliyun.com/repository/public&amp;lt;/url&amp;gt;
+      &amp;lt;mirrorOf&amp;gt;central&amp;lt;/mirrorOf&amp;gt;
+    &amp;lt;/mirror&amp;gt;
+  &amp;lt;/mirrors&amp;gt;
+
+  &amp;lt;!-- 新增以下配置 --&amp;gt;
+  &amp;lt;profiles&amp;gt;
+    &amp;lt;profile&amp;gt;
+      &amp;lt;id&amp;gt;disable-remote-archetype&amp;lt;/id&amp;gt;
+      &amp;lt;properties&amp;gt;
+        &amp;lt;!-- 强制使用本地 archetype 缓存 --&amp;gt;
+        &amp;lt;archetypeCatalog&amp;gt;internal&amp;lt;/archetypeCatalog&amp;gt;
+      &amp;lt;/properties&amp;gt;
+    &amp;lt;/profile&amp;gt;
+  &amp;lt;/profiles&amp;gt;
+
+  &amp;lt;!-- 激活配置 --&amp;gt;
+  &amp;lt;activeProfiles&amp;gt;
+    &amp;lt;activeProfile&amp;gt;disable-remote-archetype&amp;lt;/activeProfile&amp;gt;
+  &amp;lt;/activeProfiles&amp;gt;
+&amp;lt;/settings&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;父子模块管理&lt;/p&gt;
+&lt;p&gt;在父工程中的pom文件下添加的依赖可以被子模块中使用，所有将公共的依赖放置在父工程中可以简化依赖，也可以设置为不默认继承依赖，而是手动集成父工程依赖&lt;/p&gt;
+&lt;h2&gt;Docker&lt;/h2&gt;
+&lt;h3&gt;基本概念&lt;/h3&gt;
+&lt;p&gt;Docker是一个用于构建运行传送应用程序的平台，可以解决环境配置的问题，将第三方软件库，依赖等打包，运行在任何的环境&lt;/p&gt;
+&lt;p&gt;Docker是一个容器的实现，容器是一个虚拟化技术是一个独立的环境，使用宿主机的OS操作系统，减少资源的浪费（运行多个操作系统和图形化界面）&lt;/p&gt;
+&lt;p&gt;容器是Docker的一个运行实例，提供一个可以移植的环境，可以在这个环境中运行应用程序，镜像和容器的关系类似Java中的类和实例，Docker仓库可以存储Docker镜像和上传，我们打包容器为镜像上传给别人，别人就可以使用镜像创建相应的容器&lt;/p&gt;
+&lt;h3&gt;大致使用&lt;/h3&gt;
+&lt;p&gt;Dockerfile是构建指令，包含了如何配置环境的一些指令，用于告诉如何构建镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM node:14-alpine
+COPY index.js /index.js
+CMD [&quot;node&quot;, &quot;/index.js&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;构建镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker build -t hello-docker .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;查看镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+nginx        latest    9bea9f2796e2   5 months ago   192MB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run hello-docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以通过网页使用在线的play with docker来远程通过dockerhub下载镜像，运行容器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull thrinisty/hello-docker
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Docker Compose&lt;/h3&gt;
+&lt;p&gt;用于定义和运行多容器Docker应用程序的工具，使用yaml文件来设置应用程序服务&lt;/p&gt;
+&lt;p&gt;通过docker-compose.yaml配置文件将一组互相关联的容器组合在一起，形成项目，通过一条命令即可创建并启动所有的服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker compose up
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;实际使用&lt;/h3&gt;
+&lt;p&gt;我们现在在Docker上下载一个redis的镜像，并且通过镜像创建运行redis容器，之后在宿主机上用客户端连接服务器&lt;/p&gt;
+&lt;p&gt;查找可用redis镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker search redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下载redis镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行redis容器，并且通过-p参数将容器端口映射到宿主机端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run --name redis_test -p 6379:6379 -d redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在宿主机连接docker运行中的redis容器对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-cli -h 127.0.0.1 -p 6379
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>JavaWeb笔记（jQuery）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jqueryxml/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jqueryxml/</guid><description>jQuery，XML</description><pubDate>Sun, 27 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;p&gt;计划两天完成jQuery和XML部分的学习&lt;/p&gt;
+&lt;h2&gt;jQuery&lt;/h2&gt;
+&lt;p&gt;定义：是JavaScript和Query查询的结合，是辅助JavaScript开发的js类库&lt;/p&gt;
+&lt;p&gt;核心思想：写的更少，做的更多，实现了很多浏览器的兼容问题&lt;/p&gt;
+&lt;p&gt;流行程度：流行程度高，约 &lt;strong&gt;75% 的网站&lt;/strong&gt; 仍在使用 jQuery 进行 JavaScript 开发&lt;/p&gt;
+&lt;p&gt;优点：开源免费，语法便捷高效，简单易用（例如操作文档对象，选择DOM元素，制作动画效果，事件处理，使用Ajax等）&lt;/p&gt;
+&lt;h3&gt;入门示例&lt;/h3&gt;
+&lt;p&gt;如下是一个没有注册onclick事件的按钮，要求实现点击按钮输出Hello&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;button id=&quot;button&quot;&amp;gt;Say&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传统方式：通过获取标签对象绑定事件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        window.onload = function () {
+            var Obj = document.getElementById(&quot;button&quot;);
+            Obj.onclick = function () {
+                alert(&quot;Hello&quot;);
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;button id=&quot;button&quot;&amp;gt;Say&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过jQuery实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {//表示onload事件
+            var $button = $(&quot;#button&quot;);
+            $button.click(function() {//绑定单击事件
+                alert(&quot;Hello&quot;);
+            });
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;button id=&quot;button&quot;&amp;gt;Say&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;$是一个函数&lt;/p&gt;
+&lt;p&gt;对于框架而言jquery-3.7.1.min.js一般用于部署（快速，小），而jquery-3.7.1.js用于开发（可以方便看源码）&lt;/p&gt;
+&lt;p&gt;使用jQuery查询标签对象，使用标签对象.click绑定函数&lt;/p&gt;
+&lt;h3&gt;核心函数&lt;/h3&gt;
+&lt;p&gt;$是jQuery核心函数，可以完成jQuery很多功能&lt;/p&gt;
+&lt;p&gt;而$()就是在调用这个函数，根据传入的不同参数，实现不同的功能，以下是常见的使用方式&lt;/p&gt;
+&lt;p&gt;1.当传入函数的时候，功能相当于window.onload = function() {}，在文档加载完毕后自动调用函数&lt;/p&gt;
+&lt;p&gt;注意这里在加载的时间略微有区别，$内容在页面加载完毕的时候立马执行，但是原生的window.onload = function() {}还要等待标签显示内容显示完成后（例如来自网络中的图片）才会执行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {alert(&quot;jQuery&quot;)});
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.当传入HTML字符串的时候，会对我们创建这个html标签对象&lt;/p&gt;
+&lt;p&gt;通过appendTo将字符串化为html标签对象添加到body，实现拼接，而非逐层添加&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+           $(&quot;&amp;lt;div&amp;gt;&quot;
+               + &quot;&amp;lt;span&amp;gt;div-span1&amp;lt;/span&amp;gt;&quot;
+               + &quot;&amp;lt;span&amp;gt;div-span2&amp;lt;/span&amp;gt;&quot;
+               + &quot;&amp;lt;div&amp;gt;&quot;).appendTo(&quot;body&quot;);
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;div&amp;gt;
+        &amp;lt;span&amp;gt;div-span1&amp;lt;/span&amp;gt;
+        &amp;lt;span&amp;gt;div-span2&amp;lt;/span&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.传入选择器字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;#id 属性值&quot;);
+$(&quot;标签名&quot;);
+$(&quot;.class 属性值&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+           var length = $(&quot;div&quot;).length;
+           alert(length);
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;div&amp;gt;
+        &amp;lt;span&amp;gt;div-span1&amp;lt;/span&amp;gt;
+        &amp;lt;span&amp;gt;div-span2&amp;lt;/span&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.传入DOM对象，会将DOM对象转化为jQuery对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       var Obj = document.getElementById(&quot;test&quot;);
+       $Obj = $(Obj);
+       $Obj.click(function() {
+          alert(&quot;test&quot;);
+       });
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以使用jQuery对象的方法，例如绑定单击&lt;/p&gt;
+&lt;p&gt;jQuery对象的本质其实是数组，其中存放的是DOM对象，可以通过访问数组的方式取出DOM对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$Obj = $(Obj);
+var DOM = $Obj[0];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;jQuery选择器&lt;/h3&gt;
+&lt;h4&gt;基础选择器&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;#ID
+.class
+element
+*
+selector1,selector2,selector3...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;p.class表示要符合同时满足标签名和class名，使用上大体和css那部分相同&lt;/p&gt;
+&lt;h4&gt;层级选择器&lt;/h4&gt;
+&lt;p&gt;取标签下的所有对应标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;form input&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;找到forn标签下的所有input标签&lt;/p&gt;
+&lt;p&gt;取标签下的所有子标签（不算孙子节点）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;form&amp;gt;input&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;取标签后面的对应标签（同一级别）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;form+input&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;取标签后面所有的对应标签（同一级别）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;form~input&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;基本过滤选择器&lt;/h4&gt;
+&lt;p&gt;first&lt;/p&gt;
+&lt;p&gt;筛选出集合中的第一个&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;ul&amp;gt;
+    &amp;lt;li&amp;gt;1&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;2&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;3&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;4&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:first&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;查询到的结果是1，过滤出第一个li标签&lt;/p&gt;
+&lt;p&gt;not(selector)&lt;/p&gt;
+&lt;p&gt;除去集合中满足selector的元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:not(:first)&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果为234&lt;/p&gt;
+&lt;p&gt;even&lt;/p&gt;
+&lt;p&gt;匹配索引值位偶数的标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:even&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果为13&lt;/p&gt;
+&lt;p&gt;odd&lt;/p&gt;
+&lt;p&gt;匹配索引值位奇数的标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:odd&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;24&lt;/p&gt;
+&lt;p&gt;gt(index)&lt;/p&gt;
+&lt;p&gt;大于索引的标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:gt(0)&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果为234&lt;/p&gt;
+&lt;p&gt;lt(index)&lt;/p&gt;
+&lt;p&gt;小于索引的标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    $(function() {
+       alert($(&quot;li:lt(1)&quot;).text());
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果为1&lt;/p&gt;
+&lt;p&gt;head：标题元素&lt;/p&gt;
+&lt;p&gt;animated：正在执行动画的元素&lt;/p&gt;
+&lt;p&gt;eq(Index)：等于对应索引的元素&lt;/p&gt;
+&lt;h4&gt;内容过滤器&lt;/h4&gt;
+&lt;p&gt;contain(text)：匹配包含对应text的元素&lt;/p&gt;
+&lt;p&gt;empty：匹配不包含text的元素（为空）&lt;/p&gt;
+&lt;p&gt;has(selector)：匹配含有选择器匹配的元素的元素（外层元素）&lt;/p&gt;
+&lt;p&gt;parent：匹配含有子元素或者文本的元素（非空）&lt;/p&gt;
+&lt;h4&gt;属性过滤器&lt;/h4&gt;
+&lt;p&gt;div[id]：含有id的div&lt;/p&gt;
+&lt;p&gt;div[id=123]：含有id为123的div&lt;/p&gt;
+&lt;p&gt;div[id!=123]：含有id不为123的div&lt;/p&gt;
+&lt;p&gt;div[id^=123]：含有id且id为123开头的div&lt;/p&gt;
+&lt;p&gt;div[id$=123]：含有id且id为123结尾的div&lt;/p&gt;
+&lt;p&gt;div[id*=123]：含有id且id包含123的div&lt;/p&gt;
+&lt;p&gt;复合选择器：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;input[id=123][name=&apos;hello&apos;][class=.myclass]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;表单过滤器&lt;/h4&gt;
+&lt;p&gt;input：匹配所有的input，extarea，select，button元素&lt;/p&gt;
+&lt;p&gt;以下都是其匹配对应表单的对应type的标签元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;text：
+password：
+radio：
+checkbox：
+submit：
+image：
+reset：
+button：
+file：
+hidden：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;enabled：匹配可用的元素&lt;/p&gt;
+&lt;p&gt;disabled：匹配不可用的元素（加上disabled=&quot;disabled&quot;元素）&lt;/p&gt;
+&lt;p&gt;checked：匹配所有选中的checkbox元素&lt;/p&gt;
+&lt;p&gt;selected：匹配选中的option元素&lt;/p&gt;
+&lt;h4&gt;元素的筛选&lt;/h4&gt;
+&lt;p&gt;大体上和Stream流处理的方式类似，在jQuery中其实就是将 :first  换了一种方式使用  .first()&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(#123:fist)
+$(#123).first();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你学过流式处理的话其实还是很熟悉的，这里就不再记录笔记了，等碰到不会的根据需求即查即用&lt;/p&gt;
+&lt;h3&gt;属性操作&lt;/h3&gt;
+&lt;h4&gt;html&lt;/h4&gt;
+&lt;p&gt;设置和获取其实标签和结束标签中的内容，和innerHTML一致&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+            alert($(&quot;div&quot;).html());
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;div&amp;gt;div标签&amp;lt;/div&amp;gt;
+    &amp;lt;span&amp;gt;span标签&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    $(&quot;div&quot;).html(&quot;&amp;lt;h1&amp;gt;重设值&amp;lt;/h1&amp;gt;&quot;)
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传入值代表设置值，而不传参数代表获取&lt;/p&gt;
+&lt;h4&gt;text&lt;/h4&gt;
+&lt;p&gt;设置和获取其实标签和结束标签中的文本，和innerText一致&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    $(&quot;div&quot;).text(&quot;text&quot;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;val&lt;/h4&gt;
+&lt;p&gt;设置和获取表单项的value属性值，和dom中的balue一致val&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+            var $btn = $(&quot;#btn&quot;);
+            $btn.click(function() {
+                alert($(&quot;#input&quot;).val());
+            });
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;div&amp;gt;div标签&amp;lt;/div&amp;gt;
+    &amp;lt;input type=&quot;text&quot; id=&quot;input&quot;/&amp;gt;
+    &amp;lt;button id=&quot;btn&quot;&amp;gt;click&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;多选框中设置选中可以使用$().val([&quot;num1&quot;,&quot;num2&quot;])&lt;/p&gt;
+&lt;h4&gt;attr&lt;/h4&gt;
+&lt;p&gt;设置或者获取属性值，不推荐操作checked，readOnly，selected，disabled&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    var attr = $(&quot;#input&quot;).attr(&quot;name&quot;);
+    alert(attr);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    $(&quot;#input&quot;).attr(&quot;name&quot;,&quot;another&quot;);
+    var attr = $(&quot;#input&quot;).attr(&quot;name&quot;);
+    alert(attr);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;prop&lt;/h4&gt;
+&lt;p&gt;设置或者获取属性值，使用时建议与attr互补&lt;/p&gt;
+&lt;p&gt;当一个标签没有name的时候查询属性值会返回undifined，我们可以使用prop返回更为直观的false和true&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+            $(&quot;#btn&quot;).click(function() {
+               var prop = $(&quot;#check&quot;).prop(&quot;checked&quot;);
+               alert(prop);
+            });
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;input id=&quot;check&quot; type=&quot;checkbox&quot;/&amp;gt;
+    &amp;lt;button id=&quot;btn&quot;&amp;gt;check&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;增删改&lt;/h3&gt;
+&lt;h4&gt;添加&lt;/h4&gt;
+&lt;p&gt;appendTo(content)：将调用者插入到content的最后一个子元素之后&lt;/p&gt;
+&lt;p&gt;prependTo(content)：将调用者插入到content的最前一个子元素之前&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(function() {
+    $(&quot;&amp;lt;h1&amp;gt;h1&amp;lt;h1/&amp;gt;&quot;).appendTo(&quot;body&quot;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;外部插入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;a.insertAfter(b);//得到da
+a.insertBefore(b);//得到ab
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;替换&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;a.replaceWith(b);//用b替换掉a
+a.replaceAll(b);//用a替换所有的b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;删除&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;a.remove();//清除a标签
+a.empty();//清除a标签中的内容
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        $(function() {
+            $(&quot;#btn1&quot;).click(function() {
+                $(&quot;#select1 option:selected&quot;).appendTo($(&quot;#select2&quot;));
+            });
+            $(&quot;#btn2&quot;).click(function() {
+                $(&quot;#select1 option:selected&quot;).appendTo($(&quot;#select2&quot;));
+            });
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;select id=&quot;select1&quot; multiple=&quot;multiple&quot;&amp;gt;
+        &amp;lt;option value=&quot;1&quot;&amp;gt;1&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;2&quot;&amp;gt;2&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;3&quot;&amp;gt;3&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;4&quot;&amp;gt;4&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;5&quot;&amp;gt;5&amp;lt;/option&amp;gt;
+    &amp;lt;/select&amp;gt;
+    &amp;lt;select id=&quot;select2&quot; multiple=&quot;multiple&quot;&amp;gt;
+        &amp;lt;option value=&quot;6&quot;&amp;gt;6&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;7&quot;&amp;gt;7&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;8&quot;&amp;gt;8&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;9&quot;&amp;gt;9&amp;lt;/option&amp;gt;
+        &amp;lt;option value=&quot;10&quot;&amp;gt;10&amp;lt;/option&amp;gt;
+    &amp;lt;/select&amp;gt;&amp;lt;br/&amp;gt;
+    &amp;lt;button id=&quot;btn1&quot;&amp;gt;1&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;btn2&quot;&amp;gt;2&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;美化操作&lt;/h3&gt;
+&lt;h4&gt;CSS样式&lt;/h4&gt;
+&lt;p&gt;addClass：添加样式&lt;/p&gt;
+&lt;p&gt;removeClass：移除样式&lt;/p&gt;
+&lt;p&gt;toggleClass：有就删除样式，没有就添加样式&lt;/p&gt;
+&lt;p&gt;offset：获取或者设置坐标&lt;/p&gt;
+&lt;p&gt;以下是ai生成的网页，便于对比理解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;zh-CN&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&amp;gt;
+    &amp;lt;title&amp;gt;jQuery 类与坐标操作示例&amp;lt;/title&amp;gt;
+    &amp;lt;script src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;style&amp;gt;
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            margin: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .highlight {
+            background-color: #e74c3c;
+            border: 3px solid #f1c40f;
+            transform: scale(1.1);
+        }
+
+        .rounded {
+            border-radius: 50%;
+        }
+
+        .shadow {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;jQuery 类与坐标操作示例&amp;lt;/h1&amp;gt;
+
+&amp;lt;div class=&quot;box&quot; id=&quot;targetBox&quot;&amp;gt;可操作的盒子&amp;lt;/div&amp;gt;
+
+&amp;lt;div&amp;gt;
+    &amp;lt;button id=&quot;addHighlight&quot;&amp;gt;添加高亮样式&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;removeHighlight&quot;&amp;gt;移除高亮样式&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;toggleRounded&quot;&amp;gt;切换圆形样式&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;toggleShadow&quot;&amp;gt;切换阴影样式&amp;lt;/button&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;div&amp;gt;
+    &amp;lt;button id=&quot;getOffset&quot;&amp;gt;获取坐标&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;setOffset&quot;&amp;gt;设置新坐标(右移50px)&amp;lt;/button&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;div class=&quot;info&quot; id=&quot;offsetInfo&quot;&amp;gt;
+    坐标信息将显示在这里
+&amp;lt;/div&amp;gt;
+
+&amp;lt;script&amp;gt;
+    $(document).ready(function() {
+        // 添加类
+        $(&quot;#addHighlight&quot;).click(function() {
+            $(&quot;#targetBox&quot;).addClass(&quot;highlight&quot;);
+            updateOffsetInfo();
+        });
+
+        // 移除类
+        $(&quot;#removeHighlight&quot;).click(function() {
+            $(&quot;#targetBox&quot;).removeClass(&quot;highlight&quot;);
+            updateOffsetInfo();
+        });
+
+        // 切换类
+        $(&quot;#toggleRounded&quot;).click(function() {
+            $(&quot;#targetBox&quot;).toggleClass(&quot;rounded&quot;);
+            updateOffsetInfo();
+        });
+
+        // 切换另一个类
+        $(&quot;#toggleShadow&quot;).click(function() {
+            $(&quot;#targetBox&quot;).toggleClass(&quot;shadow&quot;);
+        });
+
+        // 获取偏移坐标
+        $(&quot;#getOffset&quot;).click(function() {
+            updateOffsetInfo();
+        });
+
+        // 设置新坐标
+        $(&quot;#setOffset&quot;).click(function() {
+            var currentOffset = $(&quot;#targetBox&quot;).offset();
+            $(&quot;#targetBox&quot;).offset({
+                top: currentOffset.top,
+                left: currentOffset.left + 50
+            });
+            updateOffsetInfo();
+        });
+
+        // 更新坐标信息显示
+        function updateOffsetInfo() {
+            var offset = $(&quot;#targetBox&quot;).offset();
+            var classes = $(&quot;#targetBox&quot;).attr(&quot;class&quot;) || &quot;无&quot;;
+            $(&quot;#offsetInfo&quot;).html(
+                `当前坐标: top=${offset.top}px, left=${offset.left}px&amp;lt;br&amp;gt;
+                     当前类: ${classes}`
+            );
+        }
+
+        // 初始化显示坐标信息
+        updateOffsetInfo();
+    });
+&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;jQuery动画&lt;/h4&gt;
+&lt;p&gt;show：显示，还可以传入显式的时间&lt;/p&gt;
+&lt;p&gt;hide：将元素隐藏&lt;/p&gt;
+&lt;p&gt;toggle：显示/隐藏，取决于隐藏/显示&lt;/p&gt;
+&lt;p&gt;fadeIn：淡入&lt;/p&gt;
+&lt;p&gt;fadeOut：淡出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;zh-CN&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&amp;gt;
+    &amp;lt;title&amp;gt;jQuery 动画效果示例&amp;lt;/title&amp;gt;
+    &amp;lt;script src=&quot;jquery-3.7.1.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;style&amp;gt;
+        .box {
+            width: 200px;
+            height: 200px;
+            background-color: #3498db;
+            margin: 20px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            line-height: 200px;
+            font-size: 20px;
+            border-radius: 10px;
+        }
+
+        .controls {
+            margin: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        .speed-control {
+            margin-top: 15px;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;jQuery 动画效果演示&amp;lt;/h1&amp;gt;
+
+&amp;lt;div class=&quot;controls&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;基本显示/隐藏&amp;lt;/h2&amp;gt;
+    &amp;lt;button id=&quot;btnShow&quot;&amp;gt;显示 (show)&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;btnHide&quot;&amp;gt;隐藏 (hide)&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;btnToggle&quot;&amp;gt;切换 (toggle)&amp;lt;/button&amp;gt;
+
+    &amp;lt;div class=&quot;speed-control&quot;&amp;gt;
+        动画速度：
+        &amp;lt;select id=&quot;speedBasic&quot;&amp;gt;
+            &amp;lt;option value=&quot;fast&quot;&amp;gt;快速&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;normal&quot; selected&amp;gt;正常&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;slow&quot;&amp;gt;慢速&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;1000&quot;&amp;gt;1秒&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;2000&quot;&amp;gt;2秒&amp;lt;/option&amp;gt;
+        &amp;lt;/select&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;div class=&quot;box&quot; id=&quot;box1&quot;&amp;gt;显示/隐藏动画效果&amp;lt;/div&amp;gt;
+
+&amp;lt;div class=&quot;controls&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;淡入淡出效果&amp;lt;/h2&amp;gt;
+    &amp;lt;button id=&quot;btnFadeIn&quot;&amp;gt;淡入 (fadeIn)&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;btnFadeOut&quot;&amp;gt;淡出 (fadeOut)&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;btnFadeToggle&quot;&amp;gt;淡入淡出切换&amp;lt;/button&amp;gt;
+
+    &amp;lt;div class=&quot;speed-control&quot;&amp;gt;
+        动画速度：
+        &amp;lt;select id=&quot;speedFade&quot;&amp;gt;
+            &amp;lt;option value=&quot;fast&quot;&amp;gt;快速&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;normal&quot; selected&amp;gt;正常&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;slow&quot;&amp;gt;慢速&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;1500&quot;&amp;gt;1.5秒&amp;lt;/option&amp;gt;
+            &amp;lt;option value=&quot;3000&quot;&amp;gt;3秒&amp;lt;/option&amp;gt;
+        &amp;lt;/select&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+
+&amp;lt;div class=&quot;box&quot; id=&quot;box2&quot;&amp;gt;淡入淡出动画效果&amp;lt;/div&amp;gt;
+
+&amp;lt;script&amp;gt;
+    $(document).ready(function() {
+        // 基本显示/隐藏控制
+        $(&quot;#btnShow&quot;).click(function() {
+            $(&quot;#box1&quot;).show($(&quot;#speedBasic&quot;).val());
+        });
+
+        $(&quot;#btnHide&quot;).click(function() {
+            $(&quot;#box1&quot;).hide($(&quot;#speedBasic&quot;).val());
+        });
+
+        $(&quot;#btnToggle&quot;).click(function() {
+            $(&quot;#box1&quot;).toggle($(&quot;#speedBasic&quot;).val());
+        });
+
+        // 淡入淡出控制
+        $(&quot;#btnFadeIn&quot;).click(function() {
+            $(&quot;#box2&quot;).fadeIn($(&quot;#speedFade&quot;).val());
+        });
+
+        $(&quot;#btnFadeOut&quot;).click(function() {
+            $(&quot;#box2&quot;).fadeOut($(&quot;#speedFade&quot;).val());
+        });
+
+        $(&quot;#btnFadeToggle&quot;).click(function() {
+            $(&quot;#box2&quot;).fadeToggle($(&quot;#speedFade&quot;).val());
+        });
+
+        // 初始化隐藏第二个盒子
+        $(&quot;#box2&quot;).hide();
+    });
+&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;事件处理&lt;/h3&gt;
+&lt;p&gt;在使用上和JS差不多，加了更多的常用事件&lt;/p&gt;
+&lt;h4&gt;常用的绑定方法&lt;/h4&gt;
+&lt;p&gt;click：绑定单机事件以及触发的事件&lt;/p&gt;
+&lt;p&gt;mouseover：鼠标移入事件&lt;/p&gt;
+&lt;p&gt;bind：给元素一次性绑定一个或者多个事件&lt;/p&gt;
+&lt;p&gt;one：和bind类似，但是只会触发一次&lt;/p&gt;
+&lt;p&gt;live：用于绑定事件，可以绑定与选择其匹配的所有元素的事件，即使是动态创建后的元素&lt;/p&gt;
+&lt;p&gt;unbind：和bind相反，解除事件绑定&lt;/p&gt;
+&lt;h4&gt;冒泡&lt;/h4&gt;
+&lt;p&gt;如果子元素和父元素都绑定了同一事件，当子元素被触发时，父元素也会响应，如果需要阻止则在子元素处理中返回false即可&lt;/p&gt;
+&lt;h4&gt;事件对象&lt;/h4&gt;
+&lt;p&gt;是封装有触发事件信息的一个JavaScript对象&lt;/p&gt;
+&lt;p&gt;在给元素绑定事件的时候，在事件的function(event)参数列表中添加一个参数，这个event就是JavaScript传递参数事件处理函数的事件对象，其中包含了一些事件响应的信息&lt;/p&gt;
+&lt;p&gt;有的时候需要使用到事件对象中的内容，例如获取当前操作是什么事件，并将事件打印出来&lt;/p&gt;
+&lt;h2&gt;XML&lt;/h2&gt;
+&lt;p&gt;xml是可扩展的标记性语言，用于保存数据，而且这些数据具有自我描述性，还可以作为项目的配置文件，另外还可以作为网络传输数据的格式（不过现在常使用json）&lt;/p&gt;
+&lt;h3&gt;语法规则&lt;/h3&gt;
+&lt;p&gt;XML元素命名规则：名称可以含有数字，字母，其他字符。名称不可以以数字，标点符号开始。名称不可以以xml开始。名称不可以包含空格&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;book sn=&quot;1124&quot;&amp;gt;
+        &amp;lt;name&amp;gt;C++&amp;lt;/name&amp;gt;
+        &amp;lt;author&amp;gt;汉顺&amp;lt;/author&amp;gt;
+        &amp;lt;price&amp;gt;16&amp;lt;/price&amp;gt;
+&amp;lt;/book&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;分为单标签和双标签，和html类似，写的时候建议闭合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;br/&amp;gt;
+&amp;lt;book&amp;gt;&amp;lt;/book&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;属性：和html类似，提供额外的信息给元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;book name=&quot;123&quot; id=&quot;123&quot; function=&quot;123&quot;&amp;gt;&amp;lt;/book&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文档必须有唯一根元素，即没有父标签的元素，例如示例中的books标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&amp;gt;
+&amp;lt;books&amp;gt;
+    &amp;lt;book sn=&quot;1123&quot;&amp;gt;
+        &amp;lt;name&amp;gt;时间简史&amp;lt;/name&amp;gt;&amp;lt;!--书名--&amp;gt;
+        &amp;lt;author&amp;gt;霍金&amp;lt;/author&amp;gt;
+        &amp;lt;price&amp;gt;15&amp;lt;/price&amp;gt;
+    &amp;lt;/book&amp;gt;
+    &amp;lt;book sn=&quot;1124&quot;&amp;gt;
+        &amp;lt;name&amp;gt;C++&amp;lt;/name&amp;gt;
+        &amp;lt;author&amp;gt;汉顺&amp;lt;/author&amp;gt;
+        &amp;lt;price&amp;gt;16&amp;lt;/price&amp;gt;
+    &amp;lt;/book&amp;gt;
+&amp;lt;/books&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文本区域：不会解析其中xml格式的内容（CDATA）&lt;/p&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;![CDATA[内容部分，这个部分不会被解析]]&amp;gt;
+&amp;lt;author&amp;gt;&amp;lt;![CDATA[内容部分，这个部分不会被解析]]&amp;gt;&amp;lt;/author&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;XML解析&lt;/h3&gt;
+&lt;p&gt;无论是html文件还是xml文件都是标记型文档都可以使解析取出操作内容&lt;/p&gt;
+&lt;h4&gt;常见的解析技术&lt;/h4&gt;
+&lt;p&gt;DOM解析：标签在dom解析的时候生成各个对象，并以树形的格式连接&lt;/p&gt;
+&lt;p&gt;SAX解析：这种解析方式可以一行一行读取xml文件，不会创建大量的dom对象，性能和内存都优于dom解析&lt;/p&gt;
+&lt;p&gt;第三方解析：jdom在dom基础上封装，dom4j对jdom封装。pull主要用于安卓手机开发，和sax类似，是事件机制解析xml文件&lt;/p&gt;
+&lt;h4&gt;dom4解析技术&lt;/h4&gt;
+&lt;p&gt;引入dom4 jar包，添加到类库，以下是一个实例代码，获取document对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import org.dom4j.*;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) throws DocumentException {
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(&quot;xml/test.xml&quot;);
+        Element rootElement = document.getRootElement();
+        //获取根标签对象
+        List&amp;lt;Element&amp;gt; books = rootElement.elements(&quot;book&quot;);
+        //通过根标签对象获取book子标签对象list集合
+        for (Element book : books) {
+            Element name = book.element(&quot;name&quot;);
+            //取出book标签的name子标签对象
+            System.out.println(name.asXML());
+            //调用name标签对象的asXML输出标签+内容
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;name&amp;gt;时间简史&amp;lt;/name&amp;gt;
+&amp;lt;name&amp;gt;C++&amp;lt;/name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其他常见的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;getText();//获取dom对象的内容
+elementText(&quot;targetName&quot;);//获取子标签的内容
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;jQuery的学习时间拉的有点长了，明天会进入tomcat与servlet的学习&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记（JavaScript）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0javascript%E4%BA%8B%E4%BB%B6dom%E6%A8%A1%E5%9E%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0javascript%E4%BA%8B%E4%BB%B6dom%E6%A8%A1%E5%9E%8B/</guid><description>JavaScript事件，DOM模型</description><pubDate>Sat, 26 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;JavaScript事件&lt;/h2&gt;
+&lt;h3&gt;事件定义&lt;/h3&gt;
+&lt;p&gt;事件是电脑输入设备与页面进行交互的响应，称之为事件，如点击滑动，长按等，一下是常用的事件&lt;/p&gt;
+&lt;p&gt;onload 加载完成事件（页面代码初始化）&lt;/p&gt;
+&lt;p&gt;onclick 点击事件（按钮点击响应操作）&lt;/p&gt;
+&lt;p&gt;onblur 失去焦点事件（用于输入框去焦点后验证输入内容是否合法）&lt;/p&gt;
+&lt;p&gt;onchange 内容发送改变事件（常用于下拉列表和输入框内容发送改变后）&lt;/p&gt;
+&lt;p&gt;onsubmit 表单提交事件（常用于表单提交后验证表单合法性）&lt;/p&gt;
+&lt;h3&gt;事件注册&lt;/h3&gt;
+&lt;p&gt;定义：又称为绑定，告诉浏览器，事件响应后需要执行的操作代码，又分为静态注册和动态注册&lt;/p&gt;
+&lt;p&gt;静态注册：通过html标签的时间属性直接赋予事件响应后的代码&lt;/p&gt;
+&lt;p&gt;动态注册：先通过js代码得到dom对象，再通过dom对象.事件名称=function(){}这种形式赋予事件响应后的代码。其基本的步骤为  1.获取标签对象  2.标签对象.事件名称 = function() {}&lt;/p&gt;
+&lt;h3&gt;常用事件&lt;/h3&gt;
+&lt;h4&gt;onload&lt;/h4&gt;
+&lt;p&gt;表单初始化事件&lt;/p&gt;
+&lt;p&gt;静态注册示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function onLoadFun() {
+            alert(&apos;静态注册&apos;);
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body onload=&quot;onLoadFun();&quot;&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;动态注册实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        window.onload = function() {
+            alert(&quot;动态注册&quot;);
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;onclick&lt;/h4&gt;
+&lt;p&gt;按钮1为静态注册&lt;/p&gt;
+&lt;p&gt;按钮2为动态注册：获取标签对象，通过标签对象.事件名称 = function(){}&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function onclickFun() {
+            alert(&quot;Hello World&quot;);
+        }
+
+        window.onload = function() {
+            var obj = document.getElementById(&quot;Button&quot;);
+            obj.onclick = onclickFun;
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;button onclick=&quot;onclickFun()&quot;&amp;gt;按钮1&amp;lt;/button&amp;gt;
+    &amp;lt;button id=&quot;Button&quot;&amp;gt;按钮2&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;onblur&lt;/h4&gt;
+&lt;p&gt;失去焦点：常用于输入框&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function funOnblur(){
+            //console是控制台对象，用于向浏览器控制台打印
+            console.log(&quot;静态注册失去焦点事件&quot;);
+        }
+        window.onload = function() {
+            var obj = document.getElementById(&quot;password&quot;);
+            obj.onblur = function(){
+                console.log(&quot;动态注册失去焦点事件&quot;);
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+用户名：&amp;lt;input type=&quot;text&quot; onblur=&quot;funOnblur();&quot;&amp;gt;&amp;lt;br/&amp;gt;
+密 码：&amp;lt;input id=&quot;password&quot; type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;onchange&lt;/h4&gt;
+&lt;p&gt;内容改变：常用于下拉列表，和输入框&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function funOnChange(){
+            //console是控制台对象，用于向浏览器控制台打印
+            console.log(&quot;静态注册内容发生更改&quot;);
+        }
+        window.onload = function() {
+            var obj = document.getElementById(&quot;password&quot;);
+            obj.onchange = function(){
+                console.log(&quot;动态注册内容发生更改&quot;);
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+用户名：&amp;lt;input type=&quot;text&quot; onchange=&quot;funOnChange();&quot;&amp;gt;&amp;lt;br/&amp;gt;
+密 码：&amp;lt;input id=&quot;password&quot; type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;onsubmit&lt;/h4&gt;
+&lt;p&gt;表单提交事件：用于验证表单项是否合法&lt;/p&gt;
+&lt;p&gt;注意当return false的时候不提交，其中在函数中可以加入自己的判断逻辑&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function funOnSubmit(){
+            alert(&quot;表单提交不合法&quot;)
+            return false;
+        }
+        window.onload = function() {
+            var obj = document.getElementById(&quot;submit&quot;);
+            obj.onsubmit = function(){
+                alert(&quot;表单提交不合法&quot;)
+                return false;
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form method=&quot;get&quot; action=&quot;https://www.baidu.com&quot;  onsubmit=&quot;return funOnSubmit();&quot;&amp;gt;
+        用户名：&amp;lt;input type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        密 码：&amp;lt;input type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;静态注册&quot;/&amp;gt;&amp;lt;br/&amp;gt;
+    &amp;lt;/form&amp;gt;
+    &amp;lt;form method=&quot;get&quot; action=&quot;https://www.baidu.com&quot; id=&quot;submit&quot;&amp;gt;
+        用户名：&amp;lt;input type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        密 码：&amp;lt;input type=&quot;text&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;静态注册&quot;/&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;DOM模型&lt;/h2&gt;
+&lt;p&gt;Document Object Model文档对象模型&lt;/p&gt;
+&lt;p&gt;将文档中的标签，属性，文本，转化为对象来管理&lt;/p&gt;
+&lt;h3&gt;Document对象&lt;/h3&gt;
+&lt;p&gt;一个html文档被Document对象存储，并交由Document对象管理&lt;/p&gt;
+&lt;p&gt;1.Document管理了所有的HTML文档内容&lt;/p&gt;
+&lt;p&gt;2.Document是一种树结构的文档，有层级关系&lt;/p&gt;
+&lt;p&gt;3.Document使得所有的标签都对象化&lt;/p&gt;
+&lt;p&gt;4.我们可以通过Document访问所有的标签对象&lt;/p&gt;
+&lt;h3&gt;入门案例&lt;/h3&gt;
+&lt;p&gt;验证输入框中内容是否符合某一个形式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function onclickFunction() {
+            var userObj = document.getElementById(&quot;username&quot;);//获取输入框对象
+            var value = userObj.value;//获取对象（文本框）数据
+            //运用正则表达式判断数据是否合法
+            var patt = /^\w{5,12}$/;
+            if (!patt.test(value)) {
+                Warning.innerHTML = &quot;不合法&quot;
+            } else {
+                Warning.innerHTML = &quot;合法&quot;
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+        用户名：&amp;lt;input type=&quot;text&quot; id=&quot;username&quot;&amp;gt;
+        &amp;lt;span id=&quot;Warning&quot; style=&quot;color: red&quot;&amp;gt;&amp;lt;/span&amp;gt;
+        &amp;lt;button onclick=&quot;onclickFunction();&quot;&amp;gt;校验&amp;lt;/button&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;正则表达式&lt;/h3&gt;
+&lt;p&gt;以上案例中我们使用到了正则表达式，正则表达式可以为我们判断字符串是否满足某一个模板要求&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    var patt = new RegExp(&quot;e&quot;);//判断是否含有e
+    var str = &quot;still&quot;;
+    alert(patt.test(str));
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    var patt = /e/;//判断是否含有e
+    var str = &quot;still&quot;;
+    alert(patt.test(str));
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下是一些常见的正则表达式，我觉得在这里随用随取即可&lt;/p&gt;
+&lt;p&gt;邮箱验证&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;手机号验证&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^1[3-9]\d{9}$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;身份证号码验证&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;URL验证&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;密码验证：包含数字字母至少八位&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;复杂密码（至少1个大写字母、1个小写字母、1个数字和1个特殊字符，至少8位）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;amp;])[A-Za-z\d@$!%*?&amp;amp;]{8,}$/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Document相关方法&lt;/h3&gt;
+&lt;h4&gt;getElementById&lt;/h4&gt;
+&lt;p&gt;通过标签id获取标签对象，注意只获取第一个符合条件的标签对象&lt;/p&gt;
+&lt;p&gt;在上面有演示这里不再过多说明&lt;/p&gt;
+&lt;h4&gt;getElementsByName&lt;/h4&gt;
+&lt;p&gt;通过标签名称获取标签对象，注意返回所有的标签对象，是一个集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function onclickAll() {
+            var hobbies = document.getElementsByName(&quot;hobby&quot;);
+            for (var i = 0; i &amp;lt; hobbies.length; i++) {
+                hobbies[i].checked = true;
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;C++&quot;&amp;gt;C++
+    &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;Java&quot;&amp;gt;Java
+    &amp;lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;Python&quot;&amp;gt;Python&amp;lt;br/&amp;gt;
+    &amp;lt;button onclick=&quot;onclickAll();&quot;&amp;gt;ALL&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getElementsByTagName&lt;/h4&gt;
+&lt;p&gt;按照标签名获取多个标签对象，返回集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        function onclickAll() {
+            var hobbies = document.getElementsByTagName(&quot;input&quot;);
+            for (var i = 0; i &amp;lt; hobbies.length; i++) {
+                hobbies[i].checked = true;
+            }
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;input type=&quot;checkbox&quot; value=&quot;C++&quot;&amp;gt;C++
+    &amp;lt;input type=&quot;checkbox&quot; value=&quot;Java&quot;&amp;gt;Java
+    &amp;lt;input type=&quot;checkbox&quot; value=&quot;Python&quot;&amp;gt;Python&amp;lt;br/&amp;gt;
+    &amp;lt;button onclick=&quot;onclickAll();&quot;&amp;gt;ALL&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;注意事项&lt;/h4&gt;
+&lt;p&gt;1.以上的三个方法范围从小到大，在实际使用的时候尽量从上到下使用（id，name，Tag）&lt;/p&gt;
+&lt;p&gt;2.以上方法需要在页面加载完毕后才可以使用，从上到下依次执行，在没有body加载的时候是没有办法获取得到没有创建的id的&lt;/p&gt;
+&lt;h3&gt;节点&lt;/h3&gt;
+&lt;p&gt;节点就是标签对象（狭义上讲，程序员可以操作的部分），其中有一些方法供我们使用&lt;/p&gt;
+&lt;p&gt;以下是其常用方法和属性&lt;/p&gt;
+&lt;h4&gt;方法&lt;/h4&gt;
+&lt;p&gt;getElementsByTagName：获取当前节点的指定标签名孩子节点&lt;/p&gt;
+&lt;p&gt;appendChild：添加一个子节点，参数是要添加的孩子节点&lt;/p&gt;
+&lt;p&gt;createElement&lt;/p&gt;
+&lt;p&gt;创建标签对象，再在body中添加子节点标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+        window.onload = function () {
+            var divObj = document.createElement(&quot;div&quot;);
+            divObj.innerHTML = &quot;Hello World&quot;;
+            document.body.appendChild(divObj);//通过body对象（自动创建调用方法，添加子节点）
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;由于文本也算是节点对象，我们还可以通过如下的方式加入节点内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    window.onload = function () {
+        var divObj = document.createElement(&quot;div&quot;);
+        var text = document.createTextNode(&quot;Hello World&quot;);
+        divObj.appendChild(text);
+        document.body.appendChild(divObj);
+    }
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;属性&lt;/h4&gt;
+&lt;p&gt;childNodes：当前节点的所有子节点&lt;/p&gt;
+&lt;p&gt;firstChild：当前节点的第一个子节点&lt;/p&gt;
+&lt;p&gt;lastChild：当前节点的最后一个子节点&lt;/p&gt;
+&lt;p&gt;parentNode：父节点&lt;/p&gt;
+&lt;p&gt;nextSibling：下一个节点&lt;/p&gt;
+&lt;p&gt;previousSibling：上一个节点&lt;/p&gt;
+&lt;p&gt;className：获取或设置class属性值&lt;/p&gt;
+&lt;p&gt;innerText：获取或设置起始标签和结束标签中的文本&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0htmlcssjavascript/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0htmlcssjavascript/</guid><description>HTML，CSS，JavaScript</description><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;p&gt;学习Redis到了Spring集成Jedis客户端那里的时候碰壁了，学习效率奇低，复盘了一下，发现是Maven和SpringBoot没有学习导致了环境上的问题，所以更改一下学习策略，先进行Java各大框架的学习，再使用Redis进行改进，这样也符合正常的学习规律&lt;/p&gt;
+&lt;p&gt;首先是JavaWeb的学习，打算分出12天完成&lt;/p&gt;
+&lt;p&gt;Java开发流程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/132.png&quot; alt=&quot;132&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;页面有三个部分内容组成：内容（html），表现（CSS），行为（JavaScript）&lt;/p&gt;
+&lt;p&gt;内容是在页面上可以看到的数据，表现是这些内容在页面上的展示形式（布局颜色大小等），行为是指页面中元素与输入设备交互的响应&lt;/p&gt;
+&lt;h2&gt;HTLM&lt;/h2&gt;
+&lt;p&gt;Hyper Text Markup Language&lt;/p&gt;
+&lt;p&gt;简介&lt;/p&gt;
+&lt;p&gt;HTML通过标签来标记显示网页中的各个部分，网页文件本身就是一种文本文件，通过在文本文件中添加标记符，可以告诉浏览器中如何显示其中的内容&lt;/p&gt;
+&lt;h3&gt;创建HTML文件&lt;/h3&gt;
+&lt;p&gt;1.创建一个Web工程&lt;/p&gt;
+&lt;p&gt;2.在工程下创建html文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;&amp;lt;!-- 约束声明 --&amp;gt;
+&amp;lt;html lang=&quot;zh&quot;&amp;gt;&amp;lt;!--html表示html开始，lang=zh表示中文，分为head和body--&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;!--头部信息，一般包含title，css，js--&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;&amp;lt;!--字符集--&amp;gt;
+    &amp;lt;title&amp;gt;标题&amp;lt;/title&amp;gt;&amp;lt;!--标题区域--&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    hello world
+    你好
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以在IDEA下运行html文件打开网页(html文件不需要编译，只需要浏览器解析即可)&lt;/p&gt;
+&lt;p&gt;这里我设置的是edge浏览器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;C:\Program Files (x86)\Microsoft\Edge\Application\msedge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/133.png&quot; alt=&quot;133&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;标签&lt;/h3&gt;
+&lt;p&gt;1.标签的格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;标签名&amp;gt;封装的数据&amp;lt;/标签名&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.标签名大小写不敏感&lt;/p&gt;
+&lt;p&gt;3.标签拥有自己的属性，分为基本属性（修改简单的样式效果）和实践属性（可以直接设置事件响应后的代码）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body bgcolor=&quot;aqua&quot;&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    hello world
+    你好
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/134.png&quot; alt=&quot;134&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;4.标签又分为，单标签、双标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;br/&amp;gt; &amp;lt;!--换行--&amp;gt;
+&amp;lt;hr/&amp;gt; &amp;lt;!--水平线--&amp;gt;
+&amp;lt;p&amp;gt;&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;标签语法&lt;/h3&gt;
+&lt;p&gt;标签不可以交叉嵌套&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;1&amp;gt;&amp;lt;2&amp;gt;内容&amp;lt;/2&amp;gt;&amp;lt;/1&amp;gt; &amp;lt;!--正确--&amp;gt;
+&amp;lt;1&amp;gt;&amp;lt;2&amp;gt;内容&amp;lt;/1&amp;gt;&amp;lt;/2&amp;gt; &amp;lt;!--错误，但有些浏览器可以解析--&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;标签必须要闭合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;br/&amp;gt;&amp;lt;!--正确--&amp;gt;
+&amp;lt;br&amp;gt;&amp;lt;!--错误--&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;属性必须要有值，属性值必须有“”&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body bgcolor=&quot;aqua&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注释不可以嵌套&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!--&amp;lt;!----&amp;gt;--&amp;gt;  &amp;lt;!--错误--&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;常用标签&lt;/h3&gt;
+&lt;h4&gt;font标签&lt;/h4&gt;
+&lt;p&gt;font改变字体颜色，大小，字体&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;/head&amp;gt;
+&amp;lt;body onclick=&quot;alert(&apos;警告信息&apos;)&quot;&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+&amp;lt;font color=&quot;#a52a2a&quot; face=&quot;宋体&quot; size=&quot;7&quot;&amp;gt;hello world&amp;lt;br/&amp;gt;你好&amp;lt;/font&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;特殊字符&lt;/h4&gt;
+&lt;p&gt;如果我们想要在浏览器上显示如下特殊字符&amp;lt;br&amp;gt;则&amp;lt;&amp;gt;会被解析，我们需要使用&amp;amp;lt 与 &amp;amp;gt代替&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;font color=&quot;#a52a2a&quot; face=&quot;宋体&quot; size=&quot;7&quot;&amp;gt;
+    你好&amp;lt;br&amp;gt;你好
+    你好&amp;amp;lt;br&amp;amp;gt;你好
+&amp;lt;/font&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;与此类似的还有html会裁掉，我们需要保留空格，我们需要使用到&amp;amp;nbsp&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body onclick=&quot;alert(&apos;警告信息&apos;)&quot;&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+&amp;lt;font color=&quot;#a52a2a&quot; face=&quot;宋体&quot; size=&quot;7&quot;&amp;gt;
+    你好&amp;amp;nbsp;&amp;amp;lt;br&amp;amp;gt;&amp;amp;nbsp;你好
+&amp;lt;/font&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;标题标签&lt;/h4&gt;
+&lt;p&gt;h1-h6，h7会显示原文本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;h1&amp;gt;标题&amp;lt;/h1&amp;gt;
+    &amp;lt;h2&amp;gt;标题&amp;lt;/h2&amp;gt;
+    &amp;lt;h3&amp;gt;标题&amp;lt;/h3&amp;gt;
+    &amp;lt;h4&amp;gt;标题&amp;lt;/h4&amp;gt;
+    &amp;lt;h5&amp;gt;标题&amp;lt;/h5&amp;gt;
+    &amp;lt;h6&amp;gt;标题&amp;lt;/h6&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以为标签添加属性，使其左右居中对齐&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;h1 align=&quot;left&quot;&amp;gt;标题&amp;lt;/h1&amp;gt;
+    &amp;lt;h2 align=&quot;center&quot;&amp;gt;标题&amp;lt;/h2&amp;gt;
+    &amp;lt;h3 align=&quot;right&quot;&amp;gt;标题&amp;lt;/h3&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;超链接&lt;/h4&gt;
+&lt;p&gt;指定href 连接对象，也可以增加target属性设置点击操作（默认为self）&lt;/p&gt;
+&lt;p&gt;blank会打开新的标签页&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;a href=&quot;https://www.baidu.com&quot;&amp;gt;百度&amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;https://www.baidu.com&quot; target=&quot;_self&quot;&amp;gt;百度&amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;https://www.baidu.com&quot; target=&quot;_blank&quot;&amp;gt;百度&amp;lt;/a&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;标签列表&lt;/h4&gt;
+&lt;p&gt;还可以修改列表前的符号，加上type=&quot;none&quot;&lt;/p&gt;
+&lt;p&gt;无序列表ul&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;ul&amp;gt;
+        &amp;lt;li&amp;gt;赵四&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;刘能&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;沈阳&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;小宝&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有序列表ol&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;ol&amp;gt;
+        &amp;lt;li&amp;gt;赵四&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;刘能&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;沈阳&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;小宝&amp;lt;/li&amp;gt;
+    &amp;lt;/ol&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;img标签&lt;/h4&gt;
+&lt;p&gt;显示图片&lt;/p&gt;
+&lt;p&gt;border是边框大小，alt是找不到显示的文本内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;img src=&quot;2.jpg&quot; width=&quot;200&quot; height=&quot;200&quot; border=&quot;1&quot; alt=&quot;404&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/135.png&quot; alt=&quot;135&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;表格标签&lt;/h4&gt;
+&lt;p&gt;做一个代表头的，三行三列表格，显示边框&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;table&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;1&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;2&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;3&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;4&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;5&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;6&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;7&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;8&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;9&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改长宽，边框（border）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;table border=&quot;1&quot; width=&quot;400&quot; height=&quot;300&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;添加th显示表头加增粗&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;tr&amp;gt;
+    &amp;lt;th&amp;gt;1&amp;lt;/th&amp;gt;
+    &amp;lt;th&amp;gt;2&amp;lt;/th&amp;gt;
+    &amp;lt;th&amp;gt;3&amp;lt;/th&amp;gt;
+&amp;lt;/tr&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cellspacing可以调节格子间的间距一般就使用0即可&lt;/p&gt;
+&lt;p&gt;跨行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;td colspan=&quot;2&quot;&amp;gt;4&amp;lt;/td&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;跨列&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;td rowspan=&quot;2&quot;&amp;gt;6&amp;lt;/td&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以叠加使用&lt;/p&gt;
+&lt;h4&gt;iframe标签&lt;/h4&gt;
+&lt;p&gt;可以在html页面上打开一个小窗口加载单独的页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    主页面
+    &amp;lt;iframe src=&quot;123.html&quot;&amp;gt;&amp;lt;/iframe&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;div、span、p&lt;/h4&gt;
+&lt;p&gt;div标签默认独占一行&lt;/p&gt;
+&lt;p&gt;span标签长度是封装数据的长度&lt;/p&gt;
+&lt;p&gt;p段落标签会在上下各空出一行，如果有则不空&lt;/p&gt;
+&lt;h3&gt;表单&lt;/h3&gt;
+&lt;h4&gt;入门使用&lt;/h4&gt;
+&lt;p&gt;form标签就是表单&lt;/p&gt;
+&lt;p&gt;表单用于收集用户信息，把信息发送给服务器&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/136.png&quot; alt=&quot;136&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;&amp;lt;!--主体内容--&amp;gt;
+    &amp;lt;form&amp;gt;
+        用户名称：&amp;lt;input type=&quot;text&quot; value=&quot;默认值&quot;/&amp;gt;&amp;lt;br/&amp;gt;
+        用户密码：&amp;lt;input type=&quot;password&quot;/&amp;gt;&amp;lt;br/&amp;gt;
+        性别：&amp;lt;input type=&quot;radio&quot; name=&quot;sex&quot; checked=&quot;checked&quot;&amp;gt;男&amp;lt;input type=&quot;radio&quot; name=&quot;sex&quot;&amp;gt;女&amp;lt;br/&amp;gt;
+        兴趣爱好：&amp;lt;input type=&quot;checkbox&quot;&amp;gt;Java&amp;lt;input type=&quot;checkbox&quot;&amp;gt;C++&amp;lt;input type=&quot;checkbox&quot;&amp;gt;Python&amp;lt;input type=&quot;checkbox&quot;&amp;gt;C&amp;lt;br/&amp;gt;
+        国籍：&amp;lt;select&amp;gt;
+        &amp;lt;option&amp;gt;国籍&amp;lt;/option&amp;gt;
+        &amp;lt;option&amp;gt;美国&amp;lt;/option&amp;gt;
+        &amp;lt;option selected=&quot;selected&quot;&amp;gt;中国&amp;lt;/option&amp;gt;
+        &amp;lt;option&amp;gt;日本&amp;lt;/option&amp;gt;
+        &amp;lt;/select&amp;gt;&amp;lt;br/&amp;gt;
+        自我介绍：&amp;lt;br/&amp;gt;
+        &amp;lt;textarea rows=&quot;5&quot; cols=&quot;20&quot;&amp;gt;自我介绍
+        &amp;lt;/textarea&amp;gt;
+        &amp;lt;input type=&quot;reset&quot; value=&quot;reset&quot;/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;submit&quot;/&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;file&quot;/&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;生成的网页&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/137.png&quot; alt=&quot;137&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在实际使用的时候可以将所有的表单行放入表格对齐，更加的美观&lt;/p&gt;
+&lt;h4&gt;表单提交&lt;/h4&gt;
+&lt;p&gt;注意需要将提交表单的对应行都添加上name才能发送到服务器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;form action=https://www.baidu.com method=&quot;get或者post&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;get：浏览器浏览器的地址是（action属性[+?+请求参数]），参数是(name=value&amp;amp;name=value...)&lt;/p&gt;
+&lt;p&gt;post：可传送requuest主体的表单内容 浏览器地址中只有action，安全，长度无限制&lt;/p&gt;
+&lt;h2&gt;CSS&lt;/h2&gt;
+&lt;p&gt;CSS是层叠样式表单，是用于增强控制网页样式并允许将样式信息和网页内容分离的一种标记性语言&lt;/p&gt;
+&lt;h3&gt;语法规则&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;选择器{
+	属性: 值
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;选择器：浏览器根据选择器决定受CSS样式影响的HTML元素（标签）&lt;/p&gt;
+&lt;p&gt;属性(property)：要改变的样式名，并且每个属性都有一个值，用：隔开，并被{}包围，这样就组成了一个完成的样式声明(declaration) 例如 p{color:blue}&lt;/p&gt;
+&lt;p&gt;多个声明：如果定义的不只有一个声明，则需要用分号将每个声明分开&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;p {
+    color:red;
+	font-size:80px;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSS注释&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/*注释内容*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;HTML结合使用&lt;/h3&gt;
+&lt;p&gt;入门使用&lt;/p&gt;
+&lt;p&gt;设置div和span的样式，这样的可读性差，没复用性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;div style=&quot;border: aqua solid 1px&quot;&amp;gt;CSS说明&amp;lt;/div&amp;gt;
+    &amp;lt;span style=&quot;border: red solid 1px&quot;&amp;gt;CSS说明&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自定义样式&lt;/p&gt;
+&lt;p&gt;我们可以自定义样式，对所有的特定标签生效&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;style style=&quot;height: auto&quot;&amp;gt;
+        div{
+            border: 1px solid black;
+        }
+        span{
+            color: red;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div&amp;gt;CSS说明&amp;lt;/div&amp;gt;
+    &amp;lt;span&amp;gt;CSS说明&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上代码也是有缺陷的，只可以在同一个页面编辑head内容创建style设置样式，不可以多个页面复用css代码，且维护不方便，我们可以通过如下的方式多页使用&lt;/p&gt;
+&lt;p&gt;link引入&lt;/p&gt;
+&lt;p&gt;把css样式写成一个单独的css文件，再通过link标签引入即可复用&lt;/p&gt;
+&lt;p&gt;编写.css文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;div{
+    border: 1px solid black;
+}
+span{
+    color: red;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;test.css&quot;/&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div&amp;gt;div&amp;lt;/div&amp;gt;
+    &amp;lt;span&amp;gt;span&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;后续修改在.css改即可&lt;/p&gt;
+&lt;h3&gt;选择器&lt;/h3&gt;
+&lt;h4&gt;标签名选择器&lt;/h4&gt;
+&lt;p&gt;可以决定哪些标签被动的使用这个样式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;style type=&quot;text/css&quot;&amp;gt;
+        div{
+            border: 1px solid #050505;
+            color: #3dc6b1;
+            font-size: 20px;
+        }
+        span{
+            border: 5px solid #050505;
+            color: red;
+            font-size: 20px;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div&amp;gt;div&amp;lt;/div&amp;gt;
+    &amp;lt;span&amp;gt;span&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;id选择器&lt;/h4&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#id 属性值{
+	属性:值;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;id选择器，可以让我们通过id属性选择性的去使用样式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;style type=&quot;text/css&quot;&amp;gt;
+        #id001{
+            border: 1px solid #050505;
+            color: #3dc6b1;
+            font-size: 20px;
+        }
+        #id002{
+            border: 5px solid #050505;
+            color: red;
+            font-size: 20px;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div id=&quot;id001&quot;&amp;gt;div&amp;lt;/div&amp;gt;
+    &amp;lt;span id=&quot;id002&quot;&amp;gt;span&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;class选择器&lt;/h4&gt;
+&lt;p&gt;使用建议&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用&lt;strong&gt;class&lt;/strong&gt;来定义可重复使用的样式&lt;/li&gt;
+&lt;li&gt;使用&lt;strong&gt;id&lt;/strong&gt;来标识唯一的页面元素（通常用于JS操作或页面锚点）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.class 属性值{
+	属性:值;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;style type=&quot;text/css&quot;&amp;gt;
+        .class01{
+            border: 1px solid #050505;
+            color: #3dc6b1;
+            font-size: 20px;
+        }
+        .class02{
+            border: 5px solid #050505;
+            color: red;
+            font-size: 20px;
+        }
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div class=&quot;class01&quot;&amp;gt;div&amp;lt;/div&amp;gt;
+    &amp;lt;span class=&quot;class02&quot;&amp;gt;span&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;组合选择器&lt;/h4&gt;
+&lt;p&gt;可以用多个标签去共享样式，id和class也可以&lt;/p&gt;
+&lt;p&gt;格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;选择器1, 选择器2, 选择器... {
+	属性:值;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;CSS&amp;lt;/title&amp;gt;
+    &amp;lt;style type=&quot;text/css&quot;&amp;gt;
+        div, span{
+            border: 1px solid #050505;
+            color: #3dc6b1;
+            font-size: 20px;
+        }
+
+    &amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;div&amp;gt;div&amp;lt;/div&amp;gt;
+    &amp;lt;span&amp;gt;span&amp;lt;/span&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;常用样式&lt;/h3&gt;
+&lt;p&gt;color字体颜色，border像素框，weight宽，height高，backgroud-color背景颜色，margin-left（auto）框格式左对齐，text-align（center、right、left）文字设置，text-decoration:none去除超链接&lt;/p&gt;
+&lt;h2&gt;JavaScript&lt;/h2&gt;
+&lt;p&gt;JavaScript语言最开始最要是为了完成页面的数据验证，运行在客户端，需要运行浏览器来解释执行JavaScript代码&lt;/p&gt;
+&lt;h3&gt;特点&lt;/h3&gt;
+&lt;p&gt;交互性：可以做信息的动态交互&lt;/p&gt;
+&lt;p&gt;安全性：不允许直接访问本地硬盘空间&lt;/p&gt;
+&lt;p&gt;跨平台性：只要是可以解释JS的浏览器都可以执行，和平台无关&lt;/p&gt;
+&lt;h3&gt;HTML结合使用&lt;/h3&gt;
+&lt;p&gt;第一种，在head标签中或者body标签中，使用script标签来书写Javascript代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+  &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+    alert(&quot;Hello World!&quot;);
+  &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种，为了复用可以将Javascript代码写为一个文件，再导入这个文件到html中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;alert(&quot;Hello World!&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;JavaScript&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; src=&quot;Javaweb.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上两者二选一，不可以既选择js，又在同样的标签下写js代码&lt;/p&gt;
+&lt;h3&gt;变量&lt;/h3&gt;
+&lt;p&gt;变量可以存放某些值得内存名称，其中JavaScript中有如下的变量类型&lt;/p&gt;
+&lt;p&gt;数值类型：number&lt;/p&gt;
+&lt;p&gt;字符串类型：string&lt;/p&gt;
+&lt;p&gt;对象类型：object&lt;/p&gt;
+&lt;p&gt;布尔类型：boolean&lt;/p&gt;
+&lt;p&gt;函数类型：function&lt;/p&gt;
+&lt;p&gt;以下是JavaScript中特殊的值&lt;/p&gt;
+&lt;p&gt;undefined：未定义，所有js变量未赋于初始值的时候，默认都是该类型&lt;/p&gt;
+&lt;p&gt;null：空值&lt;/p&gt;
+&lt;p&gt;NAN：非数字&lt;/p&gt;
+&lt;p&gt;JS定义变量类型格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var 变量名称;
+var 变量名称 = 值
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;var i;
+alert(i);/*undefined*/
+i = 12;
+alert(typeof (i));/*number*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;运算符&lt;/h3&gt;
+&lt;h4&gt;比较运算符&lt;/h4&gt;
+&lt;p&gt;相比较于Java中增加了===全等于&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var i;
+i = (12 == &quot;12&quot;);
+alert(i);/*true*/
+i = (12 === &quot;12&quot;);
+alert(i);/*flase*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而所有的变量都可以作为一个boolean类型的变量去使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;0,null,undefined,&quot;&quot; /*false*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;逻辑运算符&lt;/h4&gt;
+&lt;p&gt;返回确定表达式真假的第一个表达式的值&lt;/p&gt;
+&lt;p&gt;&amp;amp;&amp;amp;&lt;/p&gt;
+&lt;p&gt;当表达式全为真的情况下，返回最后一个表达式的值&lt;/p&gt;
+&lt;p&gt;当表达式有一个为假的时候，返回第一个为假的表达式值&lt;/p&gt;
+&lt;p&gt;||&lt;/p&gt;
+&lt;p&gt;当表达式全为假的时候，返回最后一个表达式的值&lt;/p&gt;
+&lt;p&gt;当表达式有一个为真的时候，返回第一个为真的表达式值&lt;/p&gt;
+&lt;h3&gt;数组&lt;/h3&gt;
+&lt;h4&gt;使用&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;var 数组名称 = [];//空数组
+var 数组名称 = [1,&apos;abc&apos;,true];//定义数组时赋值
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;var arr = [123, 133, 133];
+alert(arr[2]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在使用上基本上和java没有区别&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var arr = [123, 133, 133];
+for (var i = 0; i &amp;lt; 2; i++) {
+    alert(arr[i]);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;区别&lt;/h4&gt;
+&lt;p&gt;JavaScript中的数组，只要通过数组下表赋值，那么数组下标的最大值就会给数组做扩容操作，没有赋值的内容类型是undefined&lt;/p&gt;
+&lt;h3&gt;函数&lt;/h3&gt;
+&lt;h4&gt;基本使用&lt;/h4&gt;
+&lt;p&gt;在Javascript中有两种方式定义函数&lt;/p&gt;
+&lt;p&gt;第一种：使用function关键字来定义函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function 函数名称(形参列表){
+	函数体
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;function fun() {
+    var arr = [123, 133, 1323];
+    for (var i = 0; i &amp;lt; 3; i++) {
+        alert(arr[i]);
+    }
+}
+
+fun();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;function fun(a, b, c) {
+    alert(a + &quot; &quot; + b + &quot; &quot; + c);
+}
+
+var arr = [123, 133, 1323];
+fun(arr[0], arr[1], arr[2]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种：由于function在JavaScript中是一种类型，可以进行赋值操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var 函数名称 = function(形参列表) {
+	函数体
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;function fun(a, b, c) {
+    alert(a + &quot; &quot; + b + &quot; &quot; + c);
+}
+
+anotherFun = fun;
+var arr = [123, 133, 1323];
+anotherFun(arr[0], arr[1], arr[2]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意在，Javascript中不允许解析函数的重载，如果函数名称重名会覆盖上一次定义&lt;/p&gt;
+&lt;h4&gt;隐形参数&lt;/h4&gt;
+&lt;p&gt;在Javascript中存在一个arguments隐藏参数，在function函数体中不需要定义，但是可以获取所有参数的变量，很像Java中的可变参数，操作类似数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function fun() {
+    alert(&quot;无参函数fun&quot;);
+    alert(arguments[0] + &quot; &quot; + arguments[1] + &quot; &quot; + arguments[2]);
+}
+
+anotherFun = fun;
+var arr = [123, 133, 1323];
+anotherFun(arr[0], arr[1], arr[2]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;function fun() {
+    var result = 0;
+    for (var i = 0; i &amp;lt; arguments.length; i++) {
+        result += arguments[i];
+    }
+    return result;
+}
+
+var number = fun(1, 2, 3, 4, 5);
+alert(number);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;自定义对象&lt;/h3&gt;
+&lt;h4&gt;Object&lt;/h4&gt;
+&lt;p&gt;Object形式自定义对象&lt;/p&gt;
+&lt;p&gt;定义格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var 变量名称 = new Object();//定义空对象
+变量名称.属性名 = 值;
+变量名称.函数名 = function() {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;变量名称.属性名
+变量名称.函数名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;var obj = new Object();
+obj.id = Math.random();
+obj.fun = function(){
+    alert(obj.id);
+}
+obj.fun();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;{}&lt;/h4&gt;
+&lt;p&gt;{}形式的自定义对象&lt;/p&gt;
+&lt;p&gt;定义格式（注意各行之间用 , 间隔开，而最后一行不加 , ）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var 变量名称 = {
+    属性名称:值，
+    属性名称:值，
+    函数名:function(){}
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var obj = {
+    id:Math.random(),
+    fun:function () {alert(obj.id);}
+}
+obj.fun();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;总结&lt;/h1&gt;
+&lt;p&gt;今天为JavaWeb开了一个头，感觉学起来还是非常轻松的，尤其是在JavaScript上由于语法和Java大体类似，只需要过一遍就可以很快的掌握语法，并加以使用，而CSS和HTML部分的学习我觉得作为主攻后端开发来说做到随超随用就行，大概了解使用方式即可&lt;/p&gt;
+&lt;p&gt;明天会结束JavaScript部分的内容（事件），并开始jQuery的学习&lt;/p&gt;
 </content:encoded></item><item><title>Redis</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid><description>Java客户端，待学部分，等到Java框架学习完成后进行</description><pubDate>Thu, 24 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;h2&gt;Jedis&lt;/h2&gt;
 &lt;p&gt;我们学Redis最终还是要回到编码上，我们需要使用到Redis提供的客户端，推荐的有Jedis、lettuce、Redisson&lt;/p&gt;

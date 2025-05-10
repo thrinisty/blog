@@ -1,11 +1,15 @@
 ---
 title: 关于 Git
-published: 2024-05-10
-date: 2024-05-10
-description: 这是关于 Git 的学习笔记
+published: 2025-1-15
+updated: 2025-1-20
+description: 'Git 学习笔记'
+image: ''
+tags: [Git]
+category: 'Examples'
+draft: false 
 ---
 
-git的功能相当于一个游戏的存档功能，可用作代码的管理，正确使用git即可提高编码的效率以及存储安全，
+git的功能相当于一个游戏的存档功能，可用以代码的管理，正确使用git即可提高编码的效率以及存储安全，
 
 ![30](../images/30.png)
 

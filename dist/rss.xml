@@ -941,6 +941,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记(模板)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>JavaWeb笔记模板</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 </content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Tomcat&lt;/h2&gt;
 &lt;p&gt;JavaWeb：所用通过Java语言编写可以通过浏览器访问的程序的总称，基于请求和响应来开发的&lt;/p&gt;
@@ -22869,6 +22870,7 @@ term/definition pair to spread things out more.)&lt;/p&gt;
 | Line too
 | Line tree&lt;/p&gt;
 &lt;p&gt;and images can be specified like so:&lt;/p&gt;
+&lt;p&gt;[//]: # &quot;![example image](./demo-banner.png &quot;An exemplary image&quot;)&quot;&lt;/p&gt;
 &lt;p&gt;Inline math equations go in like so: $\omega = d\phi / dt$. Display
 math should get its own line and be put in in double-dollarsigns:&lt;/p&gt;
 &lt;p&gt;$$I = \int \rho R^{2} dV$$&lt;/p&gt;

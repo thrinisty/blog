@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: false,
-		src: "assets/images/2.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		src: "assets/images/2.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
@@ -52,7 +52,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/2.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "assets/images/2.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Thrinisty",
 	bio: "生活将我百般捶打,肉质竟变得筋道Q弹!!",
 	links: [

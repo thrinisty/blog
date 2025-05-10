@@ -1,7 +1,7 @@
 ---
 title: 关于 Git
-published: 2025-1-15
-updated: 2025-1-20
+published: 2025-01-15
+updated: 2025-01-20
 description: 'Git 学习笔记'
 image: ''
 tags: [Git]

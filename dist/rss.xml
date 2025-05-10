@@ -5989,6 +5989,1135 @@ public class PrivateTest {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0io%E6%B5%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0io%E6%B5%81/</guid><description>IO流</description><pubDate>Sun, 06 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java笔记&lt;/h1&gt;
+&lt;p&gt;IO流的部分我打算用两天的时间完成学习，再用一天来结束class以及反射的内容，Java的基础知识点就告一段落。&lt;/p&gt;
+&lt;h2&gt;文件基础知识&lt;/h2&gt;
+&lt;p&gt;文件在程序中是以流的形式来操作的&lt;/p&gt;
+&lt;p&gt;Java程序（内存）——输出流——&amp;gt;文件&lt;/p&gt;
+&lt;p&gt;文件——输入流——&amp;gt;Java程序（内存）&lt;/p&gt;
+&lt;p&gt;流：数据在数据源（文件）和程序（内存）之间经历的路径&lt;/p&gt;
+&lt;p&gt;输入流：数据从文件到程序的路径&lt;/p&gt;
+&lt;p&gt;输出流：数据从程序到文件的路径&lt;/p&gt;
+&lt;h2&gt;常用的文件操作&lt;/h2&gt;
+&lt;h3&gt;创建文件&lt;/h3&gt;
+&lt;p&gt;创建文件对象相关方法，注意只有调用createNewFile才会创建文件&lt;/p&gt;
+&lt;p&gt;方式一：通过路径创建文件对象，并创建文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+    public void create01() {
+        String filePath = &quot;e:\\JavaFile\\1.txt&quot;;
+        File file = new File(filePath);
+        try {
+            file.createNewFile();
+            System.out.println(&quot;创建成功&quot;);
+        } catch (IOException e) {
+            System.out.println(&quot;创建文件失败&quot;);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;方式二：通过父目录文件对象+文件名创建文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void create02() {
+    String filePath = &quot;e:\\JavaFile&quot;;
+    File file1 = new File(filePath);
+    String fileName = &quot;2.txt&quot;;
+    File file2 = new File(file1, fileName);
+    try {
+        file2.createNewFile();
+        System.out.println(&quot;创建成功&quot;);
+    } catch (IOException e) {
+        System.out.println(&quot;创建文件失败&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;方式三：通过父目录字符串+文件名创建文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void create03() {
+    String filePath = &quot;e:\\JavaFile&quot;;
+    String fileName = &quot;3.txt&quot;;
+    File file2 = new File(filePath, fileName);
+    try {
+        file2.createNewFile();
+        System.out.println(&quot;创建成功&quot;);
+    } catch (IOException e) {
+        System.out.println(&quot;创建文件失败&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;文件都创建成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/97.png&quot; alt=&quot;97&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;获取文件名称&lt;/h3&gt;
+&lt;p&gt;getName&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\1.txt&quot;);
+    System.out.println(file.getName());//1.txt
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;获取文件绝对路径&lt;/h3&gt;
+&lt;p&gt;getAbsolutePath&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\1.txt&quot;);
+    System.out.println(file.getAbsolutePath());//e:\1.txt
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;获取父级目录&lt;/h3&gt;
+&lt;p&gt;getParent&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\1.txt&quot;);
+    System.out.println(file.getParent());//e:\
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;获取文件大小&lt;/h3&gt;
+&lt;p&gt;length 字节&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    @Test
+    public void info() {
+        File file = new File(&quot;e:\\JavaFile\\1.txt&quot;);//6 
+        //文件里是 你好 中文字符在UTF-8占三个字节
+        System.out.println(file.length());//6 
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;检测文件是否存在&lt;/h3&gt;
+&lt;p&gt;exists&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\JavaFile\\1.txt&quot;);
+    System.out.println(file.exists());//true
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;检测是不是文件&lt;/h3&gt;
+&lt;p&gt;isFile&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\JavaFile\\1.txt&quot;);
+    System.out.println(file.isFile());//true
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;检测是不是目录&lt;/h3&gt;
+&lt;p&gt;isDirectory&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void info() {
+    File file = new File(&quot;e:\\JavaFile\\1.txt&quot;);
+    System.out.println(file.isFile());//false
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;创建目录&lt;/h3&gt;
+&lt;h4&gt;创建一级目录&lt;/h4&gt;
+&lt;p&gt;mkdir&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void mkdir() {
+    String filePath = &quot;e:\\JavaFile\\New&quot;;
+    File file = new File(filePath);
+    if (!file.exists()) {
+        file.mkdir();
+        System.out.println(filePath + &quot; 目录创建&quot;);
+    } else {
+        System.out.println(&quot;目录已存在&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;创建多级目录&lt;/h4&gt;
+&lt;p&gt;mkdirs&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void mkdirs() {
+    String filePath = &quot;e:\\JavaFile\\New\\another\\other&quot;;
+    File file = new File(filePath);
+    if (!file.exists()) {
+        file.mkdirs();
+        System.out.println(filePath + &quot; 目录创建&quot;);
+    } else {
+        System.out.println(&quot;目录已存在&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;删除空目录或文件&lt;/h3&gt;
+&lt;p&gt;delete&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void delete() {
+    String filePath = &quot;e:\\JavaFile\\1.txt&quot;;
+    File file = new File(filePath);
+    if (file.exists()) {
+        file.delete();
+        System.out.println(filePath + &quot;被删除&quot;);//1.txt被删除
+    } else {
+        System.out.println(&quot;文件不存在&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Java IO流原理&lt;/h2&gt;
+&lt;p&gt;1.I/O是Input/Output的缩写，I/O技术是非常实用的技术，用于处理数据传输，如读写文件，网络通讯等&lt;/p&gt;
+&lt;p&gt;2.Java程序中，对于数据的输入/输出以 流 ”stream“ 的方式进行。&lt;/p&gt;
+&lt;p&gt;3.java.io包下提供了各种“流”类和接口，以获取不同种类的数据，并通过方法输入或者输出数据&lt;/p&gt;
+&lt;p&gt;4.输入input：读取外部数据（磁盘，光盘的设备的数据）到程序（内存）中&lt;/p&gt;
+&lt;p&gt;5.输出output：将程序（内存）数据输出到磁盘，光盘等存储设备中&lt;/p&gt;
+&lt;h3&gt;流的分类&lt;/h3&gt;
+&lt;p&gt;按照操作数据单位不同分为：字节流（8bit），字符流（按字符）&lt;/p&gt;
+&lt;p&gt;按照数据流向分为：输入，输出流&lt;/p&gt;
+&lt;p&gt;按照流的角色不同分为：节点流，处理流，包装流&lt;/p&gt;
+&lt;h3&gt;四个抽象基类&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;抽象基类&lt;/th&gt;
+&lt;th&gt;字节流&lt;/th&gt;
+&lt;th&gt;字符流&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;输入流&lt;/td&gt;
+&lt;td&gt;InputStream&lt;/td&gt;
+&lt;td&gt;Reader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;输出流&lt;/td&gt;
+&lt;td&gt;OutputStream&lt;/td&gt;
+&lt;td&gt;Writer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;1.Java的IO流设计40多个类，实际上非常规则，都是从如上的4个抽象基类派生的&lt;/p&gt;
+&lt;p&gt;2.由这四个派生出来的子类名称都是以其父类民作为子类名后缀。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/98.png&quot; alt=&quot;98&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/99.png&quot; alt=&quot;99&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;文件输入输出流&lt;/h2&gt;
+&lt;h3&gt;FileInputStream&lt;/h3&gt;
+&lt;p&gt;文件输入流&lt;/p&gt;
+&lt;h4&gt;构造方法&lt;/h4&gt;
+&lt;p&gt;传入文件对象 File&lt;/p&gt;
+&lt;p&gt;传入文件描述符&lt;/p&gt;
+&lt;p&gt;传入文件路径字符串 String&lt;/p&gt;
+&lt;h4&gt;流循环读取单个字节&lt;/h4&gt;
+&lt;p&gt;当文件字节读取完毕时返回-1&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Stream {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        int readData = 0;
+        InputStream inputstream = null;
+        try {
+            inputstream = new FileInputStream(filePath);//创建文件对象流
+
+            while ((readData = inputstream.read()) != -1) {
+                System.out.print((char)readData);
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;没有找到文件...&quot;);
+        } finally {
+            try {
+                inputstream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用字节流数组读取&lt;/h4&gt;
+&lt;p&gt;在read中添加一个byte数组参数，如果读取正常返回一个读取到的字节数&lt;/p&gt;
+&lt;p&gt;再通过返回的字节数根据buf字节数组用String构造一个字符串（从0到每次读取到的字节数）输出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Stream {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        int readLen = 0;
+        byte[] buf = new byte[8];
+        InputStream inputstream = null;
+        try {
+            inputstream = new FileInputStream(filePath);//创建文件对象流
+            while ((readLen = (inputstream.read(buf)) )!= -1) {
+                System.out.println(new String(buf, 0, readLen));
+            }
+         //Hello Wo
+		//rld!!
+        } catch (IOException e) {
+            System.out.println(&quot;没有找到文件...&quot;);
+        } finally {
+            try {
+                inputstream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;FileOutputStream&lt;/h3&gt;
+&lt;p&gt;文件字节输出流&lt;/p&gt;
+&lt;h4&gt;写入单个字符&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class OUTSTREAM {
+    public static void main(String[] args) {
+        File file = new File(&quot;e:\\JavaFile\\4.txt&quot;);
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(file);
+            //如果没有文件会创建文件
+            fos.write(&apos;A&apos;);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;写入一个字节数组&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class OUTSTREAM {
+    public static void main(String[] args) {
+        File file = new File(&quot;e:\\JavaFile\\4.txt&quot;);
+        FileOutputStream fos = null;
+        String target = &quot;Hello World!&quot;;
+        byte[] buffer = target.getBytes();
+        //通过getBytes得到字节数组
+        try {
+            fos = new FileOutputStream(file);
+            fos.write(buffer, 0, buffer.length);
+            //后两个参数可选左闭右包，无则将调用如上形式
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;追加内容&lt;/h4&gt;
+&lt;p&gt;以上是将目标文件直接进行内容更新，如果要添加内容则需要在构造器里添加第二个boolean参数（设置为true）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fos = new FileOutputStream(file, true);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;文件拷贝&lt;/h4&gt;
+&lt;p&gt;运用文件输入流和文件输出流来进行文件的拷贝&lt;/p&gt;
+&lt;h5&gt;单个字节流&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.io.*;
+
+public class FileCopy {
+    public static void main(String[] args) {
+        String inputPath = &quot;e:\\JavaFile\\1.jpg&quot;;
+        String outputPath = &quot;e:\\JavaFile\\New\\3.jpg&quot;;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        int target;
+        try {
+            fis = new FileInputStream(inputPath);
+            fos = new FileOutputStream(outputPath);
+            while((target = fis.read()) != -1) {
+                fos.write(target);
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                fis.close();
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;字节流数组&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.io.*;
+
+public class FileCopy {
+    public static void main(String[] args) {
+        String inputPath = &quot;e:\\JavaFile\\1.jpg&quot;;
+        String outputPath = &quot;e:\\JavaFile\\New\\3.jpg&quot;;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        int bufLength = 0;
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(inputPath);
+            fos = new FileOutputStream(outputPath);
+            while((bufLength = fis.read(buffer)) != -1) {
+                for (int i = 0; i &amp;lt; bufLength; i++) {
+                    fos.write(buffer[i]);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                fis.close();
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.io.*;
+
+public class FileCopy {
+    public static void main(String[] args) {
+        String inputPath = &quot;e:\\JavaFile\\1.jpg&quot;;
+        String outputPath = &quot;e:\\JavaFile\\New\\4.jpg&quot;;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        int bufLength = 0;
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(inputPath);
+            fos = new FileOutputStream(outputPath);
+            while((bufLength = fis.read(buffer)) != -1) {
+                fos.write(buffer, 0, bufLength);
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                fis.close();
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;字符输入输出流&lt;/h2&gt;
+&lt;p&gt;相比于文件字节流而言，当读取到由多个字节组成的字符（例如中文）会将多个字节传为字符读出&lt;/p&gt;
+&lt;h3&gt;FileReader&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/101.png&quot; alt=&quot;101&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;相关方法&lt;/p&gt;
+&lt;p&gt;构造方法:传入文件对象或者文件路径字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;new FileReader(File\String);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;read:读取单个字符，返回字符如果读取到-1代表到达文件末尾&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class FileReader01 {
+    public static void main(String[] args) {
+        String inputPath = &quot;e:\\JavaFile\\2.txt&quot;;
+        String outputPath = &quot;e:\\JavaFile\\New\\1.txt&quot;;
+        FileReader filereader = null;
+        int target;
+        try {
+            filereader = new FileReader(inputPath);
+            while((target = filereader.read()) != -1) {
+                System.out.print((char)target);
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                filereader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;read（char[]）:读取多个字符到字符数组，返回读到的字符数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class FileReader01 {
+    public static void main(String[] args) {
+        String inputPath = &quot;e:\\JavaFile\\2.txt&quot;;
+        String outputPath = &quot;e:\\JavaFile\\New\\1.txt&quot;;
+        FileReader filereader = null;
+        char[] buffer = new char[4];
+        int length;
+        try {
+            filereader = new FileReader(inputPath);
+            while((length = filereader.read(buffer)) != -1) {
+                String target = new String(buffer, 0, length);
+                System.out.print(target);
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                filereader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;FileWriter&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/100.png&quot; alt=&quot;100&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;常用方法：&lt;/p&gt;
+&lt;p&gt;write(int):写入单个字符&lt;/p&gt;
+&lt;p&gt;write(char[ ]):写入指定数组&lt;/p&gt;
+&lt;p&gt;write(char[], off, len):写入数组指定部分&lt;/p&gt;
+&lt;p&gt;write(string):写入整个字符串&lt;/p&gt;
+&lt;p&gt;write(string, off, len):写入字符串指定部分&lt;/p&gt;
+&lt;p&gt;注意：当FileWriter使用后，必须要使用close关闭或者flush刷新后才可以写入完成&lt;/p&gt;
+&lt;p&gt;以下是一个代码示例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class FileWriter01 {
+    public static void main(String[] args) {
+        String outputPath = &quot;e:\\JavaFile\\New\\1.txt&quot;;
+        FileWriter filewriter = null;
+        char[] buffer = &quot;风雨之后，遇见彩虹&quot;.toCharArray();
+        try {
+            filewriter = new FileWriter(outputPath);
+            filewriter.write(buffer, 0, buffer.length);
+            filewriter.flush();//在完成写之后记得刷入
+        } catch (IOException e) {
+            System.out.println(&quot;发生异常&quot;);
+        } finally {
+            try {
+                filewriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;节点流和处理流&lt;/h2&gt;
+&lt;h3&gt;节点流&lt;/h3&gt;
+&lt;p&gt;节点流可以从一个特定的数据源读写数据，例如FileReader，FileWriter&lt;/p&gt;
+&lt;h3&gt;处理流&lt;/h3&gt;
+&lt;p&gt;处理流（包装流）是连接已存在的流（节点流或处理流）之上，为程序提供更为强大的读写功能，如BufferedReader，BufferedWriter，更加灵活&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/102.png&quot; alt=&quot;102&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;处理流具体功能&lt;/p&gt;
+&lt;p&gt;1.性能的提高：主要以增加缓冲的方式来提高输入输出的效率&lt;/p&gt;
+&lt;p&gt;2.操作的便捷：处理流可能提供了一系列便捷的方法来一次输入输出大批量的数据，使用更加的灵活&lt;/p&gt;
+&lt;h3&gt;区别与联系&lt;/h3&gt;
+&lt;p&gt;1.节点流是底层流/低级流，直接和数据源相接&lt;/p&gt;
+&lt;p&gt;2.处理流包装节点流，既可以消除不同节点流的实现差异，也可以提供方便的方法来完成输入输出&lt;/p&gt;
+&lt;p&gt;3.处理流对节点流进行了包装，使用了修饰器设计模式，不会直接与数据源相连接&lt;/p&gt;
+&lt;h3&gt;修饰器设计模式示例&lt;/h3&gt;
+&lt;p&gt;我们来模拟一下处理流封装节点流，有点类似于之前提到的代理模式&lt;/p&gt;
+&lt;p&gt;但是还是有些区别：装饰器关注于动态添加功能，代理关注于控制访问&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test {
+    public static void main(String[] args) {
+        BufferedReader_ bufferedReader = new BufferedReader_(new FileReader_());
+        System.out.println(&quot;拓展的Read方法&quot;);
+        bufferedReader.readFiles(3);
+    }
+}
+
+class BufferedReader_ extends Reader_ {
+    private Reader_ reader_;
+
+    public BufferedReader_(Reader_ reader_){
+        this.reader_ = reader_;
+    }
+
+  	//将原本的reader方法封装在修饰器中
+    public void readFile() {
+        reader_.readFile();
+    }  
+  
+    //在BufferedReader_中可以添加FileReader_的方法（拓展修饰）
+    public void readFiles(int num) {
+        for (int i = 0; i &amp;lt; num; i++) {
+            reader_.readFile();
+        }
+    }
+}
+
+abstract class Reader_ {
+    public void readFile(){}
+    public void readString(){}
+}
+
+class FileReader_ extends Reader_{
+    public void readFile() {
+        System.out.println(&quot;对文件进行读取...&quot;);
+    }
+}
+
+class StringReader_ extends Reader_{
+    public void readString() {
+        System.out.println(&quot;对字符串进行读取...&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过这样的方式我们可以通过构造的处理流来调用更具有便捷性的方法来操作节点流。&lt;/p&gt;
+&lt;h3&gt;字符处理流&lt;/h3&gt;
+&lt;h4&gt;BufferedReader&lt;/h4&gt;
+&lt;p&gt;在其中有属性Reader，可以封装一个节点流（可以是任意的Reader子类），还有一个char数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BufferedReader extends Reader {
+
+    private Reader in;
+
+    private char cb[];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下是一个代码示例，我们将文件的输入字符流放在了创建的读入字符处理流里，通过这个处理流调用读取下一行方法读取内容，并且输出&lt;/p&gt;
+&lt;p&gt;readLine方法，返回字符串类型，如果读完就返回null&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BufferedReader01 {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        FileReader filereader = null;
+        BufferedReader bufferedreader = null;
+
+        try {
+            filereader = new FileReader(filePath);
+            bufferedreader = new BufferedReader(filereader);
+            String line;
+            while ((line = bufferedreader.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println(line);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bufferedreader.close();//关闭外层流即可
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;你好！！Hello World!!
+我来自于西安
+你好
+null
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意在释放资源的时候只需要关闭外层流即可，在调用的时候会将Reader的in释放&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void close() throws IOException {
+    synchronized (lock) {
+        if (in == null)
+            return;
+        try {
+            in.close();
+        } finally {
+            in = null;
+            cb = null;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;BufferedWriter&lt;/h4&gt;
+&lt;p&gt;在其中有属性Writer，可以封装一个节点流（可以是任意的Writer子类），还有一个char数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BufferedWriter extends Writer {
+
+    private Writer out;
+
+    private char cb[];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用处理流写入内容&lt;/p&gt;
+&lt;p&gt;可以使用newLine插入换行符（根据操作系统对应的换行符）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BufferedWriter01 {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        FileWriter filewriter = null;
+        BufferedWriter bufferwriter = null;
+        try {
+            filewriter = new FileWriter(filePath, true);
+            //在节点流设置追加模式
+            bufferwriter = new BufferedWriter(filewriter);
+            bufferwriter.write(&quot;处理流写入&quot;);
+            bufferwriter.newLine();//插入一个换行符
+            bufferwriter.write(&quot;处理流写入&quot;);
+            bufferwriter.newLine();//插入一个换行符
+            bufferwriter.write(&quot;处理流写入&quot;);
+            bufferwriter.newLine();//插入一个换行符
+            bufferwriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bufferwriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;处理流字符文件拷贝案例（不可以拷贝视频，图片，音频）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.io.*;
+
+public class BufferedWriter01 {
+    public static void main(String[] args) {
+        String targetFilePath = &quot;e:\\JavaFile\\target.txt&quot;;
+        FileWriter filewriter = null;
+        BufferedWriter bufferwriter = null;
+
+        String srcFilePath = &quot;e:\\JavaFile\\src.txt&quot;;
+        FileReader filereader = null;
+        BufferedReader bufferreader = null;
+        try {
+            filewriter = new FileWriter(targetFilePath, true);
+            bufferwriter = new BufferedWriter(filewriter);
+            filereader = new FileReader(srcFilePath);
+            bufferreader = new BufferedReader(filereader);
+            String line;
+            while ((line = bufferreader.readLine()) != null) {
+                bufferwriter.write(line);
+                bufferwriter.newLine();
+            }
+            bufferwriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bufferwriter.close();
+                bufferreader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;字节处理流&lt;/h3&gt;
+&lt;h4&gt;BufferedInputStream&lt;/h4&gt;
+&lt;h4&gt;BufferedOutputStream&lt;/h4&gt;
+&lt;p&gt;通过拷贝案例说明使用方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.io.*;
+
+public class BufferedWriter01 {
+    public static void main(String[] args) {
+        String targetFilePath = &quot;e:\\JavaFile\\2.jpg&quot;;
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+
+        String srcFilePath = &quot;e:\\JavaFile\\1.jpg&quot;;
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        try {
+            fos = new FileOutputStream(targetFilePath);
+            fis = new FileInputStream(srcFilePath);
+            bos = new BufferedOutputStream(fos);
+            bis = new BufferedInputStream(fis);
+            byte[] buffer = new byte[1024];
+            int length;
+            while((length = bis.read(buffer)) != -1) {
+                bos.write(buffer, 0 , length);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bos.close();
+                bis.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;对象处理流&lt;/h2&gt;
+&lt;p&gt;在实际开发中我们可能会需要保存对象，和从文件中恢复对象（要求保存数据类型）这个时候我们就会需要到 对象处理流（专门用于处理对象）&lt;/p&gt;
+&lt;h3&gt;序列化和反序列化&lt;/h3&gt;
+&lt;p&gt;1.序列化就是在保存数据的时候，保存数据的值和数据类型&lt;/p&gt;
+&lt;p&gt;2.反序列化就是在恢复数据时，恢复数据的值和数据类型&lt;/p&gt;
+&lt;p&gt;3.需要让某个对象支持序列化机制，我们就必须让其类是可序列化的，类需要实现Serializable接口或者Externalizable接口（推荐使用第一个标记接口，没有方法）（后一个需要实现方法）&lt;/p&gt;
+&lt;h3&gt;对象输入输出流&lt;/h3&gt;
+&lt;h4&gt;ObjectOutputStream&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;实际案例&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们需要保存int型的数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;int n = 100;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;保存一个Dog类型的数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Dog dog = new Dog(&quot;来福&quot;, 18);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class ObjectClass {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\data.dat&quot;;
+        ObjectOutputStream oos = null;
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filePath);
+            oos = new ObjectOutputStream(fos);
+            oos.write(100);//保存整形100
+            oos.writeObject(new Dog(&quot;来福&quot;, 18));
+            //保存狗类示例对象
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                oos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+
+class Dog implements Serializable {
+    String name;
+    int age;
+
+    public Dog(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    @Override
+    public String toString() {
+        return name + &quot; &quot; + age;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ObjectInputStream&lt;/h4&gt;
+&lt;p&gt;接下来我们来从文件中恢复对象（反序列化）&lt;/p&gt;
+&lt;p&gt;在回复对象的Java文件下应该也有类的定义，要求类的定义完全相同，因为这里因为在同一个包下，可以不用再打一次（或者建议把Dog单独写成一个共有的类）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ObjectClassRead {
+    public static void main(String[] args) {
+        String filePath = &quot;e:\\JavaFile\\data.dat&quot;;
+        ObjectInputStream ois = null;
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(filePath);
+            ois = new ObjectInputStream(fis);
+            int i = ois.read();
+            Object obj = ois.readObject();//运行类型是Dog
+            System.out.println(i);
+            System.out.println(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;100
+来福 18
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;对象处理流的细节&lt;/h3&gt;
+&lt;p&gt;1.读写顺序要求一致（例如前一道题目先传入int再传入Dog，读的时候先int再Dog）&lt;/p&gt;
+&lt;p&gt;2.要求实现序列化或者反序列化对象（实现Serializable接口）&lt;/p&gt;
+&lt;p&gt;3.序列化的类中建议添加Serial Version UID 以提高版本的兼容性（修改类的时候会认为是原来的升级版本，而非全新的类）&lt;/p&gt;
+&lt;p&gt;4.序列化对象的时候，默认将里面的所有属性都进行序列化，但除了static和transient关键字修饰的成员&lt;/p&gt;
+&lt;p&gt;5.序列化对象时，要求对象属性的类型也都实现了序列化接口&lt;/p&gt;
+&lt;p&gt;6.序列化具备可继承性，即某类实现了序列化，则它的子类也默认实现了序列化&lt;/p&gt;
+&lt;h2&gt;标准输入输出流&lt;/h2&gt;
+&lt;h3&gt;System.in 标准输入&lt;/h3&gt;
+&lt;p&gt;默认设备为键盘&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public final static InputStream in = null;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在使用Scanner的时候传入的就是我们的标准输入流&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Scanner scanner = new Scanner(System.in);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编译类型为InputStream，运行时类型为BufferedInputStream&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class InputAndOutput {
+    public static void main(String[] args) {
+        System.out.println(System.in.getClass());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class java.io.BufferedInputStream
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;System.out 标准输出&lt;/h3&gt;
+&lt;p&gt;默认设备为显示器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public final static PrintStream out = null;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在用sout打印的时候，用的就是这个输出流到终端&lt;/p&gt;
+&lt;p&gt;编译类型和运行时类型为PrintStream&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class InputAndOutput {
+    public static void main(String[] args) {
+        System.out.println(System.out.getClass());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class java.io.PrintStream
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;转换流&lt;/h2&gt;
+&lt;h3&gt;问题引出&lt;/h3&gt;
+&lt;p&gt;我们在读取文件的时候使用的是UTF-8&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class transformation {
+    public static void main(String[] args) throws Exception {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+        String s = bufferedReader.readLine();
+        System.out.println(s);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果在读取非UTF-8的时候，可能就会读出乱码&lt;/p&gt;
+&lt;p&gt;这个时候我们就需要运用转换流将字节流指定格式转为字符流即可解决问题&lt;/p&gt;
+&lt;h3&gt;InputStreamReader&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/103.png&quot; alt=&quot;103&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Reader的子类，可以将InputStream（字节流）包装成为Reader（字符流）&lt;/p&gt;
+&lt;p&gt;其中有一个非常重要的构造方法（InputStream,Charset）后一个参数指定编码格式&lt;/p&gt;
+&lt;p&gt;使用方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class transformation {
+    public static void main(String[] args) throws Exception {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        FileInputStream fis = new FileInputStream(filePath);//获取文件字节流
+        InputStreamReader isr = new InputStreamReader(fis, &quot;UTF-8&quot;);//将字节流指定编码转为字符流
+        BufferedReader bufferedReader = new BufferedReader(isr);//将字符流放入字符处理流
+        String s = bufferedReader.readLine();
+        System.out.println(s);
+        bufferedReader.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;OutputStreamWriter&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/104.png&quot; alt=&quot;104&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Writer的子类，可以将OutputStream（字节流）包装成为Writer（字符流）&lt;/p&gt;
+&lt;p&gt;也有一个构造器（OutputStream,Charset）后一个参数指定编码格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class transformation {
+    public static void main(String[] args) throws Exception {
+        String filePath = &quot;e:\\JavaFile\\2.txt&quot;;
+        BufferedWriter bufferwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), &quot;UTF-8&quot;));
+        bufferwrite.write(&quot;你好！！&quot;);
+        bufferwrite.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;打印流&lt;/h2&gt;
+&lt;h3&gt;PrintStream&lt;/h3&gt;
+&lt;p&gt;打印字节流&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/105.png&quot; alt=&quot;105&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class PrintStream_ {
+    public static void main(String[] args) {
+        PrintStream out = System.out;
+        out.print(&quot;你好&quot;);//运用打印输出流可以输出到显示器
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;print调用了write，也可以直接调用write方法进行打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void print(String s) {
+    if (s == null) {
+        s = &quot;null&quot;;
+    }
+    write(s);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们也可以调用System.setOut来设置System.out打印输出流的位置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class PrintStream_ {
+    public static void main(String[] args) throws IOException {
+        System.setOut(new PrintStream(&quot;e:\\JavaFile\\1.txt&quot;));
+        PrintStream out = System.out;
+        out.write(&quot;你好&quot;.getBytes());
+        out.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;PrintWriter&lt;/h3&gt;
+&lt;p&gt;打印字符流&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/106.png&quot; alt=&quot;106&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class PrintStream_ {
+    public static void main(String[] args) throws IOException {
+        PrintWriter printWriter = new PrintWriter(System.out);
+        printWriter.print(&quot;hello&quot;);
+        printWriter.close();//需要用close关闭后刷入
+    }
+
+    @Test
+    public void test() throws IOException {
+        String filePath = &quot;e:\\JavaFile\\1.txt&quot;;
+        PrintWriter printWriter = new PrintWriter(new FileWriter(filePath));
+        printWriter.print(&quot;hello&quot;);
+        printWriter.close();//需要用close关闭后刷入
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;p&gt;在讲集合的时候曾提到过&lt;/p&gt;
+&lt;p&gt;1.专门用于读写配置文件的集合类，格式如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;键=值
+键=值
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.注意键值对不需要有空格，值不需要用引号括起来，默认类型是String&lt;/p&gt;
+&lt;h3&gt;常见方法&lt;/h3&gt;
+&lt;h4&gt;load&lt;/h4&gt;
+&lt;p&gt;加载配置文件的键值对到Properties对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String filePath = &quot;e:\\JavaFile\\mysql.properties&quot;;
+Properties properties = new Properties();
+properties.load(new FileReader(filePath));//加载文件到对象
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;list&lt;/h4&gt;
+&lt;p&gt;将数据显示到指定设备&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;properties.list(System.out);//将键值对打印在控制台
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;user=root
+pwd=12345
+ip=127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getProperty(key)&lt;/h4&gt;
+&lt;p&gt;根据键获取值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String user = properties.getProperty(&quot;user&quot;);
+String pwd = properties.getProperty(&quot;pwd&quot;);
+System.out.println(user + &quot; &quot; + pwd);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;root 12345
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;setProperty(key)&lt;/h4&gt;
+&lt;p&gt;根据键值设置到Properties对象&lt;/p&gt;
+&lt;h4&gt;store&lt;/h4&gt;
+&lt;p&gt;将Properties的键值对存储到配置文件中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class IPIP {
+    public static void main(String[] args) throws IOException {
+        String filePath = &quot;e:\\JavaFile\\another.properties&quot;;
+        Properties properties = new Properties();
+        properties.setProperty(&quot;charset&quot;, &quot;utf8&quot;);
+        properties.setProperty(&quot;user&quot;, &quot;tom&quot;);
+        properties.setProperty(&quot;pwd&quot;, &quot;123456&quot;);
+        properties.store(new FileOutputStream(filePath), null);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;使用场景&lt;/h3&gt;
+&lt;p&gt;有一个配置文件mysql.properties如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ip = 127.0.0.1
+user = root
+pwd = 12345
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;传统方式实现&lt;/h4&gt;
+&lt;p&gt;我们需要使用文件IO进行读取ip，user，pwd比较复杂&lt;/p&gt;
+&lt;p&gt;通过处理流读取每一行字符串数据，再通过字符串拆分处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class IPIP {
+    public static void main(String[] args) throws IOException {
+        String filePath = &quot;e:\\JavaFile\\mysql.properties&quot;;
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), &quot;UTF-8&quot;));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] targerArr = line.split(&quot;=&quot;);
+            System.out.println(targerArr[0] + &quot; 内容是 &quot; + targerArr[1]);
+        }
+
+        br.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Properties类实现&lt;/h4&gt;
+&lt;p&gt;我们可以使用Properties类方便实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class IPIP {
+    public static void main(String[] args) throws IOException {
+        String filePath = &quot;e:\\JavaFile\\mysql.properties&quot;;
+        Properties properties = new Properties();
+        properties.load(new FileReader(filePath));//加载配置文件到对象
+        properties.list(System.out);//将键值对打印在控制台
+        String user = properties.getProperty(&quot;user&quot;);
+        String pwd = properties.getProperty(&quot;pwd&quot;);
+        System.out.println(user + &quot; &quot; + pwd);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;IO章节作业&lt;/h1&gt;
+&lt;h2&gt;例题一：&lt;/h2&gt;
+&lt;p&gt;1.判断e盘下是否有文件夹mytemp，没有则创建mytemp&lt;/p&gt;
+&lt;p&gt;2.再mytemp目录下创建文件hello.txt&lt;/p&gt;
+&lt;p&gt;3.如果hello.txt存在，就提示已存在，不再重复创建&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class HomeWork01 {
+    public static void main(String[] args) {
+        File directory = new File(&quot;e:\\mytemp&quot;);
+        File file = new File(directory, &quot;hello.txt&quot;);
+
+        if (directory.isDirectory()) {
+            System.out.println(&quot;已存在该目录&quot;);
+        } else {
+            if (directory.mkdir()) {
+                System.out.println(&quot;创建成功&quot;);
+            } else {
+                System.out.println(&quot;创建失败&quot;);
+            }
+        }
+
+        if (file.exists()) {
+            System.out.println(&quot;已存在该文件&quot;);
+        } else {
+            try {
+                if (file.createNewFile()) {
+                    System.out.println(&quot;创建成功&quot;);
+                } else {
+                    System.out.println(&quot;创建失败&quot;);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;例题二：&lt;/h2&gt;
+&lt;p&gt;用BufferedReader读取一个文本文件，为每行加上行号，再将内容输出到屏幕上&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Homework02 {
+    public static void main(String[] args) throws IOException {
+        String filePath = &quot;e:\\JavaFile\\src.txt&quot;;
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String line;
+        int count = 1;
+        while((line = br.readLine()) != null) {
+            System.out.print(count++ + &quot; &quot; + line + &quot;\n&quot;);
+        }
+        br.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1 这是一个
+2 处理流拷贝的
+3 测试案例
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;例题三：&lt;/h2&gt;
+&lt;p&gt;1.编写一个dog.properties配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;name = tom
+age = 5
+color = red
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.编写Dog（name，age，color）类，创建一个对象，读取dog配置文件中的内容完成初始化，输出&lt;/p&gt;
+&lt;p&gt;3.将创建的Dog对象序列化输出到dog.txt文件&lt;/p&gt;
+&lt;p&gt;同理我们也可以将文件反序列化，读出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.stander;
+
+import java.io.*;
+import java.util.Properties;
+
+
+public class IPIP {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String filePath = &quot;e:\\JavaFile\\dog.properties&quot;;
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(filePath));
+        String name = properties.getProperty(&quot;name&quot;);
+        String age = properties.getProperty(&quot;age&quot;);
+        String color = properties.getProperty(&quot;color&quot;);
+        Dog dog = new Dog(name, age, color);
+        System.out.println(dog);
+
+        String savePath = &quot;e:\\JavaFile\\save.dat&quot;;
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(savePath));
+        oos.writeObject(dog);
+
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(savePath));
+        Dog another = (Dog) ois.readObject();
+        System.out.println(another);
+    }
+}
+
+class Dog implements Serializable {
+    String name;
+    String age;
+    String color;
+
+    public Dog(String name, String age, String color) {
+        this.name = name;
+        this.age = age;
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return name + &quot; &quot; + age + &quot; &quot; + color;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%9A%E7%BA%BF%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%9A%E7%BA%BF%E7%A8%8B/</guid><description>多线程基础，较为简陋，后续添加内容</description><pubDate>Fri, 04 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java笔记&lt;/h1&gt;
 &lt;p&gt;在韩顺平老师的Java课程中会结合一个坦克大战的实战项目，我急功近利，就不写坦克大战的编写了，只学Java中最核心的几个知识点&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;java绘图坐标体系&lt;/strong&gt;&lt;/p&gt;
@@ -9170,6 +10299,1133 @@ class Employee {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0matharrayssystem%E5%A4%A7%E6%95%B0%E5%A4%84%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0matharrayssystem%E5%A4%A7%E6%95%B0%E5%A4%84%E7%90%86/</guid><description>Math，Arrays，System，大数处理</description><pubDate>Mon, 31 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java笔记&lt;/h1&gt;
+&lt;h2&gt;Math&lt;/h2&gt;
+&lt;p&gt;Math类包含了执行基本数学运算的方法，如初等函数，对数，平方根，三角函数&lt;/p&gt;
+&lt;h3&gt;常用的方法&lt;/h3&gt;
+&lt;h4&gt;abs求绝对值&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.abs(-123));//123
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;pow求幂&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.pow(2, 4));//16.0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ceil向上取整&lt;/h4&gt;
+&lt;p&gt;返回大于等于这个数的最小整数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.ceil(20.2));//21.0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;floor向上取整&lt;/h4&gt;
+&lt;p&gt;返回小于等于这个数的最大整数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.floor(20.2));//20.0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;round四舍五入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.round(20.35));//20.0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;sqrt开方&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.sqrt(9));//3.0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;random随机数&lt;/h4&gt;
+&lt;p&gt;返回一个[0,1)之间的随机小数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.random());//0.8490844298476015
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2-7之间的随机整数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        //Math.random() * x 返回了一个数[0, x)
+        //Math.random() * 5 返回了[0, 5),
+        System.out.println(Math.random() * 5 + 2);//[2,7)
+        System.out.println((int)(Math.random() * 6 + 2));//2-7的整数
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;max和min&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Math01 {
+    public static void main(String[] args) {
+        System.out.println(Math.max(1, 2));//2
+        System.out.println(Math.min(1, 2));//1
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Arrays&lt;/h2&gt;
+&lt;p&gt;包含了一系列的静态方法，用于管理和操作数组（例如排序和搜索）&lt;/p&gt;
+&lt;h3&gt;常用方法&lt;/h3&gt;
+&lt;h4&gt;toString方法&lt;/h4&gt;
+&lt;p&gt;返回一个字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        System.out.println(Arrays.toString(arr));
+        //[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;sort排序&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {2, 1, 3, 8, 5, 6, 7, 4, 10, 9};
+        Arrays.sort(arr);
+        System.out.println(Arrays.toString(arr));
+        //[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;binarySearch二分查找&lt;/h4&gt;
+&lt;p&gt;要求排序，找不到返回-(low + 1)，表示如果存在应该在的地方&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        System.out.println(Arrays.binarySearch(arr, 5));//4
+        System.out.println(Arrays.binarySearch(arr, 15));//-10
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;copyOf拷贝数组&lt;/h4&gt;
+&lt;p&gt;拷贝arr的3个数，如果长度大于arr的length，多的int用0填充，Integer用null填充&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int[] arrNew = Arrays.copyOf(arr, 3);
+        System.out.println(Arrays.toString(arrNew));//[1, 2, 3]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Integer[] arrNew = Arrays.copyOf(arr, 11);
+        System.out.println(Arrays.toString(arrNew));
+        //[1, 2, 3, 4, 5, 6, 7, 8, 9, null, null]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;fill数组填充&lt;/h4&gt;
+&lt;p&gt;用后面的数填充整个数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3};
+        Arrays.fill(arr, 4);
+        System.out.println(Arrays.toString(arr));//[4, 4, 4]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;equals比较数组元素&lt;/h4&gt;
+&lt;p&gt;注意与直接使用arr.equals(arr2)区分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3};
+        Integer[] arr2 = {1, 2, 3};
+        System.out.println(Arrays.equals(arr, arr2));//true
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;asList将一组值转为list&lt;/p&gt;
+&lt;p&gt;将数组转为一个asList集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3};
+        List asList = Arrays.asList(arr);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;定制排序及其底层实现&lt;/h3&gt;
+&lt;p&gt;额外的，我们可以传入一个匿名内部类，定制排序&lt;/p&gt;
+&lt;p&gt;匿名内部类，动态绑定，接口编程的组合可以在编程的时候变得非常灵活&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Integer[] arr = {2, 1, 3, 8, 5, 6, 7, 4, 10, 9};
+        Arrays.sort(arr, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) o1;
+                Integer i2 = (Integer) o2;
+                return i2 - i1;
+            }
+        });
+        System.out.println(Arrays.toString(arr));
+        [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在底层的代码中会执行我们实现的匿名内部类，从而影响内部逻辑，改变排序顺序（有兴趣的可以通过断点调试去试一试）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public static &amp;lt;T&amp;gt; void sort(T[] a, Comparator&amp;lt;? super T&amp;gt; c)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;...... 这里省略了一些调用过程，下面是类c的使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;while (left &amp;lt; right) {
+    int mid = (left + right) &amp;gt;&amp;gt;&amp;gt; 1;
+    if (c.compare(pivot, a[mid]) &amp;lt; 0)//这里的c就是我们实现接口的类
+        right = mid;
+    else
+        left = mid + 1;
+}
+assert left == right;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;模拟底层排序&lt;/h3&gt;
+&lt;p&gt;我们也可以自己来模拟以下底层的排序，以下是以往的自定义方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        int[] arr = {2, 1, 3, 8, 5, 6, 7, 4, 10, 9};
+        bubbleSort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+
+    public static void bubbleSort(int[] a) {
+        for(int i = 0; i &amp;lt; a.length - 1; i++) {
+            for(int j = 0; j &amp;lt; a.length - i - 1; j++) {
+                if(a[j] &amp;gt; a[j + 1]) {
+                    int temp = a[j];
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现定制排序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        int[] arr = {2, 1, 3, 8, 5, 6, 7, 4, 10, 9};
+        bubbleSort(arr, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                int i1 = (Integer)o1;
+                int i2 = (Integer)o2;
+                return i2 - i1;
+            }
+        });
+        System.out.println(Arrays.toString(arr));
+    }
+
+    public static void bubbleSort(int[] a, Comparator c) {
+        for (int i = 0; i &amp;lt; a.length - 1; i++) {
+            for (int j = 0; j &amp;lt; a.length - i - 1; j++) {
+                if (c.compare(a[j], a[j + 1]) &amp;gt; 0) {
+                    int temp = a[j];
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其实一般限定的也比较死，都是i2 - i1是从大到小，反之亦然&lt;/p&gt;
+&lt;p&gt;一个书本排序的案例（按照价格从大到小）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Arrays01 {
+    public static void main(String[] args) {
+        Book[] books = new Book[4];
+        books[0] = new Book(&quot;爱丽丝&quot;, 1);
+        books[1] = new Book(&quot;齐欢乐&quot;, 12);
+        books[2] = new Book(&quot;英雄联盟&quot;, 123);
+        books[3] = new Book(&quot;王者荣耀&quot;, 14);
+        System.out.println(&quot;排序前&quot;);
+        printBooks(books);
+        Arrays.sort(books, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Book b1 = (Book) o1;
+                Book b2 = (Book) o2;
+                return b2.price - b1.price;
+            }
+        });
+        System.out.println(&quot;排序后&quot;);
+        printBooks(books);
+    }
+
+    public static void printBooks(Book[] books) {
+        for (Book book : books) {
+            System.out.println(book.price + &quot; &quot; + book.name);
+        }
+    }
+}
+class Book {
+    String name;
+    int price;
+
+    public Book(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;按照名字长度从大到小，自定义排序用匿名类重写compare即可&lt;/p&gt;
+&lt;p&gt;因为sort传入的是泛型，我们只需要重写接口的compare方法改为我们需要使用到的排序属性做一个相减比较即可实现类数组的排序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Arrays.sort(books, new Comparator() {
+    public int compare(Object o1, Object o2) {
+        Book b1 = (Book) o1;
+        Book b2 = (Book) o2;
+        return b2.name.length() - b1.name.length();
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;System&lt;/h2&gt;
+&lt;h3&gt;System常见的方法&lt;/h3&gt;
+&lt;h4&gt;exit&lt;/h4&gt;
+&lt;p&gt;退出当前程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class System01 {
+    public static void main(String[] args) {
+        System.exit(0);//程序退出，0代表正常退出
+        System.out.println(&quot;continue...&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;arraycopy&lt;/h4&gt;
+&lt;p&gt;复制数组元素copyOf调用的底层就是这个方法&lt;/p&gt;
+&lt;p&gt;Arrays中的&lt;/p&gt;
+&lt;p&gt;第一个参数表示拷贝源，第二个为源开始拷贝的下表
+第三个参数表示拷贝目标，第四个为源开始复制的下表
+第五个表示拷贝的长度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class System01 {
+    public static void main(String[] args) {
+        int[] src = {1, 3, 4};
+        int[] newSrc = new int[src.length];
+        System.arraycopy(src, 0, newSrc, 1, 2);
+        System.out.println(Arrays.toString(newSrc));
+        //[0, 1, 3]
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;currentTimeMillens&lt;/h4&gt;
+&lt;p&gt;返回当前时间距离1970-1-1的毫秒数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class System01 {
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
+        //1743413461175
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;gc&lt;/h4&gt;
+&lt;p&gt;运行垃圾回收机制（非阻塞）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Hashcode {
+    public static void main(String[] args) {
+        AA aa = new AA();
+        aa = null;
+        System.gc();//主动调用回收器
+        System.out.println(&quot;代码结束&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;大数处理&lt;/h2&gt;
+&lt;h3&gt;BigInteger&lt;/h3&gt;
+&lt;p&gt;比较适合保存较大的整形&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigInteger biginteger = new BigInteger(&quot;1234567893242342235233253532532&quot;);
+        System.out.println(biginteger);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在进行BigInteger的加减乘除的时候需要使用对应方法(加减乘除)&lt;/p&gt;
+&lt;p&gt;add&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigInteger biginteger = new BigInteger(&quot;1234567893242342235233253532532&quot;);
+        biginteger = biginteger.add(biginteger);
+        System.out.println(biginteger);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;subtract&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigInteger biginteger = new BigInteger(&quot;1234567893242342235233253532532&quot;);
+        biginteger = biginteger.subtract(biginteger);
+        System.out.println(biginteger);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;divide&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigInteger biginteger = new BigInteger(&quot;1234567893242342235233253532532&quot;);
+        biginteger = biginteger.divide(biginteger);
+        System.out.println(biginteger);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;multiply&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigInteger biginteger = new BigInteger(&quot;1234567893242342235233253532532&quot;);
+        biginteger = biginteger.multiply(BigInteger.valueOf(2));
+        System.out.println(biginteger);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;BigDecimal&lt;/h3&gt;
+&lt;p&gt;适合保存精度更高的浮点型（小数）&lt;/p&gt;
+&lt;p&gt;方法同理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigDecimal big = new BigDecimal(&quot;1.0000003982039023029309239203992032093&quot;);
+        BigDecimal big2 = new BigDecimal(&quot;121.333&quot;);
+        big = big.add(big2);
+        System.out.println(big);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在作除法的时候可能会抛出除不尽的异常&lt;/p&gt;
+&lt;p&gt;可以通过以下调用divide方法时指定精度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BigInteger_ {
+    public static void main(String[] args) {
+        BigDecimal big = new BigDecimal(&quot;1.0000003982039023029309239203992032093&quot;);
+        BigDecimal big2 = new BigDecimal(&quot;121.333&quot;);
+        big = big.divide(big2, BigDecimal.ROUND_CEILING);
+        //保留分子精度
+        System.out.println(big);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;日期类&lt;/h2&gt;
+&lt;h3&gt;Date&lt;/h3&gt;
+&lt;p&gt;第一代日期类：精确到毫秒，代表特定时间，实现了比较接口，克隆接口，可序列化接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date
+    implements java.io.Serializable, Cloneable, Comparable&amp;lt;Date&amp;gt;
+{ ......
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;构造方法&lt;/h4&gt;
+&lt;p&gt;Date无参构造器，获取当前系统时间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date01 {
+    public static void main(String[] args) {
+        Date d1 = new Date();//获取当前系统时间
+        System.out.println(d1);//默认为外国时间格式，需要转换
+        //Mon Mar 31 19:56:05 CST 2025
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Date构造器传入一个long型的数（毫秒数），转为Date型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date01 {
+    public static void main(String[] args) {
+        Date d1 = new Date(1341324134);
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日 || hh:mm:ss&quot;);
+        System.out.println(sdf.format(d1));
+        //1970年01月16日 || 08:35:24
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SimpleDateFormat&lt;/h4&gt;
+&lt;p&gt;格式和解析日期的类&lt;/p&gt;
+&lt;p&gt;先定义一个日期的格式，创建sdf对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;按照对应格式输出时间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date01 {
+    public static void main(String[] args) {
+        Date d1 = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日 || hh:mm:ss&quot;);
+        System.out.println(sdf.format(d1));
+        //2025年03月31日 || 07:58:20
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将Date格式化日期转为Date&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date01 {
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日 || hh:mm:ss&quot;);
+        Date d1 = sdf.parse(&quot;1970年01月16日 || 08:35:24&quot;);
+        //需要日期格式对应，否则抛出异常
+        System.out.println(d1);
+        //Fri Jan 16 08:35:24 CST 1970
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Calendar&lt;/h3&gt;
+&lt;p&gt;日历：第二代日期类，是一个抽象类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public abstract class Calendar implements Serializable, Cloneable, Comparable&amp;lt;Calendar&amp;gt; {...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该类的构造器添加了private无法手动创建实例&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/89.png&quot; alt=&quot;89&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;通过getInstance获取实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Calendar01 {
+    public static void main(String[] args) {
+        Calendar cal = Calendar.getInstance();
+        System.out.println(cal.get(Calendar.YEAR));
+        //2025
+        System.out.println(cal.get(Calendar.MONTH) + 1);
+        //3 月份需要+1，因为是由0开始编码
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;没有格式化输出方法，可以由自己自由定义，以下是一个代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Calendar01 {
+    public static void main(String[] args) {
+        Calendar cal = Calendar.getInstance();
+        System.out.println(formatPrint(cal));
+        //2025-2-31 20:21:58
+    }
+
+    public static String formatPrint(Calendar cal) {
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);//24进制
+        //12进制位HOUR
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+        return year + &quot;-&quot; + month + &quot;-&quot; + day + &quot; &quot; + hour + &quot;:&quot; + minute + &quot;:&quot; + second;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;第三代日期类&lt;/h3&gt;
+&lt;h4&gt;引入原因&lt;/h4&gt;
+&lt;p&gt;是由于前两代的不足引入的&lt;/p&gt;
+&lt;p&gt;Date大多数方法在JDK1.1之后就被弃用了&lt;/p&gt;
+&lt;p&gt;而Calendar类也存在一下问题&lt;/p&gt;
+&lt;p&gt;可变性：日期和时间的类应该是不可变的&lt;/p&gt;
+&lt;p&gt;偏移性：Date中的年份是从1900开始的，而月份是从0开始的&lt;/p&gt;
+&lt;p&gt;格式化：格式化只对Date有用，Calendar不行&lt;/p&gt;
+&lt;p&gt;线程安全：两者都不是线程安全的；同时不能处理闰秒（每隔2天，多1s）&lt;/p&gt;
+&lt;h4&gt;第三代日期的常见的使用&lt;/h4&gt;
+&lt;h5&gt;LocalDate&lt;/h5&gt;
+&lt;p&gt;只包含日期，可以获取日期字段&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalDate ldt = LocalDate.now();
+        System.out.println(ldt);//2025-03-31
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;LocalTime&lt;/h5&gt;
+&lt;p&gt;只包含时间，可以获取时间字段&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalTime ldt = LocalTime.now();
+        System.out.println(ldt);//20:34:32.321
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;LocalDateTime&lt;/h5&gt;
+&lt;p&gt;包含日期、时间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println(ldt);//2025-03-31T20:33:20.585
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;常见的方法&lt;/h4&gt;
+&lt;p&gt;即查即用即可，以下是一个自定义格式代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalDateTime ldt = LocalDateTime.now();
+        System.out.println(formatPrint(ldt));//2025-3-31
+    }
+
+    public static String formatPrint(LocalDateTime ldt) {
+        int year = ldt.getYear();
+        int month = ldt.getMonthValue();
+        int day = ldt.getDayOfMonth();
+        return year + &quot;-&quot; + month + &quot;-&quot; + day ;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者我们可以使用DateTimeFormatter来定义&lt;/p&gt;
+&lt;p&gt;类似于Date中的SimpleDateFormat&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalDateTime d1 = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;MM-dd-yyyy&quot;);
+        System.out.println(d1.format(formatter));
+        //03-31-2025
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;比较，前一个传入的参数是格式器，后一个传入的是日期类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Date01 {
+    public static void main(String[] args) {
+        Date d1 = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日 || hh:mm:ss&quot;);
+        System.out.println(sdf.format(d1));
+        //2025年03月31日 || 07:58:20
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;时间戳与Date的转换&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        Instant instant = Instant.now();//通过now获取时间戳
+        System.out.println(instant);//2025-03-31T12:47:34.897Z
+        Date date = Date.from(instant);//将时间戳转为Date
+        instant = date.toInstant();//将Date转为时间戳
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;时间计算&lt;/h4&gt;
+&lt;p&gt;在做订单的时候比较常用&lt;/p&gt;
+&lt;p&gt;可以使用plus和minus方法可以对当前时间进行加或者减&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Local01 {
+    public static void main(String[] args) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println(localDateTime.minusMonths(1));
+        //2025-03-30T20:53:15.177
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%8C%85%E8%A3%85%E7%B1%BBstringstringbufferstringbuilder/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%8C%85%E8%A3%85%E7%B1%BBstringstringbufferstringbuilder/</guid><description>包装类，String，StringBuffer，StringBuilder</description><pubDate>Fri, 28 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java笔记&lt;/h1&gt;
+&lt;h2&gt;包装类&lt;/h2&gt;
+&lt;p&gt;Wrapper（包装器）&lt;/p&gt;
+&lt;h3&gt;定义&lt;/h3&gt;
+&lt;p&gt;针对八种基本的数据类型类型响应的引用类型&lt;/p&gt;
+&lt;p&gt;有类的特点，可以调用类的方法&lt;/p&gt;
+&lt;p&gt;除了 int -&amp;gt; Integer char- &amp;gt; Character 其余的六个都是将首字母大写就是对应的包装类&lt;/p&gt;
+&lt;p&gt;Boolean  Byte Short Long Float Double&lt;/p&gt;
+&lt;p&gt;Boolean 与 Character 二者是实现了比较和可序列化的接口的Object子类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public final class Boolean implements java.io.Serializable,
+                                      Comparable&amp;lt;Boolean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Character implements java.io.Serializable, Comparable&amp;lt;Character&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而这些数字的类型一般都是继承了Number类，而Number类是实现了可序列化的接口的Object子类，数字类型直接实现比较接口&lt;/p&gt;
+&lt;p&gt;图标如下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/83.png&quot; alt=&quot;83&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;装箱与拆箱&lt;/h3&gt;
+&lt;p&gt;自动拆装箱，本质上和手动没有区别，由编译器自动调用方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class WrapperType {
+    public static void main(String[] args) {
+        //jdk5以前是用手动装箱,拆箱
+        int i = 10;
+        Integer pack = new Integer(i);
+        Integer pack2 = Integer.valueOf(i);
+
+        int j = pack.intValue();//手动拆箱
+
+        //jdk5以后支持自动拆装箱
+        int k = 200;
+        Integer pack3 = k;//自动装箱
+        int k1 = pack3;//自动拆箱
+        //本质上和手动没有区别，由编译器自动调用方法
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一道比较经典的面试题目&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/84.png&quot; alt=&quot;84&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;包装类型和String转换&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class WrapperType {
+    public static void main(String[] args) {
+        Integer i = 127;
+        String s1 = i + &quot;&quot;;//包装类转字符串
+        String s2 = i.toString();
+        /* 包装类的toString方法
+        public String toString() {
+                return toString(value);
+            }
+         */
+        System.out.println(s1);
+
+        Integer i1 = Integer.parseInt(s1);//字符串转包装类
+        Integer i2 = Integer.valueOf(s1);//会调用parseInt
+
+        System.out.println(i2);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;一些常用的方法&lt;/h3&gt;
+&lt;p&gt;即查即用，不用特殊记忆&lt;/p&gt;
+&lt;p&gt;返回最小值 最大值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class WrapperType {
+    public static void main(String[] args) {
+        Integer i = 127;
+        System.out.println(i.MIN_VALUE);
+        System.out.println(Integer.MIN_VALUE);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;判断是不是数字，是不是字母，是不是大写，是不是小写，是不是空格，转成大写，转成小写（查询使用即可，或者可以自己实现）&lt;/p&gt;
+&lt;h3&gt;Integer的面试题&lt;/h3&gt;
+&lt;p&gt;之前也涉及到过，在前面的数据类型中我曾写过&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class WrapperType {
+    public static void main(String[] args) {
+        Integer i1 = new Integer(12);
+        Integer i2 = new Integer(12);
+        System.out.println(i1 == i2);//false
+	//创建新的对象，指向的地址肯定不同
+        Integer i3 = 12;//Integer.valueOf(12);
+        Integer i4 = 12;//Integer.valueOf(12);
+        System.out.println(i3 == i4);//true
+	//Integer自动包装调用valueOf()，其中涉及到常量池的概念
+        Integer i5 = 128;
+        Integer i6 = 128;
+        System.out.println(i5 == i6);//false
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public static Integer valueOf(int i) {
+    if (i &amp;gt;= IntegerCache.low &amp;amp;&amp;amp; i &amp;lt;= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;存在一个cache，-128—127，在范围外才会创建对象&lt;/p&gt;
+&lt;p&gt;已经静态的创建好了一个Integer包装数组，将-128—127，在范围内直接用引用指向即可&lt;/p&gt;
+&lt;p&gt;还有一个，这里涉及到的是基本数据类型，比较的是值是否相等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/85.png&quot; alt=&quot;85&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;String&lt;/h2&gt;
+&lt;h3&gt;定义&lt;/h3&gt;
+&lt;p&gt;支持可序列化接口，比较接口，可读的字符序列接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public final class String
+    implements java.io.Serializable, Comparable&amp;lt;String&amp;gt;, CharSequence { ... }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;1.String 对象是用来保存字符串的，是一组字符序列&lt;/p&gt;
+&lt;p&gt;2.字符串常量对象使用双引号括起的字符序列&lt;/p&gt;
+&lt;p&gt;3.字符串的字符使用的是Unicode字符编码，一个字符占用两个字节&lt;/p&gt;
+&lt;p&gt;4.String类较为常用的构造方法有以下:多种构造器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;()
+
+(String original)
+
+(char[] a)
+
+(char[] a, int startIndex, int count)
+
+(byte[] b)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;String 有属性private final char value[ ] :用于存储字符串内容，final代表value指向的地址不可以被修改（而地址存储的单个字符内容可以变化），以下是一个代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class String1 {
+    public static void main(String[] args) {
+        final char[] target = {&apos;1&apos;,&apos;2&apos;,&apos;5&apos;};
+        target[0] = &apos;4&apos;;
+        char[] target1 = {&apos;1&apos;,&apos;2&apos;,&apos;3&apos;};
+        //target = target1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;创建String对象方式&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class String1 {
+    public static void main(String[] args) {
+        String str1 = &quot;abc&quot;;//方式一
+        String str2 = new String(&quot;abc&quot;);//方式二
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;方式一：查看常量池中是否有&quot;abc&quot;的数据空间，如果有直接指向，如果没有则在常量池中创建，最后指向的是常量池中的空间地址&lt;/p&gt;
+&lt;p&gt;方式二：在堆中创建空间，如果里面维护了value属性，指向常量池中的&quot;abc&quot;空间，如果常量池中没有&quot;abc&quot;重新创建，如果有直接通过value指向，最终指向的是堆中的空间地址，堆中的引用指向常量池中的地址&lt;/p&gt;
+&lt;p&gt;以下是示例图片&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/86.png&quot; alt=&quot;86&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;虽然指向的最终都是到常量池中的字符，但是二者指向的第一个地址不一样（一个在堆中，另一个在常量池中）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class String1 {
+    public static void main(String[] args) {
+        String str1 = &quot;abc&quot;
+        String str2 = new String(&quot;abc&quot;);
+        System.out.println(str1 == str2);//false
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用intern方法时，如果常量池中已经包含了对应的字符串，就返回池中的字符串地址，否则先添加String对象添加到池中，并返回池中的地址&lt;/p&gt;
+&lt;p&gt;一个测试题目&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/87.png&quot; alt=&quot;87&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最后一个e指向常量池，true，优化为e = &quot;helloabc&quot;;&lt;/p&gt;
+&lt;h3&gt;String的常用方法&lt;/h3&gt;
+&lt;h4&gt;equals&lt;/h4&gt;
+&lt;p&gt;//判断是否相等&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str1 = new String(&quot;abc&quot;);
+String str2 = new String(&quot;abccdff&quot;);
+System.out.println(str1.equals(str2));//false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;equalsIgnoreCase&lt;/h4&gt;
+&lt;p&gt;//忽略大小写判断是否相等&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str1 = new String(&quot;abc&quot;);
+String str2 = new String(&quot;ABC&quot;);
+System.out.println(str1.equalsIgnoreCase(str2));//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;length&lt;/h4&gt;
+&lt;p&gt;//字符个数，字符串长度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str1.length());//3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;indexOf&lt;/h4&gt;
+&lt;p&gt;//获取第一个对应对应字符的索引，无则返回-1&lt;/p&gt;
+&lt;p&gt;注意可以传入字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str1.indexOf(&quot;bc&quot;));//2
+System.out.println(str2.lastIndexOf(&apos;B&apos;));//2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;lastIndexOf&lt;/h4&gt;
+&lt;p&gt;//获取最后一个对应字符的索引，无则返回-1&lt;/p&gt;
+&lt;p&gt;同上类似&lt;/p&gt;
+&lt;h4&gt;substring&lt;/h4&gt;
+&lt;p&gt;//截取指定范围的字串&lt;/p&gt;
+&lt;p&gt;一个参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public String substring(int beginIndex) {
+    if (beginIndex &amp;lt; 0) {
+        throw new StringIndexOutOfBoundsException(beginIndex);
+    }
+    int subLen = value.length - beginIndex;
+    if (subLen &amp;lt; 0) {
+        throw new StringIndexOutOfBoundsException(subLen);
+    }
+    return (beginIndex == 0) ? this : new String(value, beginIndex, subLen);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;两个参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public String substring(int beginIndex, int endIndex) {
+    if (beginIndex &amp;lt; 0) {
+        throw new StringIndexOutOfBoundsException(beginIndex);
+    }
+    if (endIndex &amp;gt; value.length) {
+        throw new StringIndexOutOfBoundsException(endIndex);
+    }
+    int subLen = endIndex - beginIndex;
+    if (subLen &amp;lt; 0) {
+        throw new StringIndexOutOfBoundsException(subLen);
+    }
+    return ((beginIndex == 0) &amp;amp;&amp;amp; (endIndex == value.length)) ? this
+            : new String(value, beginIndex, subLen);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;concat&lt;/h4&gt;
+&lt;p&gt;//拼接字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str1.concat(str2));//abcABC
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;replace&lt;/h4&gt;
+&lt;p&gt;//替换字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str1.replace(&quot;a&quot;, &quot;b&quot;));//bbc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;toUpperCase&lt;/h4&gt;
+&lt;p&gt;//向上取大写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str1.toUpperCase());//ABC
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;toLowerCase&lt;/h4&gt;
+&lt;p&gt;//取向下小写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(str2.toLowerCase());//abc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;split&lt;/h4&gt;
+&lt;p&gt;//以（）为标准分割字符串内容&lt;/p&gt;
+&lt;p&gt;转移字符需要在前加 \&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str3 = new String(&quot;abc,ABe,CDE&quot;);
+String[] stringArr = str3.split(&quot;,&quot;);
+String str4 = stringArr[0];
+System.out.println(str4);//abc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;toCharArray&lt;/h4&gt;
+&lt;p&gt;//转换为字符数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;char[] a = str1.toCharArray();
+System.out.println(a[1]);//b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;compareTo&lt;/h4&gt;
+&lt;p&gt;//比较大小&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str1 = new String(&quot;abc&quot;);
+String str2 = new String(&quot;ABC&quot;);
+System.out.println(str1.compareTo(str2));//32
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当区分不出大小且，长度不一样时有不同返回值，详见源码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public int compareTo(String anotherString) {
+    int len1 = value.length;
+    int len2 = anotherString.value.length;
+    int lim = Math.min(len1, len2);
+    char v1[] = value;
+    char v2[] = anotherString.value;
+
+    int k = 0;
+    while (k &amp;lt; lim) {
+        char c1 = v1[k];
+        char c2 = v2[k];
+        if (c1 != c2) {
+            return c1 - c2;
+        }
+        k++;
+    }
+    return len1 - len2;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;trim&lt;/h4&gt;
+&lt;p&gt;//去前后空格&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str1 = new String(&quot;  ab c  &quot;);
+System.out.println(str1.trim());//ab c
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;format&lt;/h4&gt;
+&lt;p&gt;//字符串格式化拼接&lt;/p&gt;
+&lt;p&gt;类似于C语言中printf&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str1 = new String(&quot;abc&quot;);
+String str2 = new String(&quot;ABC&quot;);
+String str3 = String.format(&quot;你好 %s 和 %s&quot;, str1, str2);
+System.out.println(str3);//你好 abc 和 ABC
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有点太多了，没必要全记，记不得在查，早晚会熟练使用的&lt;/p&gt;
+&lt;h2&gt;StringBuffer&lt;/h2&gt;
+&lt;h3&gt;定义&lt;/h3&gt;
+&lt;p&gt;是一种增强的String支持增删改，直接父类是AbstractStringBuilder，实现了可序列化的接口，是一个final类型，不可被继承&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/88.png&quot; alt=&quot;88&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;abstract class AbstractStringBuilder implements Appendable, CharSequence {
+    char[] value;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中有value char数组，存放在堆中&lt;/p&gt;
+&lt;p&gt;StringBuffer相较于String保存的字符串常量（值无法修改），StringBuffer不用在修改内容的时候更改地址（除非内存不足时重新扩容复制），所以效率上高于String&lt;/p&gt;
+&lt;h3&gt;常用的构造器&lt;/h3&gt;
+&lt;p&gt;默认的无参构造器（创建一个16字符的空间）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传入int参数构造器，其中容量为32个字符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(32);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传入String常量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;StringBuffer01&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;jdk源码，其中先new一个同样大小的数组，再通过append拼接+16的容量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public StringBuffer(String str) {
+    super(str.length() + 16);
+    append(str);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;AbstractStringBuilder(int capacity) {
+    value = new char[capacity];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;与String的转化&lt;/h3&gt;
+&lt;p&gt;转为String&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        String str = &quot;hello&quot;;
+        StringBuffer sb1 = new StringBuffer(str);//对原先的str没有影响
+        StringBuffer sb2 = new StringBuffer();
+        sb2.append(str);//通过添加完成
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;转为StringBuffer&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        String str1 = sb.toString();
+        String str2 = new String(sb);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;StringBuffer常用方法&lt;/h3&gt;
+&lt;h4&gt;append&lt;/h4&gt;
+&lt;p&gt;在末尾添加字符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        sb.append(&quot; World!!&quot;);
+        System.out.println(sb);//Hello World!
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;delete&lt;/h4&gt;
+&lt;p&gt;删除 [1，3）的内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        sb.delete(1, 3);
+        System.out.println(sb.toString());//Hlo
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;replace&lt;/h4&gt;
+&lt;p&gt;替换，有三个参数，从 [1，3）的内容用参数 3 替换&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        sb.replace(1, 3, &quot;世界&quot;);
+        System.out.println(sb.toString());//H世界lo
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;indexOf&lt;/h4&gt;
+&lt;p&gt;返回查找内容的索引（第一个）传入字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        System.out.println(sb.indexOf(&quot;l&quot;));//2
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;insert&lt;/h4&gt;
+&lt;p&gt;在（第一个参数的位置）插入内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        sb.insert(1, &quot;插入&quot;);
+        System.out.println(sb);//H插入ello
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;length&lt;/h4&gt;
+&lt;p&gt;返回长度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer(&quot;Hello&quot;);
+        System.out.println(sb.length());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;常见的例题&lt;/h3&gt;
+&lt;p&gt;使用append传入null字符串&lt;/p&gt;
+&lt;p&gt;当为null的时候返回appendNull，而返回的值是一个null字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer();
+        String str = null;
+        sb.append(str);
+        System.out.println(sb.length());//4
+        System.out.println(sb.toString());//null
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public AbstractStringBuilder append(String str) {
+    if (str == null)
+        return appendNull();
+    int len = str.length();
+    ensureCapacityInternal(count + len);
+    str.getChars(0, len, value, count);
+    count += len;
+    return this;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;private AbstractStringBuilder appendNull() {
+    int c = count;
+    ensureCapacityInternal(c + 4);
+    final char[] value = this.value;
+    value[c++] = &apos;n&apos;;
+    value[c++] = &apos;u&apos;;
+    value[c++] = &apos;l&apos;;
+    value[c++] = &apos;l&apos;;
+    count = c;
+    return this;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种情况：使用构造器传入null&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        String str = null;
+        StringBuffer sb = new StringBuffer(str);//抛出异常
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public StringBuffer(String str) {
+    super(str.length() + 16);//在源码这里因为null抛出异常
+    append(str);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个在价格中增添，的代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StringBuffer01 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String price = sc.nextLine();//输入一个价格，在小数点前每隔3位用,隔离开
+        StringBuffer sb = new StringBuffer(price);//123456.78
+        int index = sb.indexOf(&quot;.&quot;);
+        for(int i = index - 3; i &amp;gt; 0; i -= 3) {
+            sb.insert(i, &quot;,&quot;);
+        }
+        System.out.println(sb);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;StringBuilder&lt;/h2&gt;
+&lt;h3&gt;定义&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public final class StringBuilder
+    extends AbstractStringBuilder
+    implements Serializable, CharSequence
+{
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;是一个可变的字符序列，提供与StringBuffer兼容的API，但是不保证线程安全，被设计为StringBuffer的简易替换，用在字符串缓冲区被单个线程使用的时候&lt;/p&gt;
+&lt;p&gt;如果可能优先使用StringBuilder，因为它的效率大多都要比StringBuffer快&lt;/p&gt;
+&lt;p&gt;在StringBuilder上的主要操作时append和insert方法，可以重载这些方法用以接收任意类型的数据&lt;/p&gt;
+&lt;p&gt;StringBuffer继承了AbstractStringBuilder类，可串行化，可以保存在文件，是一个final类型，不可被继承&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;abstract class AbstractStringBuilder implements Appendable, CharSequence {
+
+    char[] value;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;字符存放在堆中&lt;/p&gt;
+&lt;p&gt;StringBuilder的方法没有作互斥的处理，没有synchronization关键字，只能在单线程中使用&lt;/p&gt;
+&lt;h2&gt;String三者比较&lt;/h2&gt;
+&lt;p&gt;1.StringBuilder和StringBuffer类似，均代表可变字符序列，方法一致&lt;/p&gt;
+&lt;p&gt;2.String是不可变字符序列，效率低，但是复用率高&lt;/p&gt;
+&lt;p&gt;3.StringBuffer是可变字符序列，效率较高（增删），线程安全&lt;/p&gt;
+&lt;p&gt;4.StringBuilder是可变字符序列，效率最高，线程不安全&lt;/p&gt;
+&lt;h1&gt;课后练习&lt;/h1&gt;
+&lt;p&gt;String str = new String(&quot;hello&quot;) + new String(&quot;word&quot;)过程中产生了几个对象&lt;/p&gt;
+&lt;p&gt;在Java中，当你使用&lt;code&gt;+&lt;/code&gt;运算符进行字符串拼接时，编译器会自动进行优化，底层实际上是使用&lt;code&gt;StringBuilder&lt;/code&gt;来实现的。这是出于性能和内存效率的考虑。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String str = new String(&quot;hello&quot;) + new String(&quot;word&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编译器会将其转换为类似以下的字节码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;StringBuilder sb = new StringBuilder();
+sb.append(new String(&quot;hello&quot;));
+sb.append(new String(&quot;word&quot;));
+String str = sb.toString();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;1.反转字符串（将指定的部分反转）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Homework {
+    public static void main(String[] args) {
+        String str = new String(&quot;HelloWorld&quot;);
+        str = reverse(str, 0, str.length() - 1);
+        System.out.println(str.toString());
+    }
+
+    public static String reverse(String str, int start, int end) {
+        char[] arr = str.toCharArray();
+        for (int i = start, j = end; i &amp;lt; j; i++, j--) {
+            char temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+        return new String(arr);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.判断账号密码是否正确&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Homework {
+    public static void main(String[] args) {
+        String input = new Scanner(System.in).nextLine();
+        String[] strArray = input.split(&quot;,&quot;);
+        if(strArray[0].length() == 2 || strArray[0]
+                .length() == 3 || strArray[0].length() == 4) {
+            System.out.println(&quot;用户名正确&quot;);
+        }
+        if(strArray[1].length() == 6 &amp;amp;&amp;amp; isDigital(strArray[1])) {
+            System.out.println(&quot;密码正确&quot;);
+        }
+    }
+    public static boolean isDigital(String str) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i &amp;lt; chars.length; i++) {
+            if (!Character.isDigit(chars[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;100,123456
+用户名正确
+密码正确
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>面试小结</title><link>https://thrinisty.github.io/posts/%E9%9D%A2%E8%AF%95%E5%B0%8F%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E9%9D%A2%E8%AF%95%E5%B0%8F%E7%BB%93/</guid><description>字节跳动面试总结</description><pubDate>Thu, 27 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;面试小结&lt;/h1&gt;
 &lt;p&gt;这一次面试没有想象中的那么压力山大，面试官也没有去死咬着某个知识点去提问，而是通过投递的简历来提问，其中计算机操作系统相关的题目较多，而我有对计算机系统方面的线程进程问题又比较了解，在这个部分表现得还算过得去，但是在于存储的方面我确实没有一个很好的实践积累，回答的大多都是在理论上的知识点，还有设备IO方面，我知道的也不是很多，面试官看我不是很清楚也就没有深挖。计算机网络相关的基础没有问到，不知道是不是看我的简历上有一两个网络编程的经验就跳过了。&lt;/p&gt;
 &lt;p&gt;缺少知识点：多线程相关的细节，Mysql，Redis，哈希表，红黑树&lt;/p&gt;
@@ -9876,6 +12132,901 @@ class TypeException extends RuntimeException {
 &lt;h3&gt;throw与throws&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&quot;../images/81.png&quot; alt=&quot;81&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;到此枚举类，注解，异常处理的部分结束&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E6%8A%BD%E8%B1%A1%E7%B1%BB%E6%8E%A5%E5%8F%A3%E5%86%85%E9%83%A8%E7%B1%BB/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E6%8A%BD%E8%B1%A1%E7%B1%BB%E6%8E%A5%E5%8F%A3%E5%86%85%E9%83%A8%E7%B1%BB/</guid><description>抽象类，接口，内部类</description><pubDate>Sun, 23 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java笔记&lt;/h1&gt;
+&lt;h2&gt;抽象类&lt;/h2&gt;
+&lt;h3&gt;使用场景&lt;/h3&gt;
+&lt;p&gt;当父类方法不确定的时候，需要声明但是不知道该如何实现的时候，可以将其声明为抽象方法，这个类就是抽象类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Animal {
+    private String name;
+    
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    public void eat() {
+        System.out.println(&quot;吃一个...&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个时候可以将该方法设计为抽象方法，所谓抽象方法就是没有实现的方法（没有方法体）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;abstract class Animal {
+    private String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public abstract void eat();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当将一个类中的方法设置为抽象方法的时候，要将类也声明为抽象类&lt;/p&gt;
+&lt;p&gt;使用方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;访问修饰符 abstract 返回类型 方法名（）;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再用子类继承实现这些抽象方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+
+    public void eat() {
+        System.out.println(&quot;Dog eat&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;抽象类的价值更多的是在于设计，在设计者设计好后，让子类继承并实现&lt;/p&gt;
+&lt;h3&gt;抽象类细节&lt;/h3&gt;
+&lt;p&gt;1.抽象类不能够被实例化&lt;/p&gt;
+&lt;p&gt;2.抽象类不一定要包含抽象方法&lt;/p&gt;
+&lt;p&gt;3.抽象方法所在的类必须用abstract修饰&lt;/p&gt;
+&lt;p&gt;4.abstract只能修饰类和方法&lt;/p&gt;
+&lt;p&gt;5.抽象类可以有任意成员，非抽象方法，构造器，静态属性&lt;/p&gt;
+&lt;p&gt;6.抽象方法不能有主体&lt;/p&gt;
+&lt;p&gt;7.如果一个类继承了抽象类，则这个类必须要实现所有的抽象方法，除非他自己也声明为abstract类&lt;/p&gt;
+&lt;p&gt;8.抽象方法不能够用private final static修饰，因为和重写实现型成悖论&lt;/p&gt;
+&lt;h3&gt;模板设计模式&lt;/h3&gt;
+&lt;p&gt;抽象类的实践&lt;/p&gt;
+&lt;p&gt;需求&lt;/p&gt;
+&lt;p&gt;1.有多个类，完成不同的任务&lt;/p&gt;
+&lt;p&gt;2.要求能够统计得到各自完成的时间&lt;/p&gt;
+&lt;p&gt;3.编程实现&lt;/p&gt;
+&lt;p&gt;先使用不同的类实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.abstract_;
+
+public class Abstract {
+    public static void main(String[] args) {
+        new AA().job();
+        new BB().job();
+    }
+}
+
+class AA {
+    public void job() {
+        long start = System.currentTimeMillis();
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+        System.out.println(end - start);
+    }
+}
+
+class BB {
+    public void job() {
+        long start = System.currentTimeMillis();
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i / 2;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+        System.out.println(end - start);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以将公共的部分提取出来&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.abstract_;
+
+public class Abstract {
+    public static void main(String[] args) {
+        new AA().calulateTime();
+        new BB().calulateTime();
+    }
+}
+
+class AA {
+    public void calulateTime() {
+        long start = System.currentTimeMillis();
+        job();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start));
+    }
+
+    public void job() {
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+    }
+}
+
+class BB {
+    public void calulateTime() {
+        long start = System.currentTimeMillis();
+        job();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start));
+    }
+
+    public void job() {
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i / 2;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果说加上了C在C类中还是必须要实现calulateTime方法，所以可以将job写为一个抽象方法，calulateTime在抽象类里实现，用各个子类继承实现job即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.abstract_;
+
+public class Abstract {
+    public static void main(String[] args) {
+        new AA().calulateTime();
+        new BB().calulateTime();
+    }
+}
+
+abstract class DD {
+    public void calulateTime() {
+        long start = System.currentTimeMillis();
+        job();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start));
+    }
+
+    public abstract void job();
+}
+
+class AA extends DD {
+    public void job() {
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+    }
+}
+
+class BB extends DD {
+    public void job() {
+        long num = 0;
+        for (long i = 0; i &amp;lt; 800000; i++) {
+            num += i / 2;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(num);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这里运用到了动态绑定机制，job调用的是子类的具体实现&lt;/p&gt;
+&lt;p&gt;运用到模板设计模式，也已大幅度提高代码的复用性，简易性&lt;/p&gt;
+&lt;h2&gt;接口&lt;/h2&gt;
+&lt;h3&gt;快速入门&lt;/h3&gt;
+&lt;p&gt;现实中使用充电器，usb接口，都有着统一的尺寸规定，方便用户使用，这种思路在语言编程中也有对应使用&lt;/p&gt;
+&lt;p&gt;可以用以下代码模拟&lt;/p&gt;
+&lt;p&gt;有如下接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface UsbInterface {
+    //规定接口的相关方法
+    public void start();
+    public void stop();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;手机实现了接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+//实现接口
+public class Phone implements UsbInterface{
+    public void start() {
+        System.out.println(&quot;Phone start&quot;);
+    }
+    public void stop() {
+        System.out.println(&quot;Phone stop&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;相机实现了接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public class Camera implements UsbInterface{
+    public void start(){
+        System.out.println(&quot;Camera start&quot;);
+    }
+    public void stop(){
+        System.out.println(&quot;Camera stop&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;电脑使用接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public class Computer {
+    public void work(UsbInterface usbInterface) {
+        //通过接口调用接口方法
+        usbInterface.start();
+        usbInterface.stop();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;就可以传入接口，使用接口实现的类的接口实现方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public class Interface {
+    public static void main(String[] args) {
+        Camera camera = new Camera();
+        Phone phone = new Phone();
+        Computer computer = new Computer();
+        computer.work(phone);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码中可以通过computer的work传入phone，调用phone的方法&lt;/p&gt;
+&lt;h3&gt;基本介绍&lt;/h3&gt;
+&lt;p&gt;接口就是给出一些没有实现的方法，封装在一起，在某个类要使用的时候，再根据具体的情况把这些方法写出来，语法如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface 接口名 {
+	//属性
+	//方法
+}
+
+class 类名 implements 接口名 {
+	//属性
+	//方法
+	//必须实现的接口抽象方法
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意：在jdk7之前的接口中没有方法体，都是抽象方法，而在jdk8之后接口可以有静态方法，默认方法，也就是接口中可以有方法的具体实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public interface AInterface {
+    public int num = 0;
+    public void hi();//在接口中不需要加abstract，默认为抽象方法
+    public default void lo() {//默认的方法实现，使用default
+        System.out.println(1);
+    }
+    public static void test() {
+        System.out.println(&quot;test&quot;);
+    }
+}
+
+class A implements AInterface {
+    @Override
+    public void hi() {
+        System.out.println(&quot;hi&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;接口的使用场景&lt;/h3&gt;
+&lt;p&gt;1.在设计飞机时，专家规定飞机需要实现的功能/规格即可，让别人具体实现&lt;/p&gt;
+&lt;p&gt;2.项目经理，管理三个程序员，功能开发一个软件，为了控制和管理软件，项目经理可以定义一些接口，然后由程序员具体实现&lt;/p&gt;
+&lt;p&gt;例如：3个程序员编写三各类，分别完成对于MySQL，Oracle，DB2数据库的 connect &amp;amp; close的定义，可以分别对三个数据库规定三个接口，三个程序员就必须要统一连接和关闭的方法名，接口也可以识别connect &amp;amp; close对应的是哪一个接口&lt;/p&gt;
+&lt;p&gt;接口的使用细节&lt;/p&gt;
+&lt;p&gt;1.接口不能够被实例化&lt;/p&gt;
+&lt;p&gt;2.接口中所有的方法是public方法，接口中的抽象方法可以不用abstract修饰方法也可以不用public修饰&lt;/p&gt;
+&lt;p&gt;3.一个普通类实现接口，就必须将接口中的方法都实现&lt;/p&gt;
+&lt;p&gt;4.抽象类实现接口，可以不用实现接口的方法&lt;/p&gt;
+&lt;p&gt;5.一个类可以同时实现多个接口（类的继承不允许继承多个类）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class A implements IB, IC {
+    //实现IB接口
+    //实现IC接口
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;6.接口中的属性只能是final的，而且是public static final 修饰符，比如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;int a = 1;
+//实际上是 public static final int a = 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;7.接口中属性的访问形式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;接口名.属性名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;8.一个接口不能继承其他的类，但是可以继承多个别的接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface A extends B, C {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;9.接口的修饰符只能够是public和默认，和类的修饰符同理&lt;/p&gt;
+&lt;p&gt;一个课堂练习，以下三种方式均可以成功访问&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
+public class AInterface {
+    public static void main(String[] args) {
+        A a = new A();
+        System.out.println(a.num);//通过实例对象引用接口中的成员
+        System.out.println(A.num);//通过类使用接口静态成员
+        System.out.println(InterfaceTest.num);//通过接口使用静态成员
+    }
+}
+interface InterfaceTest {
+    int num = 1;
+}
+
+class A implements InterfaceTest {
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;接口VS继承&lt;/h3&gt;
+&lt;p&gt;接口在Java中算单继承的补充，例如一只小猴，对于猴类来说，猴子天生就会爬树，这算是继承，但是如果要学会游泳，这只猴子就需要去学习游泳（实现游泳接口的功能）&lt;/p&gt;
+&lt;p&gt;接口比继承更加灵活，继承是is — a 的关系，而接口只需要满足 like — a 的关系&lt;/p&gt;
+&lt;p&gt;接口在一定程度上实现代码的解耦（接口的规范性 + 动态绑定机制）在后续讲解源码的时候会有所涉及&lt;/p&gt;
+&lt;h3&gt;接口的多态特性&lt;/h3&gt;
+&lt;p&gt;1.多态参数&lt;/p&gt;
+&lt;p&gt;例如在前面涉及到的入门，电脑在调用接口参数的时候，这个参数可以接受实现了这个接口的对象实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public class Interface {
+    public static void main(String[] args) {
+        Camera camera = new Camera();
+        Phone phone = new Phone();
+        Computer computer = new Computer();
+        computer.work(phone);//手机和相机都实现了work中参数接口
+        computer.work(camera);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;另外一个例子&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
+public class AInterface {
+    public static void main(String[] args) {
+        InterfaceTest iface = new A();
+        InterfaceTest iface2 = new B();
+    }
+}
+interface InterfaceTest {}
+class A implements InterfaceTest {}
+class B implements InterfaceTest {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接口类型应用变量可以指向实现了接口的对象实例，这个和继承多态类似（向下转型）&lt;/p&gt;
+&lt;p&gt;2.多态数组&lt;/p&gt;
+&lt;p&gt;同继承的多态，我们可以使用向下转型，使用运行类型的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interface_;
+
+public class AInterface {
+    public static void main(String[] args) {
+        USBInterface[] usbInterfaces = new USBInterface[3];
+        usbInterfaces[0] = new PhoneA();
+        usbInterfaces[1] = new PhoneB();
+        usbInterfaces[2] = new PhoneA();
+        for (int i = 0; i &amp;lt; usbInterfaces.length; i++) {
+            usbInterfaces[i].start();
+            if (usbInterfaces[i] instanceof PhoneA) {
+                ((PhoneA) usbInterfaces[i]).call();
+            }
+        }
+    }
+}
+interface USBInterface {
+    void start();
+}
+
+class PhoneA implements USBInterface {
+    public void start() {
+        System.out.println(&quot;Phone A start&quot;);
+    }
+
+    public void call() {
+        System.out.println(&quot;Phone A call&quot;);
+    }
+}
+
+class PhoneB implements USBInterface {
+    public void start() {
+        System.out.println(&quot;Phone B start&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.接口的多态传递&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.interfacearr;
+
+public class InterfacePoly {
+    IG ig = new Teacher();//接口类型可以指向实现接口的实例对象
+    IH ih = new Teacher();//因为IG继承于IH，所以teacher也实现了IG的接口
+}
+
+interface IH {
+    void teach();
+}
+interface IG extends IH { }
+
+class Teacher implements IG {
+    //teacher也需要实现IG继承的IH接口
+    public void teach() {
+        System.out.println(&quot;Teacher&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;内部类&lt;/h2&gt;
+&lt;p&gt;一个类的内部内嵌套了另外的一个类，内部的类称作内部类，是类的五大成员之一：属性，方法， 构造器，代码块，内部类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class A {
+	class Inner {
+		//内部类	
+	}
+}
+
+class B {
+	//其他类
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;内部类的最大特点是可以直接访问私有属性，并且可以体现出类与类之间的包含关系，底层源码有大量的内部类&lt;/p&gt;
+&lt;p&gt;有四种内部类&lt;/p&gt;
+&lt;p&gt;第一类：定义在外部类局部上（比如方法内）&lt;/p&gt;
+&lt;p&gt;1.局部内部类&lt;/p&gt;
+&lt;p&gt;2.匿名内部类&lt;/p&gt;
+&lt;p&gt;第二类：定义在外部类的成员位置上&lt;/p&gt;
+&lt;p&gt;3.成员内部类（没用static修饰）&lt;/p&gt;
+&lt;p&gt;4.静态内部类（使用static修饰）&lt;/p&gt;
+&lt;h3&gt;局部内部类&lt;/h3&gt;
+&lt;p&gt;1.可以直接访问外部类的所有成员&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Outer {
+    private int n1 = 100;
+    public Outer(int n1) {
+        this.n1 = n1;
+    }
+
+    {
+        System.out.println(&quot;代码块&quot;);
+    }
+
+    public void teach() {
+        System.out.println(n1 + 1);
+    }
+
+    public void Print() {
+        class Inner {//内部类
+            public void function() {
+                System.out.println(n1);//访问外部类属性
+                teach();//访问外部类的方法
+            }
+        }
+        System.out.println(n1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.不能添加访问修饰符，因为它的地位是一个局部变量，但是可以使用final修饰，内部类可以被类继承&lt;/p&gt;
+&lt;p&gt;3.作用域仅限于定义它的方法或代码块中&lt;/p&gt;
+&lt;p&gt;4.局部内部类访问外部类成员方式：直接访问&lt;/p&gt;
+&lt;p&gt;5外部类成员访问内部类方式：创建对象，再进行访问&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Main {//其他类
+    public static void main(String[] args) {
+        Outer outer = new Outer(1);
+        outer.Print();
+    }
+}
+
+class Outer {
+    private int n1 = 100;
+    public Outer(int n1) {
+        this.n1 = n1;
+    }
+
+    {
+        System.out.println(&quot;代码块&quot;);
+    }
+
+    public void teach() {
+        System.out.println(n1 + 1);
+    }
+
+
+    public void Print() {
+        class Inner {//内部类
+            public void function() {
+                System.out.println(n1);
+                teach();
+            }
+        }
+        System.out.println(n1);
+        Inner inner = new Inner();//先创建对象
+        inner.function();//在进行调用
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;6.外部其他类不可以访问内部类&lt;/p&gt;
+&lt;p&gt;7.如果外部类和内部类的成员重名的时候，默认遵循就近原则，如果想访问外部类的成员可以使用 外部类名.this.成员 访问&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Main {//其他类
+    public static void main(String[] args) {
+        Outer outer = new Outer();
+        outer.Print();
+    }
+}
+
+class Outer {
+    private int n1 = 100;
+    {
+        System.out.println(&quot;代码块&quot;);
+    }
+
+    public void Print() {
+        class Inner {//内部类
+            private int n1 = 200;
+            public void function() {
+                System.out.println(n1);//200，就近原则
+                System.out.println(Outer.this.n1);//100，Outer.this本质是指的是Outer类的对象实例
+            }
+        }
+        Inner inner = new Inner();
+        inner.function();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;匿名内部类（重要！！）&lt;/h3&gt;
+&lt;p&gt;本质是一个类，是一个内部类，是匿名的，同时还是一个对象&lt;/p&gt;
+&lt;h4&gt;个人理解：&lt;/h4&gt;
+&lt;p&gt;匿名内部类就是一个渣男，使用的时候创建了这样的一个内部类，这个内部类就会跑路，再也没有办法使用，还留下了一个孩子（匿名内部类的实例）。当然，孩子是有用的，可以调用匿名内部类实现的一切方法，通过这样就可以不用额外的创建一个新的类，极大的简化了代码&lt;/p&gt;
+&lt;p&gt;基本语法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;new 类或接口 (参数列表) {
+	类体
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码示例：传统上而言 写一个类实现接口，创建对象，在主方法中创建类的对象完成接口创建Tiger实例与调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Anonymous {
+    public static void main(String[] args) {
+        Outer04 outer04 = new Outer04();
+        outer04.method();
+    }
+}
+
+class Outer04 {//外部类
+    private int n1 = 10;
+    public void method() {
+        //基于接口的匿名内部类
+        //需求分析：想使用IA接口，并创建对象
+        //传统上：写一个类实现接口，创建对象
+        IA tiger = new Tiger();
+        tiger.cry();
+    }
+}
+
+interface IA {//接口
+    void cry();
+}
+
+class Tiger implements IA{//一个类
+    public void cry() {
+        System.out.println(&quot;Tiger 叫&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用匿名内部类实现接口&lt;/h4&gt;
+&lt;p&gt;不想创建类，只想单独一次实现接口，并使用方法，可以使用匿名内部类简化（这个匿名内部类不能被使用第二次）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Anonymous {
+    public static void main(String[] args) {
+        Outer04 outer04 = new Outer04();
+        outer04.method();
+    }
+}
+
+class Outer04 {//外部类
+    private int n1 = 10;
+    public void method() {
+        //基于接口的匿名内部类
+        //需求分析：想使用IA接口，并创建对象
+        IA tiger = new IA() {
+            public void cry() {
+                System.out.println(&quot;tiger 叫&quot;);
+            }
+        };
+        tiger.cry();
+    }
+}
+
+interface IA {//接口
+    void cry();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这个例子中，tiger的编译类型是IA接口类型，而tiger的运行类型则是由底层系统分配名称的匿名内部类，这个类实现了接口，并立即创建实例，可以通过实例访问接口方法&lt;/p&gt;
+&lt;p&gt;可以用tiger.getClass() 验证&lt;/p&gt;
+&lt;p&gt;运行结构&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;tiger 叫
+运行类型为：class com.npu.inner.Outer04$1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用匿名内部类重写一个类方法&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Anonymous {
+    public static void main(String[] args) {
+        Outer04 outer04 = new Outer04();
+        outer04.method();
+    }
+}
+
+class Outer04 {
+    private int n1 = 10;
+    public void method() {
+        Father father = new Father(&quot;jack&quot;){
+            //jack的参数会被传递给Father的构造器！！
+            int age = 19;
+            @Override
+            public void Print() {
+                System.out.println(this.name+ &quot; 年龄是 &quot; + age);
+            }
+        };
+        father.Print();
+        System.out.println(&quot;运行类型为：&quot; + father.getClass());
+    }
+}
+
+class Father {
+    String name;
+    Father(String name) {
+        this.name = name;
+    }
+
+    public void Print() {
+        System.out.println(this.name);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;基于抽象类的匿名内部类&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Anonymous {
+    public static void main(String[] args) {
+        Outer04 outer04 = new Outer04();
+        outer04.method();
+    }
+}
+
+class Outer04 {
+    private int n1 = 10;
+    public void method() {
+        Animal animal = new Animal(){
+            public void eat(){
+                System.out.println(&quot;吃&quot;);
+            }
+        };
+        animal.eat();
+        System.out.println(&quot;运行类型为：&quot; + animal.getClass());
+    }
+}
+
+abstract class Animal {
+    abstract void eat();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;匿名内部类的使用细节&lt;/h4&gt;
+&lt;p&gt;1.内部类创建完的结果是一个实例对象&lt;/p&gt;
+&lt;p&gt;我们要访问匿名内部类的方法可以通过这个实例对象直接用.调用方法，或者可以先用一个接口，抽象类，类的引用接收，再通过这个引用调用运行类型为匿名内部类的类方法&lt;/p&gt;
+&lt;p&gt;2.可以直接访问外部类的所有成员，包含私有的&lt;/p&gt;
+&lt;p&gt;3.不能添加访问修饰符，因为是一个局部变量&lt;/p&gt;
+&lt;p&gt;4.作用域位于处于的方法或者代码块&lt;/p&gt;
+&lt;p&gt;5.如果外部类和匿名内部类成员重名的时候，就近访问内部类的成员，要使用外部类的同名成员的时候需要使用 外部类名.this.成员名&lt;/p&gt;
+&lt;p&gt;外部类名.this指的是调用method()的对象&lt;/p&gt;
+&lt;h3&gt;匿名内部类使用场景&lt;/h3&gt;
+&lt;p&gt;1.当作实参直接传递，简洁高效&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Test {
+    public static void main(String[] args) {
+        f1(new IL(){
+           @Override
+           public void show() {
+               System.out.println(&quot;鸡哥&quot;);
+           }
+        });
+    }
+    //静态方法
+    public static void f1(IL il){
+        il.show();
+    }
+}
+
+interface IL{
+    void show();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传统上需要先实现一个实现了接口的类，再将类实例化，将实例传入f1，根据运行类型调用方法&lt;/p&gt;
+&lt;p&gt;一个代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Test {
+    public static void main(String[] args) {
+        Cellphone cellphone = new Cellphone();
+
+        cellphone.alarmclock(new Bell() {
+            @Override
+            public void ring() {
+                System.out.println(&quot;ring1&quot;);
+            }
+        });
+
+        cellphone.alarmclock(new Bell() {
+            @Override
+            public void ring() {
+                System.out.println(&quot;ring2&quot;);
+            }
+        });
+    }
+}
+
+interface Bell {
+    void ring();
+}
+
+class Cellphone {
+    public void alarmclock (Bell bell) {
+        bell.ring();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;成员内部类&lt;/h3&gt;
+&lt;p&gt;成员内部类定义在外部类的成员位置&lt;/p&gt;
+&lt;p&gt;1.内部类可以访问外部类的所有成员，包含私有的&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {
+    public static void main(String[] args) {
+        Outer08 outer = new Outer08();
+        outer.inner.Print();
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+    Inner inner = new Inner();
+    {
+        System.out.println(&quot;代码块&quot;);
+    }
+    class Inner {
+        public void Print() {
+            System.out.println(n1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.成员内部类可以用访问修饰符修饰，因为它的地位是类的成员&lt;/p&gt;
+&lt;p&gt;3.作用域为整个类体中&lt;/p&gt;
+&lt;p&gt;4.访问同名成员的时候会遵循就近原则，要访问外部类的成员要使用 外部类名.this.重名成员 来进行访问&lt;/p&gt;
+&lt;p&gt;5.外部其他类可以有如下的两种方式访问成员内部类&lt;/p&gt;
+&lt;p&gt;1 使用外部类对象 通过new来创建一个成员内部类对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {//其他类
+    public static void main(String[] args) {
+        Outer08 outer = new Outer08();
+        Outer08.Inner inner = outer.new Inner();
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+
+    class Inner {
+        public void Print() {
+            System.out.println(n1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2 再外部类中编写一个方法返回一个Inner的实例（将第一种写为方法）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {//其他类
+    public static void main(String[] args) {
+        Outer08 outer = new Outer08();
+        Outer08.Inner inner = outer.getInner();
+
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+
+    class Inner {
+        public void Print() {
+            System.out.println(n1);
+        }
+    }
+
+    public Inner getInner() {
+        return new Inner();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;静态内部类&lt;/h3&gt;
+&lt;p&gt;定义在外部类的成员位置，由static修饰&lt;/p&gt;
+&lt;p&gt;1.可以直接访问外部类的所有静态成员，包含私有的，但是不可以访问非静态成员&lt;/p&gt;
+&lt;p&gt;2.成员内部类可以用访问修饰符修饰，因为它的地位是类的成员&lt;/p&gt;
+&lt;p&gt;3.作用域为整个类体中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {//其他类
+    public static void main(String[] args) {
+        Outer08 outer = new Outer08();
+        outer.getInner();
+
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+    private static int n2 = 100;
+
+    public static class Inner {
+        public void Print() {
+            System.out.println(n2);
+        }
+    }
+
+    public void getInner() {
+        Inner inner = new Inner();
+        inner.Print();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.外部其他类使用静态内部类有以下几种方式&lt;/p&gt;
+&lt;p&gt;1 用外部类静态创建内部类（不会创建外部类）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {//其他类
+    public static void main(String[] args) {
+        Outer08.Inner inner = new Outer08.Inner();
+        inner.Print();
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+    private static int n2 = 100;
+
+    public static class Inner {
+        public void Print() {
+            System.out.println(n2);
+        }
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2 静态方法返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.inner;
+
+public class Member {//其他类
+    public static void main(String[] args) {
+        Outer08.Inner inner = Outer08.getInner();
+        inner.Print();
+    }
+}
+
+class Outer08 {
+    private int n1 = 200;
+    private static int n2 = 100;
+
+    public static class Inner {
+        public void Print() {
+            System.out.println(n2);
+        }
+    }
+
+    public static Inner getInner() {
+        return new Inner();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;5.在遇到同名成员的时候默认就近访问，要访问外部类成员需要使用 外部类名.成员访问&lt;/p&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E7%B1%BB%E6%96%B9%E6%B3%95%E7%B1%BB%E5%8F%98%E9%87%8F%E4%BB%A3%E7%A0%81%E5%9D%97%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Ffinal%E5%85%B3%E9%94%AE%E5%AD%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E7%B1%BB%E6%96%B9%E6%B3%95%E7%B1%BB%E5%8F%98%E9%87%8F%E4%BB%A3%E7%A0%81%E5%9D%97%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Ffinal%E5%85%B3%E9%94%AE%E5%AD%97/</guid><description>类方法，类变量，代码块，设计模式，final关键字</description><pubDate>Thu, 20 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
 &lt;h2&gt;初级部分学习完成&lt;/h2&gt;
 &lt;p&gt;终于完成了Java网络通讯的大作业，将整个项目的大致流程掌握，可以熟练的使用socket套接字进行TCP，UDP的网络编程，但是由于在进行项目的时候没有进行前置知识的学习，导致在多线程，异常处理，IO流的部分仍然无法自己独立完成，从这一课我将开始进入Java编程高级部分。&lt;/p&gt;
@@ -10552,6 +13703,982 @@ class Tool {
 &lt;p&gt;将项目部署到客户的平台，保证运行正常，要求对环境的部署能力要高&lt;/p&gt;
 &lt;h2&gt;6.维护阶段（不固定人员）&lt;/h2&gt;
 &lt;p&gt;Debug，项目升级，发现bug&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E5%A4%9A%E7%94%A8%E6%88%B7%E9%80%9A%E8%AE%AF%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E5%A4%9A%E7%94%A8%E6%88%B7%E9%80%9A%E8%AE%AF%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</guid><description>Java多用户通讯系统设计</description><pubDate>Mon, 17 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多用户通信系统设计&lt;/h1&gt;
+&lt;p&gt;https://github.com/thrinisty/Multi-user-communication-system.git&lt;/p&gt;
+&lt;h2&gt;功能实现&lt;/h2&gt;
+&lt;p&gt;1.用户登录&lt;/p&gt;
+&lt;p&gt;2.拉取用户列表&lt;/p&gt;
+&lt;p&gt;3.私聊&lt;/p&gt;
+&lt;p&gt;4.群聊&lt;/p&gt;
+&lt;p&gt;5.发文件&lt;/p&gt;
+&lt;h2&gt;思路分析&lt;/h2&gt;
+&lt;p&gt;当客户端与服务端产生链接的时候，服务端会产生一个socket，必须要创建一个线程来持有并管理产生的socket&lt;/p&gt;
+&lt;p&gt;服务器端的多个线程需要一个管理线程的集合，用以后续的服务器推送新闻&lt;/p&gt;
+&lt;p&gt;每一个客户端也可能会创建多个线程，和服务器端通信，需要客户端线程的管理集合（hashmap）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/66.png&quot; alt=&quot;66&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;服务端&lt;/h3&gt;
+&lt;p&gt;1.当客户端连接到服务器时得到了socket&lt;/p&gt;
+&lt;p&gt;2.启动了一个线程，该线程持有socket，socket是线程的属性&lt;/p&gt;
+&lt;p&gt;3.为了管理线程，用集合hashmap管理线程，将线程放入集合&lt;/p&gt;
+&lt;h3&gt;客户端&lt;/h3&gt;
+&lt;p&gt;1.和服务端通信的时候使用对象的方式，可以使用对象流来进行读写&lt;/p&gt;
+&lt;p&gt;2.当客户端连接到服务器端时，会得到socket&lt;/p&gt;
+&lt;p&gt;3.启动一个线程，该线程持有socket&lt;/p&gt;
+&lt;p&gt;4.为了管理线程，用集合hashmap管理线程，将线程放入集合&lt;/p&gt;
+&lt;h2&gt;代码实现&lt;/h2&gt;
+&lt;h3&gt;1.用户登录&lt;/h3&gt;
+&lt;p&gt;创建User对象，表示一个用户信息（如果对象要在IO中传输，对象需要进行序列化）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqcommon;
+
+import java.io.Serializable;
+
+//表示一个用户信息
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;//增强兼容性
+    private String userId;//用户名
+    private String password;
+
+    User(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建Message对象，表示客户端和服务端通信时的消息对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqcommon;
+
+import java.io.Serializable;
+
+//表示客户端和服务端通信时的消息对象
+public class Message implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String sender;//发送者
+    private String getter;//接收者
+    private String content;//消息内容
+    private String sendTime;//发送时间
+    private String mesType;//消息类型【可以在接口定义消息类型】
+
+    public String getMesType() {
+        return mesType;
+    }
+
+    public void setMesType(String mesType) {
+        this.mesType = mesType;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getGetter() {
+        return getter;
+    }
+
+    public void setGetter(String getter) {
+        this.getter = getter;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(String sendTime) {
+        this.sendTime = sendTime;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;MessageType接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqcommon;
+
+public interface MessageType {
+    String MESSAGE_LOGIN_SUCCEED = &quot;1&quot;;//登录成功
+    String MESSAGE_LOGIN_FAIL = &quot;2&quot;;//登录失败
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;客户端聊天的菜单界面（内部逻辑）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqcommon;
+
+import java.util.Scanner;
+
+public class QQview {
+    //显示主菜单
+    private boolean loop = true;
+    private String key = &quot;&quot;;
+    Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        QQview qqview = new QQview();
+        qqview.mainMenu();
+        System.out.println(&quot;退出聊天系统&quot;);
+    }
+
+    public void mainMenu() {
+        while (loop) {
+            System.out.println(&quot;==========欢迎来到网络登录系统==========&quot;);
+            System.out.println(&quot;\t\t 1 登陆系统&quot;);
+            System.out.println(&quot;\t\t 9 退出系统&quot;);
+            System.out.print(&quot;请输入1-9： &quot;);
+            key = scanner.next();
+            switch (key) {
+                case &quot;1&quot;:
+                    System.out.println(&quot;登陆系统&quot;);
+                    System.out.println(&quot;请输入用户号码： &quot;);
+                    String userId = scanner.next();
+                    System.out.println(&quot;请输入用户密码： &quot;);
+                    String password = scanner.next();
+                    //将用户密码和用户名称发送到服务端，暂定
+                    if (true) {
+                        System.out.println(&quot;==========登录成功==========&quot;);
+                        while (loop) {
+                            System.out.println(&quot;==========网络通讯系统==========&quot;);
+                            System.out.println(&quot;欢迎用户&quot; + userId);
+                            System.out.println(&quot;\t\t 1 显示在线用户列表&quot;);
+                            System.out.println(&quot;\t\t 2 群发消息&quot;);
+                            System.out.println(&quot;\t\t 3 私聊消息&quot;);
+                            System.out.println(&quot;\t\t 4 发送文件&quot;);
+                            System.out.println(&quot;\t\t 9 退出系统&quot;);
+                            System.out.print(&quot;请输入1-9 &quot;);
+                            key = scanner.next();
+                            switch (key) {
+                                case &quot;1&quot;:
+                                    System.out.println(&quot;显示在线用户列表&quot;);
+                                    break;
+                                case &quot;2&quot;:
+                                    System.out.println(&quot;群发消息&quot;);
+                                    break;
+                                case &quot;3&quot;:
+                                    System.out.println(&quot;私聊消息&quot;);
+                                    break;
+                                case &quot;4&quot;:
+                                    System.out.println(&quot;发送文件&quot;);
+                                    break;
+                                case &quot;9&quot;:
+                                    System.out.println(&quot;退出系统&quot;);
+                                    loop = false;
+                                    break;
+                            }
+
+                        }
+                    } else {
+                        System.out.println(&quot;==========登陆失败==========&quot;);
+                    }
+                    break;
+                case &quot;9&quot;:
+                    System.out.println(&quot;==========登陆退出==========&quot;);
+                    loop = false;
+                    break;
+            }
+
+        }
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;线程服务类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqclient.service;
+
+import com.npu.qqcommon.Message;
+import com.npu.qqcommon.MessageType;
+import com.npu.qqcommon.User;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+
+
+public class UserClientService {
+    private User u = new User();//因为要在其他地方使用属性
+    private Socket socket;
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    //用以判断是否登录正确，消息来自于服务端按
+    public boolean checkUser(String userId, String password) {
+        boolean b = false;
+        u.setUserId(userId);
+        u.setPassword(password);
+        //连接到服务器，发送u对象
+        try {
+            socket = new Socket(InetAddress.getByName(&quot;127.0.0.1&quot;), 9999);
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(u);//发送User对象
+            
+            //读取收到的Message对象
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            Message ms = (Message) ois.readObject();
+            if(ms.getMesType().equals(MessageType.MESSAGE_LOGIN_SUCCEED)){
+                //创建一个和服务器端保持通信的线程-&amp;gt;创建线程类 ClientConnectServerThread
+                ClientConnectServerThread clientConnectServerThread = new ClientConnectServerThread(socket);
+                clientConnectServerThread.start();
+                //为了方便管理，将线程放入一个集合中ManageClientConnectServerThread
+                ManageClientConnectServerThread.addClientConnectServerThread(userId, clientConnectServerThread);
+                b = true;
+            } else {
+                //登陆失败不启动线程，关闭没有用到的socket
+                socket.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中创建的线程是一个类，含有socket对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqserver.server;
+
+import com.npu.qqcommon.Message;
+import com.npu.qqcommon.MessageType;
+import com.npu.qqcommon.User;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+//服务端监听9999端口，等待客户端连接，保持通信
+public class QQServer {
+    private ServerSocket ss = null;
+
+    public QQServer() {
+        try {
+            System.out.println(&quot;服务端在9999监听...&quot;);
+            ss = new ServerSocket(9999);
+            while(true) {
+                Socket socket = ss.accept();
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                User u = (User) ois.readObject();
+                //将数据进行验证，但是这没有数据库，模拟一个验证流程
+                Message message = new Message();
+                if(u.getUserId().equals(&quot;100&quot;) &amp;amp;&amp;amp; u.getPassword().equals(&quot;123456&quot;)) {
+                    //登陆成功，向客户端发送连接信息
+                    message.setMesType(MessageType.MESSAGE_LOGIN_SUCCEED);
+                    oos.writeObject(message);
+
+                    //创建线程持有socket对象
+                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, u.getUserId());
+                    serverConnectClientThread.start();
+
+                    //将线程放入集合
+                    ManageClientThreads.addClientThread(u.getUserId(),serverConnectClientThread);
+                } else {
+                    //登陆失败
+                    System.out.println(&quot;用户 &quot; + u.getUserId() + &quot;登录无效&quot;);
+                    message.setMesType(MessageType.MESSAGE_LOGIN_FAIL);
+                    oos.writeObject(message);
+                    socket.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            //如果服务端退出循环，服务器端不再监听
+            try{
+                ss.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+true){
+            try{
+                System.out.println(&quot;客户端线程，等待读取服务器数据&quot;);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message) ois.readObject();//没有发送对象 线程发送阻塞
+                //其余处理
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;又在服务类里面创建了一个现成的集合对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqclient.service;
+
+import java.util.HashMap;
+
+//管理客户端带服务端线程的一个类
+public class ManageClientConnectServerThread {
+    //把多个线程放入一个hashmap集合中，key是用户id， value是线程
+    public static HashMap&amp;lt;String, ClientConnectServerThread&amp;gt; hm = new HashMap&amp;lt;&amp;gt;();
+
+    //将线程加入
+    public static void addClientConnectServerThread(String userId, ClientConnectServerThread clientConnectServerThread) {
+        hm.put(userId, clientConnectServerThread);
+    }
+    //用id取出线程
+    public static ClientConnectServerThread getClientConnectServerThread(String userId) {
+        return hm.get(userId);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务器&lt;/h4&gt;
+&lt;p&gt;基本的服务流程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqserver.server;
+
+import com.npu.qqcommon.Message;
+import com.npu.qqcommon.MessageType;
+import com.npu.qqcommon.User;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+//服务端监听9999端口，等待客户端连接，保持通信
+public class QQServer {
+    private ServerSocket ss = null;
+
+    public QQServer() {
+        try {
+            System.out.println(&quot;服务端在9999监听...&quot;);
+            ss = new ServerSocket(9999);
+            while(true) {
+                Socket socket = ss.accept();
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                User u = (User) ois.readObject();
+                //将数据进行验证，但是这没有数据库，模拟一个验证流程 在后续更改为checkUser()
+                Message message = new Message();
+                if(u.getUserId().equals(&quot;100&quot;) &amp;amp;&amp;amp; u.getPassword().equals(&quot;123456&quot;)) {
+                    //登陆成功，向客户端发送连接信息
+                    message.setMesType(MessageType.MESSAGE_LOGIN_SUCCEED);
+                    oos.writeObject(message);
+
+                    //创建线程持有socket对象
+
+                    //将线程放入集合
+
+                } else {
+
+                    //登陆失败
+                }
+
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中的创建线程对象如下，重写了线程运行的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqserver.server;
+
+import com.npu.qqcommon.Message;
+
+import java.io.ObjectInputStream;
+import java.net.Socket;
+
+//该类对该类的对象和客户端保持连接，拥有一个socket
+public class ServerConnectClientThread extends Thread {
+    Socket socket = null;
+    private String userId = &quot;&quot;;//连接到服务器的用户id
+
+    public ServerConnectClientThread(Socket socket, String userId) {
+        this.socket = socket;
+        this.userId = userId;
+    }
+
+   @Override
+    public void run() {
+        while (true) {
+            try{
+                System.out.println(&quot;正在尝试读取客户端数据&quot;);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message) ois.readObject();
+                //等待使用的数据
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在服务器中创建线程的时候将线程放入一个集合中统一管理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.qqserver.server;
+
+import java.util.HashMap;
+
+//该类用于管理与客户端通讯的线程
+public class ManageClientThreads {
+    private static HashMap&amp;lt;String, ServerConnectClientThread&amp;gt; hm = new HashMap&amp;lt;&amp;gt;();
+
+    public static void addClientThread(String userId, ServerConnectClientThread ServerConnectClientThread) {
+        hm.put(userId, ServerConnectClientThread);
+    }
+
+    public static ServerConnectClientThread getClientThread(String userId) {
+        return hm.get(userId);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;判断账户密码&lt;/h4&gt;
+&lt;p&gt;在上述中我们服务器判断账号密码是否合法采用的是账户为100 密码为123456&lt;/p&gt;
+&lt;p&gt;现在进行功能上的修改：更改为指定的数个账户&lt;/p&gt;
+&lt;p&gt;判断方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public boolean checkUser(String userId, String password) {
+        User user = validUsers.get(userId);
+        if(user == null) {
+
+            System.out.println(&quot;用户id错误，不存在用户&quot; + userId);
+            return false;
+        }
+        if(!password.equals(user.getPassword())) {
+            System.out.println(&quot;用户密码错误&quot;);
+            return false;
+        }
+        return true;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中对应的hashmap集合（在静态中初始化一些用户）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; private static HashMap&amp;lt;String, User&amp;gt; validUsers = new HashMap&amp;lt;&amp;gt;();
+    static {
+        validUsers.put(&quot;100&quot;, new User(&quot;100&quot;, &quot;123456&quot;));
+        validUsers.put(&quot;200&quot;, new User(&quot;100&quot;, &quot;123456&quot;));
+        validUsers.put(&quot;300&quot;, new User(&quot;100&quot;, &quot;123456&quot;));
+        validUsers.put(&quot;400&quot;, new User(&quot;100&quot;, &quot;123456&quot;));
+        validUsers.put(&quot;李昊轩&quot;, new User(&quot;李昊轩&quot;, &quot;123456&quot;));
+        validUsers.put(&quot;王凌&quot;, new User(&quot;王凌&quot;, &quot;123456&quot;));
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;至此多用户登录功能已经完成，下面进入拉取用户列表的实现&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/67.png&quot; alt=&quot;67&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;2.拉取用户列表&lt;/h3&gt;
+&lt;h4&gt;接口扩展&lt;/h4&gt;
+&lt;p&gt;扩展MessageType接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface MessageType {
+    String MESSAGE_LOGIN_SUCCEED = &quot;1&quot;;//登录成功
+    String MESSAGE_LOGIN_FAIL = &quot;2&quot;;//登录失败
+    String MESSAGE_COMM_MES = &quot;3&quot;;//普通信息包
+    String MESSAGE_GET_ONLINE_FRIEND = &quot;4&quot;;//要求返回在线用户列表
+    String MESSAGE_RET_ONLINE_FRIEND = &quot;5&quot;;//返回在线用户列表
+    String MESSAGE_CLIENT_EXIT = &quot;6&quot;;//客户端请求退出
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;在客户端菜单栏中调用特定方法发送给服务器用户列表请求&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;switch (key) {
+case &quot;1&quot;:
+     System.out.println(&quot;显示在线用户列表&quot;);
+	userClientService.onlineFriendList();
+	break;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;客户端服务类的发送请求方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void onlineFriendList() {
+        Message ms = new Message();
+        ms.setMesType(MessageType.MESSAGE_GET_ONLINE_FRIEND);
+        //发送给服务器，先得到当前线程的socket对应的输出流
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(ManageClientConnectServerThread
+                    .getClientConnectServerThread(u.getUserId()).getSocket().getOutputStream());
+            oos.writeObject(ms);//发送请求
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在客户端线程中如果收到的message类型是在线用户列进行的相关处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void run() {
+        //因为持续通信持续循环
+        while(true){
+            try{
+                System.out.println(&quot;客户端线程，等待读取服务器数据&quot;);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message) ois.readObject();//没有发送对象 线程发送阻塞
+                //其余处理,后续需要使用
+                //判断message类型，处理后续内容
+
+                //当读到用户列表请求
+                if(message.getMesType().equals(MessageType.MESSAGE_RET_ONLINE_FRIEND)) {
+                    //取出在线列表然后返回
+                    String[] onlineUsers = message.getContent().split(&quot; &quot;);
+                    System.out.println(&quot;======当前在线用户======&quot;);
+                    for (int i = 0; i &amp;lt; onlineUsers.length; i++) {
+                        System.out.println(&quot;用户：&quot; + onlineUsers[i]);
+                    }
+                } else {
+                    System.out.println(&quot;暂时不处理&quot;);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务端&lt;/h4&gt;
+&lt;p&gt;在线程中处理收到的Message信息&lt;/p&gt;
+&lt;p&gt;如果收到的Message信息是请求获取列表，则构造信息返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void run() {
+    while (true) {
+        try{
+            System.out.println(&quot;用户id &quot; + userId);
+            System.out.println(&quot;正在尝试读取客户端数据&quot;);
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            Message message = (Message) ois.readObject();
+            //等待使用的数据
+            //更具Message类型处理后续
+            if(message.getMesType().equals(MessageType.MESSAGE_GET_ONLINE_FRIEND)) {
+                //客户端要求返回在线用户列表
+                System.out.println(userId + &quot; 需要在线列表&quot;);
+                String onlineUser = ManageClientThreads.getOnlineUser();
+                //拿到了信息构造一个Message
+                Message message2 = new Message();
+                message2.setMesType(MessageType.MESSAGE_RET_ONLINE_FRIEND);
+                message2.setContent(onlineUser);
+                message2.setGetter(message.getSender());
+                //写入Message
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(message2);
+                System.out.println(&quot;已发送在线用户列表给 &quot; + userId);
+
+            }else {
+                System.out.println(&quot;收到服务器消息，暂不处理&quot;);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2.5.无异常退出&lt;/h3&gt;
+&lt;p&gt;问题一：当在二级菜单 输入设置为9 退出的时候也没办法正常退出，因为服务器通讯的线程没有结束&lt;/p&gt;
+&lt;p&gt;问题二：当客户端断开连接的时候，服务线程还在不断地尝试获取客户端消息，造成了报错&lt;/p&gt;
+&lt;p&gt;我们需要一个好的方法进行无异常退出&lt;/p&gt;
+&lt;p&gt;解决方法：&lt;/p&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;客户端没有移除集合中的线程是因为最终客户端只拥有一个线程&lt;/p&gt;
+&lt;p&gt;1.在主函数中调用方法给服务器端发送一个退出的Message对象&lt;/p&gt;
+&lt;p&gt;2.调用客户端 System.exit(0) 进行退出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void logout() {
+        Message ms = new Message();
+        ms.setMesType(MessageType.MESSAGE_CLIENT_EXIT);
+        ms.setSender(u.getUserId());
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(ms);
+            System.out.println(&quot;退出系统&quot;);
+            System.exit(0);//结束进程
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务端&lt;/h4&gt;
+&lt;p&gt;1.接收message消息，当消息为退出的时候执行下述步骤&lt;/p&gt;
+&lt;p&gt;2.移除集合中的对应线程&lt;/p&gt;
+&lt;p&gt;3.服务器端关闭线程持有的socket,再退出线程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if(message.getMesType().equals(MessageType.MESSAGE_CLIENT_EXIT)) {
+       System.out.println(userId + &quot; 准备退出&quot;);
+       //将客户端的线程从集合中删除
+       ManageClientThreads.removeClientThread(userId);
+       socket.close();
+       //退出while循环
+       break;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/68.png&quot; alt=&quot;68&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/69.png&quot; alt=&quot;69&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;3.私聊&lt;/h3&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;1.接收用户希望给某个其他的在线用户聊天内容&lt;/p&gt;
+&lt;p&gt;2.将消息构建成Message对象，通过对应的socket发送给服务器&lt;/p&gt;
+&lt;p&gt;3.在通讯线程中收到其他的客户端发送的消息并显示&lt;/p&gt;
+&lt;p&gt;在菜单中调用方法发送私聊&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;case &quot;3&quot;:
+    System.out.println(&quot;私聊消息&quot;);
+    System.out.print(&quot;请输入要聊天的用户: &quot;);
+    String getterId = scanner.next();
+    System.out.print(&quot;请输入想说的话&quot;);
+    String content = scanner.next();
+    //编写一个方法完成发送
+    messageClientService.sendMessageToOne(content, userId, getterId);
+    break;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;私聊实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void sendMessageToOne(String content, String senderId, String getterId) {
+    Message ms = new Message();
+    ms.setMesType(MessageType.MESSAGE_COMM_MES);//设置为普通消息类型
+    ms.setSender(senderId);
+    ms.setGetter(getterId);
+    ms.setContent(content);
+    System.out.println(senderId + &quot;对&quot; + getterId + &quot;私聊 内容为：&quot; + content);
+
+    try {
+        ObjectOutputStream oos = new ObjectOutputStream(ManageClientConnectServerThread
+                .getClientConnectServerThread(senderId).getSocket().getOutputStream());
+        oos.writeObject(ms);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;收到私聊消息后显示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if(message.getMesType().equals(MessageType.MESSAGE_COMM_MES)) {
+    //将消息显示出来
+    System.out.println(&quot;\n收到来自 &quot; + message.getSender() + &quot; 的消息，内容如下：&quot;);
+    System.out.println(message.getContent());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务器&lt;/h4&gt;
+&lt;p&gt;1.可以读取到客户端发送给某个客户的消息&lt;/p&gt;
+&lt;p&gt;2.从管理的线程集合中根据发送的目标用户id，获取socket&lt;/p&gt;
+&lt;p&gt;3.将message对象转发给客户&lt;/p&gt;
+&lt;p&gt;服务器只完成转发的工作，当收到转发消息时转发&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if(message.getMesType().equals(MessageType.MESSAGE_COMM_MES)) {
+    //根据收到的消息中获取发送的对象进行转发
+    ServerConnectClientThread serverConnectClientThread =
+            ManageClientThreads.getClientThread(message.getGetter());
+    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread
+            .getSocket().getOutputStream());
+    oos.writeObject(message);//发送，如果客户不在线可以保存到数据库中
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4.群聊&lt;/h3&gt;
+&lt;p&gt;大体和私聊类似&lt;/p&gt;
+&lt;p&gt;在Message消息类型补充&lt;/p&gt;
+&lt;p&gt;String MESSAGE_TO_ALL_MES = &quot;7&quot;;//群发消息&lt;/p&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;菜单调用功能方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;case &quot;2&quot;:
+    System.out.println(&quot;请输入群发的话，内容将被发给所有的在线用户&quot;);
+    String s = scanner.next();
+    //调用方法将字符串发送给服务器进行广播
+    messageClientService.sendMessageToAll(s, userId);
+    break;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;群发消息到服务器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void sendMessageToAll(String content, String senderId) {
+    Message ms = new Message();
+    ms.setMesType(MessageType.MESSAGE_TO_ALL_MES);//设置为普通消息类型
+    ms.setSender(senderId);
+    ms.setContent(content);
+    System.out.println(senderId + &quot;群发消息，内容为：&quot; + content);
+
+    try {
+        ObjectOutputStream oos = new ObjectOutputStream(ManageClientConnectServerThread
+                .getClientConnectServerThread(senderId).getSocket().getOutputStream());
+        oos.writeObject(ms);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接收到群发消息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if (message.getMesType().equals(MessageType.MESSAGE_TO_ALL_MES)) {
+    System.out.println(&quot;\n收到来自 &quot; + message.getSender() + &quot; 群发的消息，内容如下：&quot;);
+    System.out.println(message.getContent());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务端&lt;/h4&gt;
+&lt;p&gt;当收到消息为群发时，中介群发给除发送者外的所有用户&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if (message.getMesType().equals(MessageType.MESSAGE_TO_ALL_MES)) {
+    //需要遍历线程的管理集合逐个发送
+    HashMap&amp;lt;String, ServerConnectClientThread&amp;gt; hm = ManageClientThreads.getHm();
+    Iterator&amp;lt;String&amp;gt; interator = hm.keySet().iterator();
+    while (interator.hasNext()) {
+        //取出在线用户ID
+        String onLineUserId = interator.next().toString();
+        if(!onLineUserId.equals(message.getSender())) {
+            ObjectOutputStream oos = new ObjectOutputStream(hm.get
+                    (onLineUserId).getSocket().getOutputStream());
+                oos.writeObject(message);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;至此群发消息功能完成&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/70.png&quot; alt=&quot;70&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;5.发文件&lt;/h3&gt;
+&lt;p&gt;首先我们要扩展Message类的定义，在类中添加bytes数组，以及一些必要的成员变量，拓展MessageType，定义新的消息类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;private byte[] fileBytes;//用于发送文件
+private int fileSize = 0;//文件大小
+private String dest;//将文件传输到的位置
+private String src;//发送的文件路径
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;客户端&lt;/h4&gt;
+&lt;p&gt;1.将指定路径下的文件输出流转换为字节数组&lt;/p&gt;
+&lt;p&gt;2.将字节数组封装在message对象中&lt;/p&gt;
+&lt;p&gt;3.将message对象发送，在服务器进行相应处理&lt;/p&gt;
+&lt;p&gt;4.接收到文件message对象的时候将message对象中的字节数组运用文件输入流存储至指定的目录下&lt;/p&gt;
+&lt;p&gt;在菜单栏中调用文件类的功能方法，完成向服务器传送message消息（其中包含了文件的内容）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;case &quot;4&quot;:
+    System.out.print(&quot;请输入发送对象 &quot;);
+    String target = scanner.next();
+    System.out.print(&quot;请输入要发送的文件路径 &quot;);
+    //e:\\1.jpg  e:\\2.jpg
+    String filePath = scanner.next();
+    System.out.print(&quot;请输入保存至对方电脑的文件路径 &quot;);
+    String savePath = scanner.next();
+    fileClientService.sendFileToOne(filePath, savePath, userId, target);
+    break;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sendFileToOne具体实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class FileClientService {
+    public void sendFileToOne(String src, String dest, String senderId, String getterId) {
+        //构造message信息
+        Message message = new Message();
+        message.setMesType(MessageType.MESSAGE_FILE_MES);
+        message.setSender(senderId);
+        message.setDest(dest);
+        message.setGetter(getterId);
+        message.setSrc(src);
+        //读取文件内容
+        FileInputStream fileInputStream = null;
+        byte[] fileBytes = new byte[(int)new File(src).length()];
+
+        try {
+            fileInputStream = new FileInputStream(src);
+            fileInputStream.read(fileBytes);
+            //将字节数组放入message
+            message.setFileBytes(fileBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(ManageClientConnectServerThread
+                    .getClientConnectServerThread(senderId).getSocket().getOutputStream());
+            oos.writeObject(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(&quot;发送目录 &quot; + message.getSrc() + &quot;目录文件至 &quot;
+                + message.getGetter() + &quot; 的目录 &quot; + message.getDest());
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运用线程来接收来自服务器的文件相关message，将其中的数据保存在指定目录&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
+    System.out.println(&quot;\n收到来自 &quot; + message.getSender() + &quot; 的文件&quot;);
+    FileOutputStream fos = new FileOutputStream(message.getDest());
+    fos.write(message.getFileBytes());
+    fos.close();
+    System.out.println(&quot;文件保存在目录 &quot; + message.getDest());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务器&lt;/h4&gt;
+&lt;p&gt;1.接收到message对象&lt;/p&gt;
+&lt;p&gt;2.得到message对象中的getter，用他的userId获取通信线程&lt;/p&gt;
+&lt;p&gt;3.将message对象转发给指定的用户&lt;/p&gt;
+&lt;p&gt;和私聊类似，完成message转发&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
+    //根据getterid选取集合中的对应线程得到socket用以转发文件消息
+    ServerConnectClientThread serverConnectClientThread =
+            ManageClientThreads.getClientThread(message.getGetter());
+    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread
+            .getSocket().getOutputStream());
+    oos.writeObject(message);
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/71.png&quot; alt=&quot;71&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/72.png&quot; alt=&quot;72&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0udp%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0udp%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</guid><description>UDP网络编程</description><pubDate>Sun, 16 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
+&lt;h2&gt;UDP网络通信编程&lt;/h2&gt;
+&lt;p&gt;不同于TCP通信，UDP不需要建立连接，UDP数据包中含有发送的目标地址&lt;/p&gt;
+&lt;p&gt;1.类 DatagramSocket 和 DatagramPacket【数据包/数据报】实现了基于UDP协议网络程序&lt;/p&gt;
+&lt;p&gt;2.UDP数据报通过数据报套接字 DatagramSocket 发送和接收，系统不保证UDP数据报有一定可以能够到达目的地，也不确定在什么时候可以到达&lt;/p&gt;
+&lt;p&gt;3.DatagramPacket 对象封装了UDP数据报，在数据包中包含了发送端和接收端的IP地址以及端口号&lt;/p&gt;
+&lt;p&gt;4.UDP协议中的每一个数据报都给出了完整的信息地址，因此无需建立发送方和接收方的链接吧&lt;/p&gt;
+&lt;h2&gt;UDP特殊说明&lt;/h2&gt;
+&lt;p&gt;1.UDP中没有明确的服务端和客户端，演变为数据的发送端和接收端&lt;/p&gt;
+&lt;p&gt;2.接收数据和发送数据通过DatagramSocket对象完成&lt;/p&gt;
+&lt;p&gt;3.发送数据时会将数据封装在DatagramPacket对象中，称之为装包&lt;/p&gt;
+&lt;p&gt;4.当接收到数据包后，需要进行拆包取出数据&lt;/p&gt;
+&lt;p&gt;5.DatagramSocket可以指定在哪个端口接收数据&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/65.png&quot; alt=&quot;65&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;UDP通信流程&lt;/h2&gt;
+&lt;p&gt;1.建立发送端和接收端&lt;/p&gt;
+&lt;p&gt;2.发送数据前建立数据包和数据报&lt;/p&gt;
+&lt;p&gt;3.调用数据包的发送和接受方法&lt;/p&gt;
+&lt;p&gt;4.关闭数据包&lt;/p&gt;
+&lt;h2&gt;代码示例&lt;/h2&gt;
+&lt;p&gt;发送端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.udp;
+
+import java.io.IOException;
+import java.net.*;
+
+public class Sender {
+    public static void main(String[] args) throws IOException {
+        DatagramSocket socket = new DatagramSocket(9998);//发送端的端口是9998
+        byte[] bytes = &quot;hello&quot;.getBytes();
+        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, InetAddress.getByName(&quot;127.0.0.1&quot;), 9999);
+        socket.send(packet);
+        System.out.println(&quot;数据已发送&quot;);
+        socket.close();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接收端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.udp;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
+public class Receiver {
+    public static void main(String[] args) throws IOException {
+        DatagramSocket socket = new DatagramSocket(9999);
+        byte[] buf = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+        System.out.println(&quot;等待接收数据&quot;);
+        socket.receive(packet);//将收到的数据填充进入packet对象
+
+        int length = packet.getLength();//实际接收到的数据长度
+        byte[] data = packet.getData();
+        String s = new String(data, 0, length);
+        socket.close();
+        System.out.println(s);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;一个代码的综合习题&lt;/h2&gt;
+&lt;p&gt;这一道题是聊天交互的最简情况，支持一次通信，可以加上循环完成消息的重复发送与接收&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.homework;
+
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+public class Client {
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        Socket socket = new Socket(InetAddress.getByName(&quot;127.0.0.1&quot;), 6666);
+        System.out.println(&quot;TCP链接建立&quot;);
+        System.out.print(&quot;输入发送的消息:&quot;);
+        String message = scanner.next();
+        OutputStream outputStream = socket.getOutputStream();
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+        bufferedWriter.write(message);
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+        System.out.println(&quot;消息发送完成&quot;);
+
+        InputStream inputStream = socket.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String response = bufferedReader.readLine();
+        System.out.println(&quot;收到服务器消息：&quot; + response);
+
+        bufferedReader.close();
+        bufferedWriter.close();
+        socket.close();
+        System.out.println(&quot;客户端关闭&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.homework;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(6666);
+        System.out.println(&quot;服务器正在监听...&quot;);
+        Socket socket = serverSocket.accept();
+
+        OutputStream outputStream = socket.getOutputStream();
+        InputStream inputStream = socket.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+
+        String receive = bufferedReader.readLine();
+        System.out.println(&quot;收到客户短消息&quot; + receive);
+        switch (receive) {
+            case &quot;name&quot;:
+                bufferedWriter.write(&quot;我是nova&quot;);
+                break;
+            case &quot;hobby&quot;:
+                bufferedWriter.write(&quot;编写java程序&quot;);
+                break;
+            default:
+                bufferedWriter.write(&quot;未知消息&quot;);
+                break;
+        }
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+        bufferedWriter.close();
+        System.out.println(&quot;回复消息已发送&quot;);
+
+        bufferedReader.close();
+        bufferedWriter.close();
+        socket.close();
+        serverSocket.close();
+        System.out.println(&quot;服务器关闭&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%AD%97%E7%AC%A6%E6%B5%81%E4%BC%A0%E8%BE%93netstat%E6%8C%87%E4%BB%A4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%AD%97%E7%AC%A6%E6%B5%81%E4%BC%A0%E8%BE%93netstat%E6%8C%87%E4%BB%A4/</guid><description>字符流传输，netstat指令</description><pubDate>Sat, 15 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
 &lt;h2&gt;文件传输&lt;/h2&gt;
 &lt;p&gt;Java中利用套接字在服务器与客户端间进行文件传输&lt;/p&gt;
@@ -11494,6 +15621,172 @@ class Student extends Person {
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;因为课程大作业的安排，我打算明天完成房屋出租系统设计之后，先进行Java网络编程部分的学习，以此复习计算机网络相关知识，再顺便水个作业，美哉美哉&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0object%E7%B1%BB%E9%87%8D%E5%86%99%E6%96%B9%E6%B3%95%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0object%E7%B1%BB%E9%87%8D%E5%86%99%E6%96%B9%E6%B3%95%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95/</guid><description>Object类方法，断点调试</description><pubDate>Wed, 12 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
+&lt;h2&gt;Object类&lt;/h2&gt;
+&lt;p&gt;这一章会介绍object类的方法&lt;/p&gt;
+&lt;p&gt;通过自动配置或者手动配置后可以运用IDEA查看Object的源代码以及其对应的方法，点击右键跳转，或者ctrl + 左键 跳转&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/55.png&quot; alt=&quot;55&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Object的子类String方法进行重写更改为，此时判断的是内容&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/56.png&quot; alt=&quot;56&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;整形的包装类equals判断方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/57.png&quot; alt=&quot;57&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/58.png&quot; alt=&quot;58&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;查看源码查看方法重写是程序员重要的技能&lt;/p&gt;
+&lt;h3&gt;equals方法&lt;/h3&gt;
+&lt;p&gt;在不重写equals方法的时候，Person类使用的是父类object的方法，这个时候判断的是两个引用是否指向同一个对象，如果需要用equals判断内容是否一致的时候需要重写方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.object;
+
+public class Equals01 {
+    public static void main(String[] args) {
+        Person person1 = new Person(&quot;l&quot;, 1, &apos;女&apos;);
+        Person person2 = new Person(&quot;k&quot;, 1, &apos;女&apos;);
+        if(person2.equals(person1)) {
+            System.out.println(&quot;Person 1 and Person 2 are equal&quot;);
+        }
+    }
+}
+
+class Person {
+    private String name;
+    private int age;
+    private char gender;
+
+    public Person(String name, int age, char gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj instanceof Person) {
+            Person person = (Person)obj;
+            return person.name == person.name &amp;amp;&amp;amp; this.age == person.age &amp;amp;&amp;amp; this.gender == person.gender;
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;hashCode方法&lt;/h3&gt;
+&lt;p&gt;源码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public native int hashCode();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;1.两个引用如果指向同一个对象，则哈希值一定是一样的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.object;
+
+public class Hashcode {
+    public static void main(String[] args) {
+        AA aa1 = new AA();
+        AA aa2 = new AA();
+        AA aa3 = aa1;
+        System.out.println(aa1.hashCode());
+        System.out.println(aa2.hashCode());
+        System.out.println(aa3.hashCode());
+    }
+}
+
+class AA {}
+/*运行结果
+	1163157884
+	1956725890
+	1163157884
+*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.可以提高有哈希结构的容器效率&lt;/p&gt;
+&lt;p&gt;3.哈希值是根据地址计算而来，但是不能够等价于地址（Java中代码是跑在虚拟机上的，不用关注于底层）&lt;/p&gt;
+&lt;h3&gt;toString方法&lt;/h3&gt;
+&lt;p&gt;源码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public String toString() {
+        return getClass().getName() + &quot;@&quot; + Integer.toHexString(hashCode());
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;全类名 + @ + 类的哈希地址十六进制&lt;/p&gt;
+&lt;p&gt;全类名为 包名 + 类名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;com.npu.object.AA@4554617c
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一般而言我们会将Object类的toString方法进行重写，用于打印各个详细的属性信息&lt;/p&gt;
+&lt;p&gt;当输出一个对象的时候，我们默认会调用这个对象的toString 方法进行输出&lt;/p&gt;
+&lt;p&gt;以下是一个代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.object;
+
+public class Hashcode {
+    public static void main(String[] args) {
+        AA aa = new AA();
+        System.out.println(aa);
+    }
+}
+
+class AA {
+    int i;
+    double m;
+
+    public String toString() {
+        return &quot;AA{i=&quot; + i + &quot;, m=&quot; + m + &quot;}&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;finalize方法&lt;/h3&gt;
+&lt;p&gt;当垃圾回收器检测到没有指向该对象的引用时，系统自动调用该对象的finalize方法，进行资源释放&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; AA aa = new AA();
+ System.out.println(aa);
+ aa = null;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当执行完毕的时候 AA的实例变为一个 垃圾 ，垃圾回收器就会被回收分配的堆空间&lt;/p&gt;
+&lt;p&gt;程序员可以在销毁方法finalize 写一些自己的业务逻辑（通过重写finalize方法完成）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.object;
+
+public class Hashcode {
+    public static void main(String[] args) {
+        AA aa = new AA();
+        aa = null;
+        System.out.println(&quot;代码结束&quot;);
+    }
+}
+
+class AA {
+    int i;
+    double m;
+
+    public String toString() {
+        return &quot;AA{i=&quot; + i + &quot;, m=&quot; + m + &quot;}&quot;;
+    }
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println(&quot;Finalize called&quot;);
+        super.finalize();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当回收的时候会输出对应的提示信息&lt;/p&gt;
+&lt;p&gt;但是如上代码不会输出信息，因为回收调用回收方法的时候不是在置空引用后立即执行&lt;/p&gt;
+&lt;p&gt;我们可以注定调用回收 System.gc( )&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Hashcode {
+    public static void main(String[] args) {
+        AA aa = new AA();
+        aa = null;
+        System.gc();//主动调用回收器
+        System.out.println(&quot;代码结束&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输出结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;代码结束
+Finalize called
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码结束输出在前&lt;/p&gt;
+&lt;p&gt;因为gc方法不会阻塞代码&lt;/p&gt;
+&lt;h2&gt;断点调试&lt;/h2&gt;
+&lt;p&gt;1.在实际开发中要查找错误的时候，断点调试是很重要的一步，可以一步一步的看代码执行的过程，从而纠错&lt;/p&gt;
+&lt;p&gt;2.在断点调试的时候是运行的，是以对象的运行类型来执行的&lt;/p&gt;
+&lt;p&gt;3.断点调试也可以帮我们查看java底层源代码的执行过程，提高Java水平&lt;/p&gt;
+&lt;h3&gt;断点调试中常用的快捷键&lt;/h3&gt;
+&lt;p&gt;F7 跳入&lt;/p&gt;
+&lt;p&gt;F8 跳过&lt;/p&gt;
+&lt;p&gt;shift + F8 跳出方法&lt;/p&gt;
+&lt;p&gt;F9 跳到下一个断点 支持动态添加断点，可以添加到自写代码或者jdk源码中&lt;/p&gt;
+&lt;p&gt;force step into 强制进入jdk源码 alt + shift + F7&lt;/p&gt;
+&lt;p&gt;面向对象编程中级内容到此结束，明天将进行零钱通项目的综合运用&lt;/p&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%9A%E6%80%81%E5%8A%A8%E6%80%81%E7%BB%91%E5%AE%9A%E6%9C%BA%E5%88%B6%E5%A4%9A%E6%80%81%E7%9A%84%E5%BA%94%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%9A%E6%80%81%E5%8A%A8%E6%80%81%E7%BB%91%E5%AE%9A%E6%9C%BA%E5%88%B6%E5%A4%9A%E6%80%81%E7%9A%84%E5%BA%94%E7%94%A8/</guid><description>多态，动态绑定机制，多态的应用</description><pubDate>Tue, 11 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
 &lt;h2&gt;多态&lt;/h2&gt;
 &lt;p&gt;定义：方法或者对象具有多种形态&lt;/p&gt;
@@ -12096,6 +16389,291 @@ class Dog extends Animal {
 &lt;p&gt;重写和重载之间的比较&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/54.png&quot; alt=&quot;54&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;明天会来到面向对象中的多态&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0idea%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83java%E5%8C%85%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6%E5%B0%81%E8%A3%85/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0idea%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83java%E5%8C%85%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6%E5%B0%81%E8%A3%85/</guid><description>IDEA集成开发环境，Java包，访问修饰符，封装</description><pubDate>Sun, 09 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
+&lt;h2&gt;IDEA的使用&lt;/h2&gt;
+&lt;p&gt;IDEA支持30天试用，如果是学生或者教师可以在官网使用学校邮箱或者学信网获取授权使用&lt;/p&gt;
+&lt;p&gt;IDEA之中各种快捷键，定义模板，变量名，自动补全，自动添加导入可以极大地增加开发的效率&lt;/p&gt;
+&lt;h2&gt;Java中的包&lt;/h2&gt;
+&lt;p&gt;包的本质是创建不同的文件夹来保存类文件&lt;/p&gt;
+&lt;p&gt;包有三个重大的作用&lt;/p&gt;
+&lt;p&gt;1.可以区分相同名字的类&lt;/p&gt;
+&lt;p&gt;2.当类很多的时候可以高效的管理类&lt;/p&gt;
+&lt;p&gt;3.控制访问范围&lt;/p&gt;
+&lt;h3&gt;包的基本语法&lt;/h3&gt;
+&lt;p&gt;package com.thrinisty&lt;/p&gt;
+&lt;p&gt;package 关键字 表示打包&lt;/p&gt;
+&lt;p&gt;com.thrinisty 表示包名&lt;/p&gt;
+&lt;p&gt;以下是一个包的入门案例&lt;/p&gt;
+&lt;p&gt;建立了两个包 小强的包 小明的包 在各自的包中定义了Dog方法&lt;/p&gt;
+&lt;p&gt;在use包中定义了主方法，主方法中可以导入小明的Dog类，但是再导入小强的Dog类因为方法同名，可以通过com.xiaoqiang.Dog()使用小强的Dog类&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/51.png&quot; alt=&quot;51&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package use;
+
+import com.xiaoming.Dog;
+
+public class Test {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        System.out.println(dog);
+
+        com.xiaoqiang.Dog dog1 = new com.xiaoqiang.Dog();
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;包的命名&lt;/p&gt;
+&lt;p&gt;命名规则，只能包含数子，字母，小圆点，但不能够是用数字开头，不能是关键字或保留字&lt;/p&gt;
+&lt;p&gt;命名规范&lt;/p&gt;
+&lt;p&gt;一般是小写字母 + 小圆点&lt;/p&gt;
+&lt;p&gt;com.公司名.项目名.业务模块名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.sina.crm.user;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Java中常用的包&lt;/h3&gt;
+&lt;p&gt;1.lang 基本包，默认引入，不需要再次引入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.lang.*;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.util 工具包系统提供的工具类，例如Scanner&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.util.*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.net 网络包，用于网络开发&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.net.*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.awt 界面开发工具 GUI&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.awt.*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;导入包&lt;/h3&gt;
+&lt;p&gt;建议需要用哪个类就导入哪个类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.util.Scanner;//导入Scanner类
+import java.util.Scanner;//导入util下的所有类
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.pkg;
+
+import java.util.Arrays;
+public class Import {
+    public static void main(String[] args) {
+        int[] arr = {13, 35, 16, 67, 33};
+        Arrays.sort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用给定的 Arrays 方法排序输出&lt;/p&gt;
+&lt;p&gt;1.package 作用是声明当前类的包，需要放在类的最上面，一个类中最多只能有一个package&lt;/p&gt;
+&lt;p&gt;2.import 位置放在package下面，类定义的前面，可以导入多个包方法，且没有顺序要求&lt;/p&gt;
+&lt;h2&gt;访问修饰符&lt;/h2&gt;
+&lt;p&gt;1.public 公开 对外公开&lt;/p&gt;
+&lt;p&gt;2.protected 受保护的 对子类和同一个包公开&lt;/p&gt;
+&lt;p&gt;3.默认 向同一个包的类公开&lt;/p&gt;
+&lt;p&gt;4.private 私有的 只有类的本身可以访问，不对外公开&lt;/p&gt;
+&lt;p&gt;使用的注意事项&lt;/p&gt;
+&lt;p&gt;1.修饰符可以用来修饰类中的属性，成员方法，以及类的本身&lt;/p&gt;
+&lt;p&gt;2.只有默认和public才可以修饰类&lt;/p&gt;
+&lt;p&gt;代码示例：（以属性举例）&lt;/p&gt;
+&lt;p&gt;A类定义(同一个类中可以访问所有的变量)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.modifier;
+
+public class A {
+    public int n1 = 100;
+    protected int n2 = 200;
+    int n3 = 300;
+    private int n4 = 400;
+    //同一个类下可以访问所有的变量
+    public void m1() {
+        System.out.println(n1 + &quot; &quot; + n2 + &quot; &quot; + n3 + &quot; &quot; + n4);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;B类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.modifier;
+
+public class B {
+    public void test() {
+        A a = new A();
+        System.out.println(a.n1 + &quot; &quot; + a.n2 + &quot; &quot; + a.n3);
+        //在同一个包下可以访问 默认 public protected 修饰的变量
+        //不可以访问private修饰的n4属性
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;C类的子类权限暂时不做验证，在讲完子类后再做演示&lt;/p&gt;
+&lt;p&gt;D类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.pkg;
+
+import com.npu.modifier.A;
+public class D {
+    public void test() {
+        A a = new A();
+        System.out.println(a.n1);
+        //在不同包下 只可以访问public修饰的属性方法
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;主函数调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.modifier;
+
+import com.npu.pkg.D;
+
+public class Main {
+    public static void main(String[] args) {
+        A a = new A();
+        a.test();
+        B b = new B();
+        b.test();
+        D d = new D();
+        d.test();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;面向对象的三大特征&lt;/h2&gt;
+&lt;h3&gt;封装&lt;/h3&gt;
+&lt;p&gt;把抽象出来的属性和方法封装在一起，数据被保护在内部，程序的其他部分只有通过授权的方法才可以对于数据进行操作&lt;/p&gt;
+&lt;p&gt;好处：&lt;/p&gt;
+&lt;p&gt;1.可以隐藏实现的细节，不必对外展示，外部直接传入参数即可使用&lt;/p&gt;
+&lt;p&gt;2.可以对数据进行验证，保证安全合理&lt;/p&gt;
+&lt;h3&gt;封装的实现步骤&lt;/h3&gt;
+&lt;p&gt;1.将属性私有化&lt;/p&gt;
+&lt;p&gt;2.提供一个公共的 set 方法用于对属性进行判断以及赋值(伪代码)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void setNum() {
+	if(){
+		set(Num);
+	} else {
+		sout(info)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.提供一个公共的 get 方法，用于获取某个属性的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public 类型 getNum(){
+	return data;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下是一个代码示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.encap;
+
+public class Person {
+
+    public String name;
+    private int age;
+    private double salary;
+
+    public void setName(String name) {
+        if(name.length() &amp;lt; 10) {
+            this.name = name;
+        } else {
+            System.out.println(&quot;Name is too long&quot;);
+        }
+    }
+
+    public void setSalary(double salary) {
+        if(salary &amp;gt;= 0) {
+            this.salary = salary;
+        } else {
+            System.out.println(&quot;illegal Salary&quot;);
+        }
+    }
+    public void setAge(int age) {
+        if(age &amp;gt;= 0 &amp;amp;&amp;amp; age &amp;lt;= 120) {
+            this.age = age;
+        } else {
+            System.out.println(&quot;illegal Age&quot;);
+        }
+    }
+    public void print() {
+        System.out.println(&quot;Name: &quot; + name + &quot; Age: &quot; + age + &quot; Salary: &quot; + salary);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;主函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.encap;
+
+public class Main {
+    public static void main(String[] args) {
+        Person p = new Person();
+        p.setSalary(500);
+        p.setName(&quot;Nikola&quot;);
+        p.setAge(18);
+        p.print();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以将构造器和封装结合起来&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public Person(String name, int age, double salary) {
+        setName(name);
+        setAge(age);
+        setSalary(salary);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.encap;
+
+public class Main {
+    public static void main(String[] args) {
+        Person p = new Person(&quot;lory&quot;, 18, 3000);
+        p.print();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个模拟银行注册的代码案例&lt;/p&gt;
+&lt;p&gt;主函数调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.encap;
+
+public class AccountTest {
+    public static void main(String[] args) {
+        Account account = new Account(&quot;thrinisy&quot;, 2000, &quot;123&quot;);
+        account.print();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Account类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.npu.encap;
+
+public class Account {
+    private String name;
+    private double balance;
+    private String password;
+
+    public Account(String name, double balance, String password) {
+        setName(name);
+        setBalance(balance);
+        setPassword(password);
+    }
+    public void setName(String name) {
+        if(name.length() == 2 || name.length() == 3|| name.length() == 4) {
+            this.name = name;
+            System.out.println(&quot;设置成功，用户名是&quot; + name);
+        } else {
+            this.name = &quot;王女士&quot;;
+            System.out.println(&quot;姓名必须要满足2-4位，设置为默认用户名字：王女士&quot;);
+        }
+    }
+    public void setBalance(double balance) {
+        if(balance &amp;gt; 20) {
+            this.balance = balance;
+            System.out.println(&quot;设置成功，余额为&quot; + balance);
+        } else {
+            System.out.println(&quot;设置失败，余额必须大于20 ，赋初值位6666.6&quot;);
+            this.balance = 6666.6;
+        }
+    }
+    public void setPassword(String password) {
+        if(password.length() == 6) {
+            this.password = password;
+            System.out.println(&quot;设置密码成功&quot;);
+        } else {
+            this.password = &quot;123456&quot;;
+            System.out.println(&quot;设置密码失败，密码必须为六位数，默认设置为123456&quot;);
+        }
+    }
+    public void print() {
+        System.out.println(&quot;name = &quot; + name + &quot;, balance = &quot; + balance + &quot;, password = &quot; + password);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;姓名必须要满足2-4位，设置为默认用户名字：王女士
+设置成功，余额为2000.0
+设置密码失败，密码必须为六位数，默认设置为123456
+name = 王女士, balance = 2000.0, password = 123456
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;周末有事耽搁了，本来打算今天对于继承 多态收尾的，就把这两个部分放在明天来学习&lt;/p&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E9%87%8D%E8%BD%BD%E5%A4%9A%E5%8F%82%E6%96%B9%E6%B3%95%E6%9E%84%E9%80%A0%E5%99%A8%E4%BD%9C%E7%94%A8%E5%9F%9Fthis/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E9%87%8D%E8%BD%BD%E5%A4%9A%E5%8F%82%E6%96%B9%E6%B3%95%E6%9E%84%E9%80%A0%E5%99%A8%E4%BD%9C%E7%94%A8%E5%9F%9Fthis/</guid><description>重载，多参方法，构造器，作用域，this</description><pubDate>Sat, 08 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
 &lt;h2&gt;Java中的重载&lt;/h2&gt;
 &lt;p&gt;Java中允许同名方法的存在，这种情况下要求同名方法的参数不同&lt;/p&gt;
@@ -14696,6 +19274,320 @@ public class Input{
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Java中的多重循环&lt;/h2&gt;
 &lt;p&gt;学习到了第三天终于来到了算法难点部分，在这里也希望自己可以通过课程学习来巩固自己算法的基础。&lt;/p&gt;
+</content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%8F%98%E9%87%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%BC%96%E7%A0%81%E7%B1%BB%E5%9E%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%8F%98%E9%87%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%BC%96%E7%A0%81%E7%B1%BB%E5%9E%8B/</guid><description>变量，数据类型，类型转换，编码类型</description><pubDate>Sun, 02 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
+&lt;h2&gt;Java中的变量&lt;/h2&gt;
+&lt;p&gt;在这一个部分因为本人有C语言的相关基础，只记录Java 中与C 不同的部分，以及重点部分&lt;/p&gt;
+&lt;p&gt;Java中的“+”的使用方式，1.当左右两边都是数值的时候，做加法运算，当有一方是字符串时，做拼接运算&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+		System.out.println(100 + 11);			//111
+		System.out.println(1 + &quot;100&quot;);			//1100
+		System.out.println(100 + 11 + &quot;100&quot;);	//111100
+		System.out.println(&quot;100&quot; + 100 + 11);	//10010011
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Java中的数据类型&lt;/h2&gt;
+&lt;p&gt;分为基本数值类型和引用数据类型&lt;/p&gt;
+&lt;h3&gt;基本数值类型&lt;/h3&gt;
+&lt;p&gt;数值型 byte short int long float double&lt;/p&gt;
+&lt;p&gt;字符型 char 占两个字节（因为有中文等的存在需要更多的空间存储）&lt;/p&gt;
+&lt;p&gt;布尔型 boolean&lt;/p&gt;
+&lt;h3&gt;引用数据类型&lt;/h3&gt;
+&lt;p&gt;类   class&lt;/p&gt;
+&lt;p&gt;接口 interface&lt;/p&gt;
+&lt;p&gt;数组 [ ]&lt;/p&gt;
+&lt;h2&gt;整数类型&lt;/h2&gt;
+&lt;p&gt;在java上整数类型有着固定的范围和字段长度，不受具体的操作系统的影响，保证了可移植性。&lt;/p&gt;
+&lt;p&gt;java中整形常量默认为int 型，声明long型需要在数据后加上 L 或者 l （以下为一个具体的例子）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;long b = 127;
+System.out.println(b);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;127&lt;/code&gt;是一个&lt;code&gt;int&lt;/code&gt;类型的常量，但由于&lt;code&gt;long&lt;/code&gt;类型的范围比&lt;code&gt;int&lt;/code&gt;类型大，Java会自动将&lt;code&gt;127&lt;/code&gt;转换为&lt;code&gt;long&lt;/code&gt;类型，然后赋值给变量&lt;code&gt;b&lt;/code&gt;。因此，这段代码可以通过编译并正常运行。&lt;/p&gt;
+&lt;p&gt;如果你要将一个超出&lt;code&gt;int&lt;/code&gt;范围的常量赋值给&lt;code&gt;long&lt;/code&gt;类型的变量，那么你必须在常量后面加上&lt;code&gt;L&lt;/code&gt;或&lt;code&gt;l&lt;/code&gt;来明确指定这是一个&lt;code&gt;long&lt;/code&gt;类型的常量。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;long b = 2147483648L;  // 这个值超出了int的范围，必须加上L
+System.out.println(b);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这种情况下，如果不加&lt;code&gt;L&lt;/code&gt;，编译器会报错，因为&lt;code&gt;2147483648&lt;/code&gt;超出了&lt;code&gt;int&lt;/code&gt;类型的范围（&lt;code&gt;int&lt;/code&gt;的范围是&lt;code&gt;-2147483648&lt;/code&gt;到&lt;code&gt;2147483647&lt;/code&gt;），而Java不会自动将超出&lt;code&gt;int&lt;/code&gt;范围的常量转换为&lt;code&gt;long&lt;/code&gt;类型。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/40.png&quot; alt=&quot;40&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;浮点类型&lt;/h2&gt;
+&lt;p&gt;与整型相同，java中浮点类型有着固定的范围和字段长度，不受操作系统的影响。&lt;/p&gt;
+&lt;p&gt;java中浮点类型常量默认为double 型，声明float型需要在数据后加上 f 或者 F&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+		
+		float num1 = 1.1;//错误 浮点数默认存储是double类型
+         double num2 = 1.1;//可以，没有类型的转换
+		System.out.println(b);	
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/41.png&quot; alt=&quot;41&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;特殊的数值表示&lt;/h2&gt;
+&lt;p&gt;.123 表示 0.123&lt;/p&gt;
+&lt;p&gt;科学计数法 e大小写都可以&lt;/p&gt;
+&lt;p&gt;3.14e2 表示 314.0&lt;/p&gt;
+&lt;p&gt;3.14E-1 表示 0.314&lt;/p&gt;
+&lt;p&gt;在使用浮点类型推荐使用double类型&lt;/p&gt;
+&lt;p&gt;在判断两个浮点数是否相等时往往取二者的差值是否小于一定的范围，而非直接 == 判断&lt;/p&gt;
+&lt;h2&gt;字符类型&lt;/h2&gt;
+&lt;p&gt;char型，两个字节，可以存放汉字&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+		
+		char num1 = &apos;李&apos;; 		//汉字
+		char num2 = &apos;\n&apos;; 		//转义字符
+		char num3 = &apos;a&apos;;  		//字母
+		char num4 = 20013;  	//中的Unicode编码为20013
+		System.out.println(num1);
+		System.out.println(num2);
+		System.out.println(num3);
+		System.out.println(num4);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;字符类型的单个字符运用的 Unicode 进行编码，char 类型也可以参与运算，取其 Unicode编码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(&apos;a&apos; + 1);	//结果为98 a 的ASCII编码为 97
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;ASCII&lt;/h3&gt;
+&lt;p&gt;American Standard Code for Information Interchange，美国信息交换标准代码&lt;/p&gt;
+&lt;p&gt;是最早的字符编码标准之一。它使用 7 位二进制数（即 1 个字节中的低 7 位）来表示字符，总共可以表示 128 个字符，注意在这里只用了 128 个字符，实际加上 8 位可以表示 256 个字符&lt;/p&gt;
+&lt;p&gt;Unicode 是一个国际化的字符编码标准，旨在为世界上所有的字符提供一个唯一的编号（称为 &lt;strong&gt;码点&lt;/strong&gt;，Code Point）。&lt;/p&gt;
+&lt;h3&gt;Unicode&lt;/h3&gt;
+&lt;p&gt;使用 &lt;strong&gt;16 位或更多位&lt;/strong&gt; 来表示字符，理论上可以表示超过 100 万个字符。&lt;/p&gt;
+&lt;p&gt;Unicode 完全兼容 ASCII，即 ASCII 字符的 Unicode 码点与 ASCII 码相同。&lt;/p&gt;
+&lt;p&gt;还有一些其他常用的编码&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/43.png&quot; alt=&quot;43&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;UTF-8&lt;/h4&gt;
+&lt;p&gt;是在互联网中使用最广的一种Unicode实现方式，也是对Unicode编码的一种改进&lt;/p&gt;
+&lt;p&gt;它是一种变长的编码方式，支持使用 1 到 6 个字节表示一个符号，根据不同的符号来变化字节长度&lt;/p&gt;
+&lt;h2&gt;布尔类型&lt;/h2&gt;
+&lt;p&gt;boolean 类型 只允许取置 true 与 false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+		
+		boolean isPass = true;
+		if(isPass == true) {
+			System.out.println(&quot;pass&quot;);
+		} else {
+			System.out.println(&quot;No pass&quot;);
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 java 中不允许用 0 和 非 0 来代替 true 与 false&lt;/p&gt;
+&lt;h2&gt;基本数据类型转换&lt;/h2&gt;
+&lt;p&gt;从左到右可以自动类型转换&lt;/p&gt;
+&lt;p&gt;char  int  long  float  double&lt;/p&gt;
+&lt;p&gt;byte  short  int  long  float  double&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+	
+			int a = &apos;a&apos;;	//char 转 int
+			char b = a;		//int 转 char 不可实现
+			double c = 12;	//int 转 double
+			float d = 10; 	//int 转 float 
+			float e = 10.0; //double 转 float 不可实现
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;数据类型转换重点&lt;/h3&gt;
+&lt;p&gt;1.有多种类型的混合运算时，将所有的类型转化为数据类型精度最大的后在进行运算&lt;/p&gt;
+&lt;p&gt;2.byte short 与 char 类型间不可以发生自动的精度转换&lt;/p&gt;
+&lt;p&gt;3.boolean 类型不参与类型自动转换&lt;/p&gt;
+&lt;p&gt;4.byte short char 三者可以计算，先将三者转化为 int 类型 再参与运算&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+	
+			char a = &apos;a&apos;;
+			short b = 2;
+			byte c = 1;
+			int c = a + b + c; //三者参与运算时转为 int 类型
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Test{
+	
+	public static void main(String[] args){
+			byte a = 1;
+			byte b = 1;
+			byte c = a + b; //三者参与运算时转为 int 不可转为byte 编译错误
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;5.自动提升原则：表达式结果的类型自动提升为操作数中最大的类型&lt;/p&gt;
+&lt;h2&gt;强制类型转换&lt;/h2&gt;
+&lt;p&gt;自动类型转换的逆过程，将精度大的转为小的，使用强制类型转换符（） ，会造成精度的降低或溢出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+			int num1 = (int)1.9;
+			System.out.println(num1);	//发生截断 结果为 1
+			int num2 = 2000;
+			byte flag = (byte)num2;
+			System.out.println(flag);	//发生溢出 结果为 -48
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;基本数据类型和 String 类型的转换&lt;/h2&gt;
+&lt;p&gt;将基本数据类型转化为 String 类型&lt;/p&gt;
+&lt;p&gt;加上 &quot; &quot; 即可实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+			int num1 = 100;
+			float num2 = 2.1f;
+			double num3 = 3.1;
+			boolean num4 = true;
+			String s1 = num1 + &quot;&quot;;
+			String s2 = num2 + &quot;&quot;;
+			String s3 = num3 + &quot;&quot;;
+			String s4 = num4 + &quot;&quot;;
+        	System.out.println(s1 + s2 + s3 + s4);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将String 类型转化为 基本数据类型&lt;/p&gt;
+&lt;p&gt;通过 parse 方法实现转换&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+			
+			String s1 = &quot;100&quot;;
+			String s2 = &quot;23.2&quot;;
+			String s3 = &quot;23.1&quot;;
+			String s4 = &quot;true&quot;;
+			
+			int n1 = Integer.parseInt(s1);
+			double n2 = Double.parseDouble(s2);
+			float n3 = Float.parseFloat(s3);
+			boolean n4 = Boolean.parseBoolean(s4);
+			char n5 = s4.charAt(0);	//得到字符串的第一个字符
+			
+			System.out.println(n1);
+			System.out.println(n2);
+			System.out.println(n3);
+			System.out.println(n4);
+			System.out.println(n5);
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;把字符串转为字符指的是将字符串中第一个字符取出转化为 char 类型&lt;/p&gt;
+&lt;p&gt;假设将 hello 字符串转化为 int 类型则会发生解析错误，在这里编译的时候不会发生错误，但是运行的时候会报错&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	public static void main(String[] args) {	
+			String s1 = &quot;true&quot;;
+			int n1 = Integer.parseInt(s1);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/44.png&quot; alt=&quot;44&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Java API 文档&lt;/h2&gt;
+&lt;p&gt;Application Programming Interface&lt;/p&gt;
+&lt;p&gt;提供了大量的基础类，官方给了相应的API文档，用于告诉开发者如何使用相关类以及方法&lt;/p&gt;
+&lt;p&gt;在这里提供一个java8 中文文档&lt;/p&gt;
+&lt;p&gt;https://www.matools.com/api/java8&lt;/p&gt;
+&lt;h2&gt;Java类 的组织形式&lt;/h2&gt;
+&lt;p&gt;java 中类以包的形式包装，JDK 中有很多的包，包下面有很多的接口，类，异常&lt;/p&gt;
+&lt;p&gt;类下面有字段，（构造器）构造方法，（成员方法）方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/42.png&quot; alt=&quot;42&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;通过文档可以方便的查找需要的 API&lt;/p&gt;
+&lt;h2&gt;Java 中的算数运算符&lt;/h2&gt;
+&lt;p&gt;/ 号在处理 int 数据时会发生截断&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+			double n1 = 10 / 4;    
+			System.out.println(n1);//结果是2.0 将int 2 转为 2.0
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;取模公式 a % b = a - a / b * b&lt;/p&gt;
+&lt;p&gt;java中面试题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;int i = 1;
+i = i++; // 1.temp = i;  2. i = i + 1;  3.i = temp;
+System.out.println(i) //i = 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;int i = 1;
+i = ++i; // 1.i = i + 1;  2. temp = i;  3.i = temp;
+System.out.println(i) //i = 2;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Java中的逻辑运算符&lt;/h2&gt;
+&lt;p&gt;&amp;amp;&amp;amp; 短路与 &amp;amp; 与&lt;/p&gt;
+&lt;p&gt;|| 短路或 | 或&lt;/p&gt;
+&lt;p&gt;! 取反&lt;/p&gt;
+&lt;p&gt;a ^ b 逻辑异或 a与b不同时为 true ，相同时为 true&lt;/p&gt;
+&lt;h2&gt;赋值运算符&lt;/h2&gt;
+&lt;p&gt;注意在使用赋值运算符计算byte char short 类型的时候会发生类型的转换，计算得到的 int 类型 会转化为 byte类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+public class Test{
+	
+	public static void main(String[] args){
+			byte b = 3;
+			b += 2;	//等价于 b = (byte)(b + 2);
+			b++;	//等价于 b = (byte)(b + 1);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;运算符优先级大致分类&lt;/h2&gt;
+&lt;p&gt;1.（）{}&lt;/p&gt;
+&lt;p&gt;2.单目运算符++ --&lt;/p&gt;
+&lt;p&gt;3.算术运算符 + - % /&lt;/p&gt;
+&lt;p&gt;4.位移运算符 &amp;gt;&amp;gt;&amp;gt;&lt;/p&gt;
+&lt;p&gt;5.比较运算符 &amp;gt; ==&lt;/p&gt;
+&lt;p&gt;6.逻辑运算符 || &amp;amp;&amp;amp; ^&lt;/p&gt;
+&lt;p&gt;7.三元运算符 ？ ：&lt;/p&gt;
+&lt;p&gt;8.赋值运算符 =&lt;/p&gt;
+&lt;h2&gt;Java中的标识符&lt;/h2&gt;
+&lt;h3&gt;标识符的命名规则&lt;/h3&gt;
+&lt;p&gt;1.由26个英文字母大小写，0—9，_ ，$ 组成&lt;/p&gt;
+&lt;p&gt;2.不可以以数字开头如 int 2ab = 1;&lt;/p&gt;
+&lt;p&gt;3.不可以使用关键字或者保留字，但是可以包含关键字和保留字&lt;/p&gt;
+&lt;p&gt;4.java 中严格区分大小写，在长度上无限制&lt;/p&gt;
+&lt;p&gt;5.标识符不含空格 如 int a b = 1;&lt;/p&gt;
+&lt;h3&gt;标识符的命名规范&lt;/h3&gt;
+&lt;p&gt;可以使得代码的编写更加专业&lt;/p&gt;
+&lt;p&gt;1.包名：多单词组成时，所有字母小写&lt;/p&gt;
+&lt;p&gt;2.类名与接口名：多单词组成时，所有首字母大写，如 StudentClass（大驼峰法）&lt;/p&gt;
+&lt;p&gt;3.变量名与方法名：多单词组成时，第一个单词首字母小写，其余的单词首字母大写，如 studentName（小驼峰法）&lt;/p&gt;
+&lt;p&gt;4.常量命名：所有字母大写，再多单词组成时之间用 _ 链接，STUDENT_NAME_CLASS&lt;/p&gt;
+&lt;h2&gt;Java中的键盘输入&lt;/h2&gt;
+&lt;p&gt;再 java 编程中需要接收用户输入数据时需要键盘输入语句类获取内容时&lt;/p&gt;
+&lt;p&gt;我们需要使用到 java.util.*包中的扫描器 Scanner&lt;/p&gt;
+&lt;p&gt;使用步骤：&lt;/p&gt;
+&lt;p&gt;1.导入类所在包&lt;/p&gt;
+&lt;p&gt;2.创建类的对象&lt;/p&gt;
+&lt;p&gt;3.调用类方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.util.Scanner; 							//1.导入类所在包
+
+public class Input{
+	public static void main(String[] args){
+		Scanner myScanner = new Scanner(System.in);	 //2.创建类的对象
+		System.out.println(&quot;请输入名字：&quot;);
+		String name = myScanner.next();				//3.调用类方法
+		System.out.println(&quot;请输入年龄：&quot;);
+		int ages = myScanner.nextInt();				//3.调用类方法
+		System.out.println(&quot;请输入成绩：&quot;);
+		double grades = myScanner.nextDouble();		 //3.调用类方法
+		System.out.println(&quot;信息如下：&quot; + name + ages + grades);
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Java笔记</title><link>https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E9%87%8D%E8%A6%81%E7%89%B9%E7%82%B9%E6%B3%A8%E9%87%8A%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E9%87%8D%E8%A6%81%E7%89%B9%E7%82%B9%E6%B3%A8%E9%87%8A%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/</guid><description>重要特点，注释，编程规范</description><pubDate>Sat, 01 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;听课笔记&lt;/h1&gt;
 &lt;p&gt;目前在听韩顺平老师的java课程，准备以此来巩固自己的java基础，以下是一些我听课程时候所记录的笔记&lt;/p&gt;
 &lt;h2&gt;Java技术体系平台&lt;/h2&gt;

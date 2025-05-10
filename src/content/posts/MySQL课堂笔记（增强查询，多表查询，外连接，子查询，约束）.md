@@ -5,7 +5,7 @@ updated: 2025-04-13
 description: '增强查询，多表查询，外连接，子查询，约束'
 image: ''
 tags: [MySQL]
-category: ''
+category: 'MySQL'
 draft: false 
 ---
 

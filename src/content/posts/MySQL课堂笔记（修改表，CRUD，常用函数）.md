@@ -5,7 +5,7 @@ updated: 2025-04-11
 description: '修改表，CRUD，常用函数'
 image: ''
 tags: [MySQL]
-category: ''
+category: 'MySQL'
 draft: false 
 ---
 

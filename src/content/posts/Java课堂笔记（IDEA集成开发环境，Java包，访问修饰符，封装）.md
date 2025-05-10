@@ -3,7 +3,7 @@ title: Java笔记
 published: 2025-03-09
 updated: 2025-03-09
 description: 'IDEA集成开发环境，Java包，访问修饰符，封装'
-image: ''
+image: './photo/idea.jpg'
 tags: [Java]
 category: 'Java'
 draft: false 

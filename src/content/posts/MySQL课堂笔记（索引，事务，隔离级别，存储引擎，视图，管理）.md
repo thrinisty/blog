@@ -5,7 +5,7 @@ updated: 2025-04-14
 description: '索引，事务，隔离级别，存储引擎，视图，管理'
 image: ''
 tags: [MySQL]
-category: ''
+category: 'MySQL'
 draft: false 
 ---
 

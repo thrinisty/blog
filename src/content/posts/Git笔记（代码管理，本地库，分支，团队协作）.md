@@ -3,7 +3,7 @@ title: 关于 Git
 published: 2025-04-16
 updated: 2025-04-16
 description: 'Git 学习笔记（加强版本）代码管理，本地库，分支，团队协作'
-image: ''
+image: './photo/git.jpg'
 tags: [Git]
 category: ''
 draft: false 

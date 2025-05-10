@@ -3,9 +3,9 @@ title: MySQL笔记
 published: 2025-04-10
 updated: 2025-04-10
 description: '基本使用，数据类型，备份恢复'
-image: ''
+image: './photo/MySQL.jpg'
 tags: [MySQL]
-category: ''
+category: 'MySQL'
 draft: false 
 ---
 

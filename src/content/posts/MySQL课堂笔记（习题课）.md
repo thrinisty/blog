@@ -5,7 +5,7 @@ updated: 2025-04-15
 description: '习题练习'
 image: ''
 tags: [MySQL]
-category: ''
+category: 'MySQL'
 draft: false 
 ---
 

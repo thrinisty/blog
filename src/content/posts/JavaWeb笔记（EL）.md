@@ -76,7 +76,7 @@ null	//null字符串
 
 
 
-### 域对象数据输出
+**域对象数据输出**
 
 EL表达式主要输出的是域对象的数据
 
@@ -330,5 +330,52 @@ false或false
 
 #### empty运算
 
+可以判断一个数据是否为空，为空则输出true，其余为false
 
+值为null  值为空串  值为Object类型数组且长度为0  list、map集合元素个数为0 
+
+定义一些（为空的）对象
+
+```jsp
+<%
+    Integer a = null;
+    String b ="";
+    Object[] c = new Object[0];
+    List<Object> d = new ArrayList<>();
+    Map<String, Object> e = new HashMap<>();
+    request.setAttribute("a", a);
+    request.setAttribute("b", b);
+    request.setAttribute("c", c);
+    request.setAttribute("d", d);
+    request.setAttribute("e", e);
+%>
+```
+
+```elm
+${empty a}<br/>
+${empty b}<br/>
+${empty c}<br/>
+${empty d}<br/>
+${empty e}<br/>
+```
+
+这些值显示都是true
+
+
+
+#### 点运算与中括号
+
+点运算：可以输出Bean对象中的某个元素值
+
+中括号：可以输出有序集合中某个元素的值，还可以输出map集合中key里含有特殊字符的key值
+
+例如有一个key为a.a.a的数据放在名为map的Map集合中，我们可以使用如下的方式取出数据
+
+```
+${map['a.a.a']}
+```
+
+
+
+### EL表达式隐含对象
 

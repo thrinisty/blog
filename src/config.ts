@@ -57,22 +57,20 @@ export const profileConfig: ProfileConfig = {
 	bio: "生活将我百般捶打,肉质竟变得筋道Q弹!!",
 	links: [
 		{
-			name: "Twitter",
-			icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
-			// You will need to install the corresponding icon set if it's not already included
-			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://twitter.com",
-		},
-		{
-			name: "Steam",
-			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
-		},
-		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
 			url: "https://github.com/thrinisty/Blog",
 		},
+   		{
+      		name: 'QQ',
+     		icon: 'fa6-brands:qq',
+    		url: 'https://wpa.qq.com/msgrd?v=3&uin=714605471&site=qq&menu=yes',
+   		},
+   		{
+      		name: 'QQ',
+      		icon: 'fa6-brands:accessible-icon',
+      		url: ' https://space.bilibili.com/356387876',
+    	},
 	],
 };
 

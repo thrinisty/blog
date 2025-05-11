@@ -2,7 +2,7 @@
 title: Vim
 published: 2025-02-18
 updated: 2025-02-18
-description: 'Vim入门'
+description: 'Vim入门，后续可能添加新的内容，或者重构一下'
 image: ''
 tags: [Vim]
 category: ''

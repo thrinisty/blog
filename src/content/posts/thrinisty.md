@@ -2,8 +2,8 @@
 title: My First Post
 published: 2024-11-15
 updated: 2024-11-15
-description: '第一篇博客'
-image: ''
+description: '欢迎来到我的博客网站！！这里会记录学习Java后端的一些笔记'
+image: './photo/2.jpg'
 tags: [Blog]
 category: ''
 draft: false  

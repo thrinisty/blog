@@ -3,7 +3,7 @@ title: Java笔记
 published: 2025-03-01
 updated: 2025-03-01
 description: '重要特点，注释，编程规范'
-image: ''
+image: './photo/Java.jpg'
 tags: [Java]
 category: 'Java'
 draft: false 

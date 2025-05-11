@@ -3,7 +3,7 @@ title: Redis
 published: 2025-04-23
 updated: 2025-04-23
 description: 'NoSQL，Redis数据结构'
-image: ''
+image: './photo/redis.png'
 tags: [Redis]
 category: ''
 draft: false 

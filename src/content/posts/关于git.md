@@ -2,7 +2,7 @@
 title: 关于 Git
 published: 2025-01-15
 updated: 2025-01-20
-description: 'Git 学习笔记'
+description: '这一份比较古老了，可以4月份那一篇，稍微详细点'
 image: ''
 tags: [Git]
 category: ''

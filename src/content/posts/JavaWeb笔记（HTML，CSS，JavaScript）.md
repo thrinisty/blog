@@ -1,9 +1,9 @@
 ---
-title: JavaWeb笔记
+title: JavaWeb笔记（前端基础）
 published: 2025-04-25
 updated: 2025-04-25
 description: 'HTML，CSS，JavaScript'
-image: ''
+image: './photo/JavaWeb.png'
 tags: [JavaWeb]
 category: 'JavaWeb'
 draft: false 

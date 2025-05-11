@@ -3,8 +3,8 @@
 title: 虚拟机代理
 published: 2024-11-15
 updated: 2024-11-15
-description: 'VMware虚拟机代理'
-image: ''
+description: 'VMware虚拟机代理设置，在安装rust软件包时碰到的问题'
+image: './photo/vmware.jpg'
 tags: [VMware, Clash]
 category: ''
 draft: false 

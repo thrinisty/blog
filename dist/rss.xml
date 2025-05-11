@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New One</description><link>https://thrinisty.github.io/</link><language>en</language><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
 &lt;p&gt;这两天事情确实有一点多，但好在也是顺利完成了，昨晚上还抽空更新了一下主页的样式，把就博客给迁移到了 Fuwari 新的主题上，看着确实稍微顺眼一点，今天没什么多的事情，就学一下EL表达式，JSTL标签库部分的知识&lt;/p&gt;
 &lt;h2&gt;EL表达式&lt;/h2&gt;
 &lt;p&gt;EL表达式全称是：Expression Language，是表达式语言&lt;/p&gt;
@@ -141,6 +141,54 @@ public class Person {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;输出map集合{key1=value1, key2=value2, key3=value3, key4=value4}
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;EL表达式运算&lt;/h3&gt;
+&lt;h4&gt;关系运算&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    ${12 == 12}或${12 eq 12}&amp;lt;br/&amp;gt;
+    ${12 != 12}或${12 ne 12}&amp;lt;br/&amp;gt;
+    ${1 &amp;lt; 2}或${1 lt 2}&amp;lt;br/&amp;gt;
+    ${1 &amp;gt; 2}或${1 gt 2}&amp;lt;br/&amp;gt;
+    ${1 &amp;lt;= 2}或${1 le 2}&amp;lt;br/&amp;gt;
+    ${1 &amp;gt;= 2}或${1 ge 2}&amp;lt;br/&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;页面显示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;true或true
+false或false
+true或true
+false或false
+true或true
+false或false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;逻辑运算&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    ${true &amp;amp;&amp;amp; true}或${true and true}&amp;lt;br/&amp;gt;
+    ${true || false}或${true or false}&amp;lt;br/&amp;gt;
+    ${!true}或${not true}&amp;lt;br/&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;页面显示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;true或true
+true或true
+false或false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;算术运算&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    ${12 + 18}&amp;lt;br/&amp;gt;
+    ${12 - 10}&amp;lt;br/&amp;gt;
+    ${12 * 2}&amp;lt;br/&amp;gt;
+    ${12 / 2} 或 ${12 div 2}&amp;lt;br/&amp;gt;
+    ${13 % 2} 或 ${13 mod 2}&amp;lt;br/&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;页面显示&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;30
+2
+24
+6.0 或 6.0
+1 或 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;empty运算&lt;/h4&gt;
 </content:encoded></item><item><title>JavaWeb笔记(JSP)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</guid><description>JSP,Java服务器页面</description><pubDate>Thu, 08 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;JSP&lt;/h2&gt;
 &lt;h3&gt;初步介绍&lt;/h3&gt;

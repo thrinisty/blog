@@ -254,3 +254,81 @@ public class Person {
 输出map集合{key1=value1, key2=value2, key3=value3, key4=value4}
 ```
 
+
+
+### EL表达式运算
+
+#### 关系运算
+
+```jsp
+<body>
+    ${12 == 12}或${12 eq 12}<br/>
+    ${12 != 12}或${12 ne 12}<br/>
+    ${1 < 2}或${1 lt 2}<br/>
+    ${1 > 2}或${1 gt 2}<br/>
+    ${1 <= 2}或${1 le 2}<br/>
+    ${1 >= 2}或${1 ge 2}<br/>
+</body>
+```
+
+页面显示
+
+```
+true或true
+false或false
+true或true
+false或false
+true或true
+false或false
+```
+
+
+
+#### 逻辑运算
+
+```elm
+<body>
+    ${true && true}或${true and true}<br/>
+    ${true || false}或${true or false}<br/>
+    ${!true}或${not true}<br/>
+</body>
+```
+
+页面显示
+
+```
+true或true
+true或true
+false或false
+```
+
+
+
+#### 算术运算
+
+```elm
+<body>
+    ${12 + 18}<br/>
+    ${12 - 10}<br/>
+    ${12 * 2}<br/>
+    ${12 / 2} 或 ${12 div 2}<br/>
+    ${13 % 2} 或 ${13 mod 2}<br/>
+</body>
+```
+
+页面显示
+
+```
+30
+2
+24
+6.0 或 6.0
+1 或 1
+```
+
+
+
+#### empty运算
+
+
+

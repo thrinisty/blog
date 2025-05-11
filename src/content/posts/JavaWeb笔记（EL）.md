@@ -379,3 +379,137 @@ ${map['a.a.a']}
 
 ### EL表达式隐含对象
 
+EL表达式中定义的，可以直接使用
+
+#### 隐含对象表格
+
+| 变量             | 类型                 | 作用                         |
+| ---------------- | -------------------- | ---------------------------- |
+| pageContext      | PageConextImpl       | 获取jsp中的九大内置对象      |
+| pageScope        | Map<String,Object>   | 获取PageContext域中的数据    |
+| requestScope     | Map<String,Object>   | 获取Request域中的数据        |
+| sessionScope     | Map<String,Object>   | 获取Session域中的数据        |
+| applicationScope | Map<String,Object>   | 获取ServletContext域中的数据 |
+| param            | Map<String,Object>   | 获取请求参数的值             |
+| paramValues      | Map<String,Object[]> | 获取请求参数的值(多个)       |
+| header           | Map<String,String>   | 获取请求头的信息             |
+| headerValues     | Map<String,String[]> | 获取请求头的信息(多个)       |
+| cookie           | Map<String,Cookie>   | 获取当前请求的Cookie信息     |
+| initParam        | Map<String,String>   | web.xml配置中的上下文参数    |
+
+
+
+#### 域对象
+
+对于四个域对象而言
+
+相比于之前获取域数据直接填入key查找对应的value，我们在使用隐含变量获取key可以避免数据的屏蔽，选择性的输出想要的域对应的值
+
+```
+${变量.key}
+```
+
+
+
+#### pageContext
+
+获取JSP内置对象
+
+常见作用
+
+常用于输出常用信息：协议，获取服务器ip，获取服务器端口，工程路径，请求方法，获取客户端ip，获取会话id编号（上边是JSP表达式，下边是EL表达式）
+
+协议
+
+```
+<%request.getScheme()%>
+${pageContext.request.scheme}
+```
+
+获取服务器ip
+
+```
+<%request.getServerName()%>
+${pageContext.request.servername}
+```
+
+获取服务器端口
+
+```
+<%request.getServerPort()%>
+${pageContext.request.serverPort}
+```
+
+工程路径
+
+```
+<%request.getContextPath()%>
+${pageContext.request.contextPath}
+```
+
+请求方法
+
+```
+<%request.getMethod()%>
+${pageContext.request.method}
+```
+
+获取客户端ip
+
+```
+<%request.getRemoteHost()%>
+${pageContext.request.remoteHost}
+```
+
+获取会话id编号
+
+```
+<%session.getId())%>
+${pageContext.session.id}
+```
+
+
+
+## JSTL标签库
+
+JSTL标签库是 JSP标准的标签库，EL表达式是为了替换JSP中的表达式脚本，而标签库则是为了替换代码脚本，使得JSP页面更加的简洁
+
+
+
+### JSTL的五个标签
+
+对应五个不同功能
+
+| 功能范围   | URI                                    | 前缀 |
+| ---------- | -------------------------------------- | ---- |
+| 核心标签库 | http://java.sun.com/jsp/jstl/core      | c    |
+| 格式化     | http://java.sun.com/jsp/jstl/fmt       | fmt  |
+| 函数       | http://java.sun.com/jsp/jstl/functions | fn   |
+| 数据库     | http://java.sun.com/jsp/jstl/sql       | sql  |
+| XML        | http://java.sun.com/jsp/jstl/xml       | x    |
+
+一般不使用数据库标签（破坏了三层结构），XML标签（通过Session传数据）
+
+
+
+### 使用步骤
+
+导入jar包，我这里给出了Maven构建的对应坐标文件
+
+```xml
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
+```
+
+在JSP文件下导入标签库（IDEA可以自动导入）
+
+```
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+```
+
+
+
+#### core核心库

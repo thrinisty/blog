@@ -46,10 +46,15 @@ ${key}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;value1
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;这里再key相同的情况下，优先输出域范围小的时候的值，这里和c语言中的屏蔽机制有些类似，但是在实际使用的时候不建议这么做，回减少代码的可读性&lt;/p&gt;
+&lt;p&gt;:::tip
+这里在key相同的情况下，优先输出域范围小的时候的值，这里和c语言中的屏蔽机制有些类似，但是在实际使用的时候不建议这么做，回减少代码的可读性
+:::&lt;/p&gt;
 &lt;h3&gt;Bean对象输出&lt;/h3&gt;
 &lt;h4&gt;对象构造&lt;/h4&gt;
 &lt;p&gt;我们先编写一个Java Person类&lt;/p&gt;
+&lt;p&gt;:::important
+get方法必须要添加，因为后续EL表达式调用的不是类本身的属性值，而是通过getXxx方法获取到的属性对象
+:::&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;package com.bean;
 
 import java.util.Arrays;
@@ -136,7 +141,7 @@ public class Person {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;输出map集合{key1=value1, key2=value2, key3=value3, key4=value4}
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>JavaWeb笔记(JSP)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</guid><description>JSP</description><pubDate>Thu, 08 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+</content:encoded></item><item><title>JavaWeb笔记(JSP)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</guid><description>JSP,Java服务器页面</description><pubDate>Thu, 08 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;JSP&lt;/h2&gt;
 &lt;h3&gt;初步介绍&lt;/h3&gt;
 &lt;p&gt;JSP全称为Java Server Pages，java的服务器页面，主要作用为替Servlet程序回传html页面的数据，因为Servlet程序回传html页面数据是一件非常繁琐的事情，开发成本和维护成本都很高&lt;/p&gt;
@@ -5257,6 +5262,19 @@ select id,name,pwd from admin where name = &apos;user2&apos; -- &apos; and pwd =
 &lt;p&gt;Mysql基础部分内容结束，本来打算直接进入JDBC的学习，但是一来我有点小累，学不动Java了，二来我的编译原理课程需要使用到Git，实习的公司也要求熟练运用Git，所以就先看看这一个部分的知识，整理笔记并实际运用，预计今天（15号）一个晚自习和明天把这一块知识拿下（熟练使用Git、Github、GitLab、Gitee）&lt;/p&gt;
 &lt;p&gt;之前的博客中我也介绍了一下Git大体是个什么玩意，但是使用的是VsCode链接到的Github，而我现在学Java改用IDEA了，又需要重新配置一下才可以方便使用。&lt;/p&gt;
 &lt;p&gt;找的课程也就4~5个小时，就当过一遍教程了，对不了解的代码分支，分支合并学习一下，以下是该课程涉及的一些知识点（代码推送、代码拉取、代码克隆、IDEA集成Github、分支合并）&lt;/p&gt;
+&lt;p&gt;:::tip
+课程推荐 【尚硅谷Git入门到精通全套教程（涵盖GitHub\Gitee码云\GitLab）】
+:::&lt;/p&gt;
+&lt;p&gt;&amp;lt;iframe
+width=&quot;100%&quot;
+height=&quot;468&quot;
+src=&quot;//player.bilibili.com/player.html?bvid=BV1vy4y1s7k6&amp;amp;p=1&amp;amp;autoplay=false&quot;
+scrolling=&quot;no&quot;
+border=&quot;0&quot;
+frameborder=&quot;no&quot;
+framespacing=&quot;0&quot;
+allowfullscreen=&quot;true&quot;&amp;gt;
+&amp;lt;/iframe&amp;gt;&lt;/p&gt;
 &lt;h2&gt;重要概念&lt;/h2&gt;
 &lt;h3&gt;版本控制&lt;/h3&gt;
 &lt;p&gt;版本控制是一种记录文件内容变化，以便将来查阅特定版本修订情况的系统&lt;/p&gt;
@@ -22722,7 +22740,7 @@ public class Test{
 &lt;p&gt;:%s/old/new替换&lt;/p&gt;
 &lt;p&gt;/进入底行模式用于查找&lt;/p&gt;
 &lt;p&gt;如/main&lt;/p&gt;
-</content:encoded></item><item><title>关于 Git</title><link>https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</guid><description>Git 学习笔记</description><pubDate>Wed, 15 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;git的功能相当于一个游戏的存档功能，可用以代码的管理，正确使用git即可提高编码的效率以及存储安全，&lt;/p&gt;
+</content:encoded></item><item><title>关于 Git</title><link>https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</guid><description>这一份比较古老了，可以4月份那一篇，稍微详细点</description><pubDate>Wed, 15 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;git的功能相当于一个游戏的存档功能，可用以代码的管理，正确使用git即可提高编码的效率以及存储安全，&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/30.png&quot; alt=&quot;30&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;在VScode之中可以通过GUI进行快速的配置与github的git链接，首先用默认的浏览器注册一个GitHub账号，保持账号的登陆状态，按照网络上的教程安装git（详细可参照各大博客上的相关教程）&lt;/p&gt;
 &lt;p&gt;再次打开vscode即可在上图的位置看到打开文件夹以及克隆仓库的两个选项，我们选择创建一个文件夹，在文件夹下可以新建一个本地的git仓库，可以自行在仓库中添加一些内容，提交就等价于游戏中保存一个本地存档，而同步相当于提交本地的游戏数据到云端存储，而第一次存储到github中需要按照相关的步骤对本地的环境进行授权操作。&lt;/p&gt;
@@ -22732,7 +22750,7 @@ public class Test{
 &lt;p&gt;&lt;img src=&quot;../images/32.png&quot; alt=&quot;32&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;上述我们通过了在本地的初始化建立git仓库，默认提交到了github中，当然我们也可以在GitHub中先建立仓库，然后再远程建立连接，我们先在源代码管理界面的右侧找到三个点...的选项，选择远程，添加远程库，如果你登陆了github账号的话即可自动查找github中的仓库，选取并在后续选择私有或者公有即可&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/33.png&quot; alt=&quot;33&quot; /&gt;&lt;/p&gt;
-</content:encoded></item><item><title>虚拟机代理</title><link>https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</guid><description>VMware虚拟机代理</description><pubDate>Fri, 15 Nov 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;第一份正式的博客内容&lt;/h3&gt;
+</content:encoded></item><item><title>虚拟机代理</title><link>https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%BB%A3%E7%90%86/</guid><description>VMware虚拟机代理设置，在安装rust软件包时碰到的问题</description><pubDate>Fri, 15 Nov 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;第一份正式的博客内容&lt;/h3&gt;
 &lt;p&gt;这算是我写的第一份博客，大学时光已经过半，我也想在有限的时间里面留下点什么，希望这一篇推文可以帮助到你:happy:&lt;/p&gt;
 &lt;h4&gt;序言&lt;/h4&gt;
 &lt;p&gt;和大多数人一样，我在linux安装各种软件包的时候，想到的第一个方法应该是换源，换一个学术的源平台去下载各种各样的包或者软件之类的，但是有的时候镜像资源难免会出现一些缺漏，导致了没有办法正确的找到依赖，而通过代理的方式可以在linux虚拟机下安装各式各样的软件一劳永逸，接下来是我从网络上找寻到的一种方式&lt;/p&gt;

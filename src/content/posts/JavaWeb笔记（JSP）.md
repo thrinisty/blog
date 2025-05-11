@@ -2,7 +2,7 @@
 title: JavaWeb笔记(JSP)
 published: 2025-05-08
 updated: 2025-05-08
-description: 'JSP'
+description: 'JSP,Java服务器页面'
 image: ''
 tags: [JavaWeb]
 category: 'JavaWeb'

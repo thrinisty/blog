@@ -17,7 +17,20 @@ Mysql基础部分内容结束，本来打算直接进入JDBC的学习，但是�
 
 找的课程也就4~5个小时，就当过一遍教程了，对不了解的代码分支，分支合并学习一下，以下是该课程涉及的一些知识点（代码推送、代码拉取、代码克隆、IDEA集成Github、分支合并）
 
+:::tip
+课程推荐 【尚硅谷Git入门到精通全套教程（涵盖GitHub\Gitee码云\GitLab）】
+:::
 
+<iframe 
+    width="100%" 
+    height="468" 
+    src="//player.bilibili.com/player.html?bvid=BV1vy4y1s7k6&p=1&autoplay=false" 
+    scrolling="no" 
+    border="0" 
+    frameborder="no" 
+    framespacing="0" 
+    allowfullscreen="true">
+</iframe>
 
 ## 重要概念
 

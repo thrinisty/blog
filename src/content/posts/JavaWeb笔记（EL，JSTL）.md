@@ -161,7 +161,7 @@ public class Person {
     map.put("key2", "value2");
     map.put("key3", "value3");
     map.put("key4", "value4");
-    Person persion = new Person("Jack", phones, list, map);
+    Person person = new Person("Jack", phones, list, map);
     pageContext.setAttribute("person", person);
 %>
 ```
@@ -512,4 +512,101 @@ JSTL标签库是 JSP标准的标签库，EL表达式是为了替换JSP中的表�
 
 
 
-#### core核心库
+### core核心库
+
+#### set
+
+可以往域里面那保存数据
+
+```jsp
+<c:set scope="request" var="key" value="123"/>
+${requestScope.key}
+```
+
+
+
+#### if
+
+做选择判断，但是不可以做if-else分支，需要使用需要再写一个if标签
+
+```jsp
+<c:set scope="request" var="key" value="123"/>
+<c:if test="${false or true}">
+    ${requestScope.key}
+</c:if>
+```
+
+
+
+#### choose
+
+用于多路判断，和switch类似
+
+```jsp
+<c:choose>
+    <c:when test="${key > 180}">
+        ${key}
+    </c:when>
+    <c:when test="${key < 180 && key > 100}">
+        ${key1}
+    </c:when>
+    <c:otherwise>
+        ${key2}
+    </c:otherwise>
+</c:choose>
+```
+
+:::warning
+choose里不可以使用html注释.
+
+otherwise和when标签的直接父标签一定要是choose
+
+:::
+
+
+
+#### forEach
+
+作用是遍历输出
+
+遍历1~10，var属性表示循环的变量
+
+```jsp
+<c:forEach begin="1" end="10" var="i">
+    ${i}
+</c:forEach>
+```
+
+遍历Object数组
+
+```jsp
+<body>
+    <%
+        Object[] arr = {"Java", "Cpp", 10};
+        request.setAttribute("key", arr);
+    %>
+    <c:forEach items="${requestScope.key}" var="i">
+       ${i}
+    </c:forEach>
+</body>
+```
+
+遍历List集合（Bean对象一般可以放在表格中显示，要整齐一点）
+
+```jsp
+<c:forEach items="${requestScope.person}" var="person">
+    ${person}
+</c:forEach>
+```
+
+遍历Map集合
+
+```jsp
+<c:forEach items="${requestScope.key}" var="entry">
+    ${entry}
+    ${entry.key}
+    ${entry.value}
+</c:forEach>
+```
+
+这个部分其实还有很多的内容，但是考虑到代码脚本也可以轻松完成，而且JSTL伴随着JSP慢慢减少使用，我不想在这个部分浪费太多时间

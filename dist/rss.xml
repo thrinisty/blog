@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0el/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0session/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0session/</guid><description>JavaWeb文件传输，Session</description><pubDate>Mon, 12 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;文件传输&lt;/h2&gt;
+&lt;p&gt;文件上传和下载是非常常见的功能，很多的系统中或者软件中都经常使用文件的上传和下载&lt;/p&gt;
+&lt;h3&gt;文件上传&lt;/h3&gt;
+&lt;p&gt;1.要有一个form标签，method=post请求&lt;/p&gt;
+&lt;p&gt;2.form标签的encType属性必须为multipart/form-data&lt;/p&gt;
+&lt;p&gt;3.在form标签中使用input type=file添加上传的文件&lt;/p&gt;
+&lt;p&gt;4.使用服务器代码接收上传的文件&lt;/p&gt;
+&lt;p&gt;以下是一个代码示例&lt;/p&gt;
+&lt;p&gt;1-3：前端显示界面完成上传功能&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
+        用户名称：&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        头像：&amp;lt;input type=&quot;file&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;上传&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.服务器处理上传图片的代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/photoUpload&quot;)
+public class PhotoServer extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+        System.out.println(&quot;图片上传处理&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
 &lt;p&gt;这两天事情确实有一点多，但好在也是顺利完成了，昨晚上还抽空更新了一下主页的样式，把就博客给迁移到了 Fuwari 新的主题上，看着确实稍微顺眼一点，今天没什么多的事情，就学一下EL表达式，JSTL标签库部分的知识&lt;/p&gt;
 &lt;h2&gt;EL表达式&lt;/h2&gt;
 &lt;p&gt;EL表达式全称是：Expression Language，是表达式语言&lt;/p&gt;
@@ -34,7 +62,7 @@ ${keyNull}
 &lt;p&gt;当然我们使用三目运算符，编写表达式脚本也可以实现类似的效果&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;%=request.getAttribute(&quot;key&quot;) == null? &quot;&quot; : request.getAttribute(&quot;key&quot;)%&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;域对象数据输出&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;域对象数据输出&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;EL表达式主要输出的是域对象的数据&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;%
     pageContext.setAttribute(&quot;key&quot;, &quot;value1&quot;);
@@ -98,7 +126,7 @@ public class Person {
     map.put(&quot;key2&quot;, &quot;value2&quot;);
     map.put(&quot;key3&quot;, &quot;value3&quot;);
     map.put(&quot;key4&quot;, &quot;value4&quot;);
-    Person persion = new Person(&quot;Jack&quot;, phones, list, map);
+    Person person = new Person(&quot;Jack&quot;, phones, list, map);
     pageContext.setAttribute(&quot;person&quot;, person);
 %&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -189,6 +217,255 @@ false或false
 1 或 1
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4&gt;empty运算&lt;/h4&gt;
+&lt;p&gt;可以判断一个数据是否为空，为空则输出true，其余为false&lt;/p&gt;
+&lt;p&gt;值为null  值为空串  值为Object类型数组且长度为0  list、map集合元素个数为0&lt;/p&gt;
+&lt;p&gt;定义一些（为空的）对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%
+    Integer a = null;
+    String b =&quot;&quot;;
+    Object[] c = new Object[0];
+    List&amp;lt;Object&amp;gt; d = new ArrayList&amp;lt;&amp;gt;();
+    Map&amp;lt;String, Object&amp;gt; e = new HashMap&amp;lt;&amp;gt;();
+    request.setAttribute(&quot;a&quot;, a);
+    request.setAttribute(&quot;b&quot;, b);
+    request.setAttribute(&quot;c&quot;, c);
+    request.setAttribute(&quot;d&quot;, d);
+    request.setAttribute(&quot;e&quot;, e);
+%&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;${empty a}&amp;lt;br/&amp;gt;
+${empty b}&amp;lt;br/&amp;gt;
+${empty c}&amp;lt;br/&amp;gt;
+${empty d}&amp;lt;br/&amp;gt;
+${empty e}&amp;lt;br/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这些值显示都是true&lt;/p&gt;
+&lt;h4&gt;点运算与中括号&lt;/h4&gt;
+&lt;p&gt;点运算：可以输出Bean对象中的某个元素值&lt;/p&gt;
+&lt;p&gt;中括号：可以输出有序集合中某个元素的值，还可以输出map集合中key里含有特殊字符的key值&lt;/p&gt;
+&lt;p&gt;例如有一个key为a.a.a的数据放在名为map的Map集合中，我们可以使用如下的方式取出数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;${map[&apos;a.a.a&apos;]}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;EL表达式隐含对象&lt;/h3&gt;
+&lt;p&gt;EL表达式中定义的，可以直接使用&lt;/p&gt;
+&lt;h4&gt;隐含对象表格&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;变量&lt;/th&gt;
+&lt;th&gt;类型&lt;/th&gt;
+&lt;th&gt;作用&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;pageContext&lt;/td&gt;
+&lt;td&gt;PageConextImpl&lt;/td&gt;
+&lt;td&gt;获取jsp中的九大内置对象&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pageScope&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取PageContext域中的数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;requestScope&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取Request域中的数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sessionScope&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取Session域中的数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;applicationScope&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取ServletContext域中的数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;param&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取请求参数的值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;paramValues&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Object[]&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取请求参数的值(多个)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;header&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,String&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取请求头的信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;headerValues&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,String[]&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取请求头的信息(多个)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;cookie&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,Cookie&amp;gt;&lt;/td&gt;
+&lt;td&gt;获取当前请求的Cookie信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;initParam&lt;/td&gt;
+&lt;td&gt;Map&amp;lt;String,String&amp;gt;&lt;/td&gt;
+&lt;td&gt;web.xml配置中的上下文参数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4&gt;域对象&lt;/h4&gt;
+&lt;p&gt;对于四个域对象而言&lt;/p&gt;
+&lt;p&gt;相比于之前获取域数据直接填入key查找对应的value，我们在使用隐含变量获取key可以避免数据的屏蔽，选择性的输出想要的域对应的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;${变量.key}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;pageContext&lt;/h4&gt;
+&lt;p&gt;获取JSP内置对象&lt;/p&gt;
+&lt;p&gt;常见作用&lt;/p&gt;
+&lt;p&gt;常用于输出常用信息：协议，获取服务器ip，获取服务器端口，工程路径，请求方法，获取客户端ip，获取会话id编号（上边是JSP表达式，下边是EL表达式）&lt;/p&gt;
+&lt;p&gt;协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getScheme()%&amp;gt;
+${pageContext.request.scheme}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;获取服务器ip&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getServerName()%&amp;gt;
+${pageContext.request.servername}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;获取服务器端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getServerPort()%&amp;gt;
+${pageContext.request.serverPort}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;工程路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getContextPath()%&amp;gt;
+${pageContext.request.contextPath}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;请求方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getMethod()%&amp;gt;
+${pageContext.request.method}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;获取客户端ip&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%request.getRemoteHost()%&amp;gt;
+${pageContext.request.remoteHost}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;获取会话id编号&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%session.getId())%&amp;gt;
+${pageContext.session.id}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;JSTL标签库&lt;/h2&gt;
+&lt;p&gt;JSTL标签库是 JSP标准的标签库，EL表达式是为了替换JSP中的表达式脚本，而标签库则是为了替换代码脚本，使得JSP页面更加的简洁&lt;/p&gt;
+&lt;h3&gt;JSTL的五个标签&lt;/h3&gt;
+&lt;p&gt;对应五个不同功能&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;功能范围&lt;/th&gt;
+&lt;th&gt;URI&lt;/th&gt;
+&lt;th&gt;前缀&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;核心标签库&lt;/td&gt;
+&lt;td&gt;http://java.sun.com/jsp/jstl/core&lt;/td&gt;
+&lt;td&gt;c&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;格式化&lt;/td&gt;
+&lt;td&gt;http://java.sun.com/jsp/jstl/fmt&lt;/td&gt;
+&lt;td&gt;fmt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;函数&lt;/td&gt;
+&lt;td&gt;http://java.sun.com/jsp/jstl/functions&lt;/td&gt;
+&lt;td&gt;fn&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;数据库&lt;/td&gt;
+&lt;td&gt;http://java.sun.com/jsp/jstl/sql&lt;/td&gt;
+&lt;td&gt;sql&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XML&lt;/td&gt;
+&lt;td&gt;http://java.sun.com/jsp/jstl/xml&lt;/td&gt;
+&lt;td&gt;x&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;一般不使用数据库标签（破坏了三层结构），XML标签（通过Session传数据）&lt;/p&gt;
+&lt;h3&gt;使用步骤&lt;/h3&gt;
+&lt;p&gt;导入jar包，我这里给出了Maven构建的对应坐标文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;javax.servlet&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;jstl&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;1.2&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在JSP文件下导入标签库（IDEA可以自动导入）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;core核心库&lt;/h3&gt;
+&lt;h4&gt;set&lt;/h4&gt;
+&lt;p&gt;可以往域里面那保存数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:set scope=&quot;request&quot; var=&quot;key&quot; value=&quot;123&quot;/&amp;gt;
+${requestScope.key}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;if&lt;/h4&gt;
+&lt;p&gt;做选择判断，但是不可以做if-else分支，需要使用需要再写一个if标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:set scope=&quot;request&quot; var=&quot;key&quot; value=&quot;123&quot;/&amp;gt;
+&amp;lt;c:if test=&quot;${false or true}&quot;&amp;gt;
+    ${requestScope.key}
+&amp;lt;/c:if&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;choose&lt;/h4&gt;
+&lt;p&gt;用于多路判断，和switch类似&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:choose&amp;gt;
+    &amp;lt;c:when test=&quot;${key &amp;gt; 180}&quot;&amp;gt;
+        ${key}
+    &amp;lt;/c:when&amp;gt;
+    &amp;lt;c:when test=&quot;${key &amp;lt; 180 &amp;amp;&amp;amp; key &amp;gt; 100}&quot;&amp;gt;
+        ${key1}
+    &amp;lt;/c:when&amp;gt;
+    &amp;lt;c:otherwise&amp;gt;
+        ${key2}
+    &amp;lt;/c:otherwise&amp;gt;
+&amp;lt;/c:choose&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning
+choose里不可以使用html注释.&lt;/p&gt;
+&lt;p&gt;otherwise和when标签的直接父标签一定要是choose&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;forEach&lt;/h4&gt;
+&lt;p&gt;作用是遍历输出&lt;/p&gt;
+&lt;p&gt;遍历1~10，var属性表示循环的变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:forEach begin=&quot;1&quot; end=&quot;10&quot; var=&quot;i&quot;&amp;gt;
+    ${i}
+&amp;lt;/c:forEach&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;遍历Object数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;%
+        Object[] arr = {&quot;Java&quot;, &quot;Cpp&quot;, 10};
+        request.setAttribute(&quot;key&quot;, arr);
+    %&amp;gt;
+    &amp;lt;c:forEach items=&quot;${requestScope.key}&quot; var=&quot;i&quot;&amp;gt;
+       ${i}
+    &amp;lt;/c:forEach&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;遍历List集合（Bean对象一般可以放在表格中显示，要整齐一点）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:forEach items=&quot;${requestScope.person}&quot; var=&quot;person&quot;&amp;gt;
+    ${person}
+&amp;lt;/c:forEach&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;遍历Map集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;c:forEach items=&quot;${requestScope.key}&quot; var=&quot;entry&quot;&amp;gt;
+    ${entry}
+    ${entry.key}
+    ${entry.value}
+&amp;lt;/c:forEach&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个部分其实还有很多的内容，但是考虑到代码脚本也可以轻松完成，而且JSTL伴随着JSP慢慢减少使用，我不想在这个部分浪费太多时间&lt;/p&gt;
 </content:encoded></item><item><title>JavaWeb笔记(JSP)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jsp/</guid><description>JSP,Java服务器页面</description><pubDate>Thu, 08 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;JSP&lt;/h2&gt;
 &lt;h3&gt;初步介绍&lt;/h3&gt;

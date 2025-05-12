@@ -1,4 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0session/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0session/</guid><description>JavaWeb文件传输，Session</description><pubDate>Mon, 12 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(Cookie，Session)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</guid><description>Cookie，Session</description><pubDate>Tue, 13 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;Cookie&lt;/h2&gt;
+&lt;p&gt;Cookie大小不超过4KB&lt;/p&gt;
+&lt;p&gt;Cookie是服务器通知客户端保存键值对的一种技术&lt;/p&gt;
+&lt;p&gt;客户端拥有Cookie后每次请求都发送给服务器&lt;/p&gt;
+&lt;h3&gt;创建Cookie&lt;/h3&gt;
+&lt;p&gt;通过请求连接访问createCookie方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+&amp;lt;div&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=createCookie&quot;
+       target=&quot;_blank&quot;
+       style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
+        Cookie创建
+    &amp;lt;/a&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现createCookie方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/CookieServlet&quot;)
+public class Servlet01 extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;doGet&quot;);
+        String action = req.getParameter(&quot;action&quot;); // 获取 action 参数
+        if (&quot;createCookie&quot;.equals(action)) {
+            createCookie(req, resp); // 调用 createCookie 方法
+        } else {
+            System.out.println(&quot;doGet (default)&quot;);
+            resp.getWriter().write(&quot;Default GET request&quot;);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;doPost&quot;);
+    }
+
+    protected void createCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cookie cookie = new Cookie(&quot;name&quot;, &quot;value&quot;);
+        resp.addCookie(cookie);
+        System.out.println(&quot;Cookie created&quot;);
+        resp.getWriter().write(&quot;Cookie created&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>JavaWeb笔记（文件上传）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</guid><description>JavaWeb文件传输</description><pubDate>Mon, 12 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;文件传输&lt;/h2&gt;
 &lt;p&gt;文件上传和下载是非常常见的功能，很多的系统中或者软件中都经常使用文件的上传和下载&lt;/p&gt;
 &lt;h3&gt;文件上传&lt;/h3&gt;
@@ -7,25 +52,189 @@
 &lt;p&gt;3.在form标签中使用input type=file添加上传的文件&lt;/p&gt;
 &lt;p&gt;4.使用服务器代码接收上传的文件&lt;/p&gt;
 &lt;p&gt;以下是一个代码示例&lt;/p&gt;
+&lt;h4&gt;实现方式&lt;/h4&gt;
 &lt;p&gt;1-3：前端显示界面完成上传功能&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
     &amp;lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
         用户名称：&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
-        头像：&amp;lt;input type=&quot;file&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        头像：&amp;lt;input type=&quot;file&quot; name=&quot;photo&quot;&amp;gt;&amp;lt;br/&amp;gt;
         &amp;lt;input type=&quot;submit&quot; value=&quot;上传&quot;&amp;gt;
     &amp;lt;/form&amp;gt;
 &amp;lt;/body&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;4.服务器处理上传图片的代码&lt;/p&gt;
+&lt;p&gt;:::note
+使用如下的Tomcat中的虚拟机选项设置字符集&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-Dfile.encoding=UTF-8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/photoUpload&quot;)
+public class PhotoServer extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;图片上传处理&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里暂时没有实现图片的Servlet处理，我们接下来通过Servlet API实现&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;文件传输request中的数据以流的形式传输，需要使用流对象来接收，而且流对象中的内容包括了请求头部分和图片二进制数据部分，需要我们手动处理，这里建议直接调用Servlet API&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;相关工具包&lt;/h4&gt;
+&lt;p&gt;在使用相关API之前，我们需要使用Maven管理工具导入相关包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- Apache Commons FileUpload --&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;commons-fileupload&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;commons-fileupload&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;1.5&amp;lt;/version&amp;gt; &amp;lt;!-- 最新稳定版 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+&amp;lt;!-- Apache Commons IO（FileUpload 依赖它） --&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;commons-io&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;commons-io&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.11.0&amp;lt;/version&amp;gt; &amp;lt;!-- 最新稳定版 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中有一些常用类与方法&lt;/p&gt;
+&lt;p&gt;ServletFileUpLoad：用于解析上传的数据&lt;/p&gt;
+&lt;p&gt;ServletFileUpLoad静态方法isMultipartContent：用于判断当前上传的数据格式是否是多段的格式&lt;/p&gt;
+&lt;p&gt;parseRequest：返回FileItem类List集合，解析上传数据&lt;/p&gt;
+&lt;p&gt;FileItem类方法isFormField:判断表单项是普通表单还是上传文件类型的表单&lt;/p&gt;
+&lt;p&gt;FileItem类方法getFieldName：获取表单项的name属性&lt;/p&gt;
+&lt;p&gt;FileItem类方法getString：获取当前表单项的值&lt;/p&gt;
+&lt;p&gt;FileItem类方法getName：获取上传的文件名&lt;/p&gt;
+&lt;p&gt;FileItem类方法write：传入file参数，将上传的文件写入到参数file指向的空间&lt;/p&gt;
+&lt;h4&gt;文件处理实现&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/photoUpload&quot;)
 public class PhotoServer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
         System.out.println(&quot;图片上传处理&quot;);
+        if(ServletFileUpload.isMultipartContent(req)) {
+            //创建FileItemFactory工厂实现类
+            FileItemFactory fileItemFactory = new DiskFileItemFactory();
+            //创建用于上传数据的工具类ServletFileUpload
+            ServletFileUpload upload = new ServletFileUpload(fileItemFactory);
+            try {
+                List&amp;lt;FileItem&amp;gt; list = upload.parseRequest(req);
+                for (FileItem item : list) {
+                    if (item.isFormField()) {
+                        //普通表单项
+                        System.out.println(item.getFieldName() + &quot; : &quot; + item.getString());
+                    } else {
+                        //文件处理
+                        String filePath = &quot;e:\\&quot; + item.getName();
+                        item.write(new File(filePath));
+                        System.out.println(&quot;存储至路径&quot; + filePath);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;文件下载&lt;/h3&gt;
+&lt;p&gt;1.获取要下载的文件名&lt;/p&gt;
+&lt;p&gt;2.读取要下载的文件内容（通过ServletContext获取）&lt;/p&gt;
+&lt;p&gt;3.把下载的文件内容回传给客户端&lt;/p&gt;
+&lt;p&gt;4.回传前通过响应头告诉客户端返回的数据类型&lt;/p&gt;
+&lt;p&gt;5.告诉客户端收到的数据是用于下载使用&lt;/p&gt;
+&lt;h4&gt;页面get请求&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;form action=&quot;http://localhost:8080/EL/Download&quot; method=&quot;get&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
+    输入下载的文件名&amp;lt;input type=&quot;text&quot; name=&quot;filename&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    &amp;lt;input type=&quot;submit&quot; value=&quot;下载文件&quot;&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Servlet服务器处理&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/Download&quot;)
+public class Download extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String fileName = req.getParameter(&quot;filename&quot;);
+        //String fileName = &quot;2.jpg&quot;;
+        ServletContext context = getServletContext();
+        String mimeType = context.getMimeType(&quot;/file/&quot; + fileName);
+
+        resp.setContentType(mimeType);
+        resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=&quot; + fileName);
+
+        InputStream resourceAsStream = context.getResourceAsStream(&quot;/file/&quot; + fileName);//获取输入流
+        OutputStream out = resp.getOutputStream();//获取响应输出流
+        IOUtils.copy(resourceAsStream, out);//复制数据给输出流，输出到客户端
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;当文件路径中含有中文的时候，没有办法正常识别文件对象，我们需要处理一下头部，将文件名称进行url编码（谷歌浏览器、Edge）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=&quot; + URLEncoder.encode(fileName, &quot;UTF-8&quot;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;如果是火狐浏览器需要Base64编码解码，较为麻烦，需要手动的将文件名转化为字节数组（UTF-8），再将字节数组使用编码器实例编码，解码也一样，先将Base64编码解为字节数组，再使用String指定UTF-8编码格式将其转化为字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename==?UTF-8?B?&quot; + new BASE64Encoder().encode(fileName.getBytes(UTF-8)) + &quot;?=&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;进一步改进&lt;/h4&gt;
+&lt;p&gt;可以通过request的请求头User-Agent对于客户端浏览器进行判断，再根据不同的分支进行响应的编码处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if(req.getHeader(&quot;User-Agent&quot;).contains(&quot;Chrome&quot;)) {
+    resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=&quot; + URLEncoder.encode(fileName, &quot;UTF-8&quot;));
+} else {
+    resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename==?UTF-8?B?&quot; + new BASE64Encoder().encode(fileName.getBytes(&quot;UTF-8&quot;)) + &quot;?=&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是在实际使用中，我们采取更加健壮的编码方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/Download&quot;)
+public class Download extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String fileName = req.getParameter(&quot;filename&quot;);
+        ServletContext context = getServletContext();
+        String mimeType = context.getMimeType(&quot;/file/&quot; + fileName);
+
+        resp.setContentType(mimeType);
+
+        // 改进的文件名编码处理（兼容所有现代浏览器）
+        String encodedFileName = getEncodedFileName(fileName);
+        resp.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; &quot; + encodedFileName);
+
+        try (InputStream resourceAsStream = context.getResourceAsStream(&quot;/file/&quot; + fileName)) {
+            IOUtils.copy(resourceAsStream, resp.getOutputStream());
+        }
+    }
+
+    private String getEncodedFileName(String fileName) throws UnsupportedEncodingException {
+        // 1. 简单ASCII文件名（兼容旧浏览器）
+        String asciiFallback = &quot;filename=\&quot;&quot; + escapeAscii(fileName) + &quot;\&quot;&quot;;
+
+        // 2. RFC 5987编码（现代浏览器优先使用这个）
+        String rfc5987 = &quot;filename*=UTF-8&apos;&apos;&quot; + encodeRFC5987(fileName);
+
+        return asciiFallback + &quot;; &quot; + rfc5987;
+    }
+
+    private String escapeAscii(String fileName) {
+        // 转义ASCII文件名中的特殊字符
+        return fileName.replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)
+                .replace(&quot;\r&quot;, &quot;&quot;)
+                .replace(&quot;\n&quot;, &quot;&quot;);
+    }
+
+    private String encodeRFC5987(String fileName) throws UnsupportedEncodingException {
+        // 使用Java标准库进行RFC 5987编码
+        return URLEncoder.encode(fileName, &quot;UTF-8&quot;)
+                .replace(&quot;+&quot;, &quot;%20&quot;)
+                .replace(&quot;*&quot;, &quot;%2A&quot;)
+                .replace(&quot;%7E&quot;, &quot;~&quot;)
+                .replace(&quot;%27&quot;, &quot;&apos;&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;今天课多，学的内容较少，但是额外抽出时间整理了一下网络编程第二个大作业的思路（JSP+Servlet+Bean实现图书管理系统），准备攒一个简易版本网络程序，就当综合使用下JavaWeb部分的知识&lt;/p&gt;
+&lt;p&gt;明天打算，进入Cookie和Session部分的学习&lt;/p&gt;
 </content:encoded></item><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
 &lt;p&gt;这两天事情确实有一点多，但好在也是顺利完成了，昨晚上还抽空更新了一下主页的样式，把就博客给迁移到了 Fuwari 新的主题上，看着确实稍微顺眼一点，今天没什么多的事情，就学一下EL表达式，JSTL标签库部分的知识&lt;/p&gt;
 &lt;h2&gt;EL表达式&lt;/h2&gt;

@@ -38,7 +38,7 @@ draft: false
 
 ```html
 <body>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="http://localhost:8080/EL/photoUpload" method="post" enctype="multipart/form-data">
         用户名称：<input type="text" name="username"><br/>
         头像：<input type="file" name="photo"><br/>
         <input type="submit" value="上传">

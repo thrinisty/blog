@@ -2,8 +2,8 @@
 &lt;h2&gt;Cookie&lt;/h2&gt;
 &lt;p&gt;Cookie大小不超过4KB&lt;/p&gt;
 &lt;p&gt;Cookie是服务器通知客户端保存键值对的一种技术&lt;/p&gt;
-&lt;p&gt;客户端拥有Cookie后每次请求都发送给服务器&lt;/p&gt;
-&lt;h3&gt;创建Cookie&lt;/h3&gt;
+&lt;p&gt;客户端拥有Cookie后每次请求都发送Cookie信息给服务器&lt;/p&gt;
+&lt;h3&gt;Cookie使用&lt;/h3&gt;
 &lt;p&gt;通过请求连接访问createCookie方法&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
 &amp;lt;div&amp;gt;
@@ -15,31 +15,136 @@
 &amp;lt;/div&amp;gt;
 &amp;lt;/body&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;实现createCookie方法&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/CookieServlet&quot;)
-public class Servlet01 extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(&quot;doGet&quot;);
-        String action = req.getParameter(&quot;action&quot;); // 获取 action 参数
-        if (&quot;createCookie&quot;.equals(action)) {
-            createCookie(req, resp); // 调用 createCookie 方法
-        } else {
-            System.out.println(&quot;doGet (default)&quot;);
-            resp.getWriter().write(&quot;Default GET request&quot;);
+&lt;p&gt;Servlet get方法逻辑重写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+    System.out.println(&quot;doGet&quot;);
+    String action = req.getParameter(&quot;action&quot;); // 获取 action 参数
+    if (&quot;createCookie&quot;.equals(action)) {
+        createCookie(req, resp); // 调用 createCookie 方法
+    } else if (&quot;getCookie&quot;.equals(action)) {
+        getCookie(req, resp);
+
+    } else if (&quot;updateCookie&quot;.equals(action)) {
+        updateCookie(req, resp);
+    }else {
+        System.out.println(&quot;doGet (default)&quot;);
+        resp.getWriter().write(&quot;Default GET request&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;方法实现&lt;/h3&gt;
+&lt;h4&gt;实现createCookie方法&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;protected void createCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie cookie1 = new Cookie(&quot;name1&quot;, &quot;value&quot;);
+    resp.addCookie(cookie1);//通知客户端保存Cookie
+    Cookie cookie2 = new Cookie(&quot;name2&quot;, &quot;value&quot;);
+    resp.addCookie(cookie2);//通知客户端保存Cookie
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;请求头中得到的Cookie&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cookie
+name=value; JSESSIONID=4F532626BFB4F9BD1E10FB5AD9B48B8B; name1=value; name2=value; Idea-edca08ae=bf13885b-ced0-462f-82b1-c1e0b2a26978
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;服务器获取Cookie对象&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;protected void getCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie[] cookies = req.getCookies();
+    for (Cookie cookie : cookies) {
+        resp.getWriter().write(cookie.getName() + &quot;:&quot; + cookie.getValue() +&quot;&amp;lt;br/&amp;gt;&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;name1:value
+name2:value
+JSESSIONID:A8B31B0AD41D5E89238669FF5CA83DB6
+Idea-edca08ae:bf13885b-ced0-462f-82b1-c1e0b2a26978
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在方法中还可以用逻辑判断取出我们想要的cookie使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for (Cookie cookie : cookies) {
+    if(cookie.getName().equals(&quot;name1&quot;)) {
+        System.out.println(&quot;Cookie name1 found&quot;);
+        target = cookie;
+    }
+}
+if (target != null) {
+    System.out.println(&quot;Cookie function&quot;);
+    resp.getWriter().write(target.getName() + &quot;:&quot; + target.getValue() + &quot;&amp;lt;br/&amp;gt;&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;为了方便可以构造一个Cookie工具类，使用起来会方便一些&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class CookieUtils {
+    public static Cookie findCookie(Cookie[] cookies, String name) {
+        if(cookies != null || cookies.length == 0 || name != null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals(name)) {
+                    return cookie;
+                }
+            }
         }
+        return null;
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(&quot;doPost&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;protected void getCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie[] cookies = req.getCookies();
+    Cookie target = CookieUtils.findCookie(cookies, &quot;name1&quot;);
+    if (target != null) {
+        System.out.println(&quot;Cookie function&quot;);
+        resp.getWriter().write(target.getName() + &quot;:&quot; + target.getValue() + &quot;&amp;lt;br/&amp;gt;&quot;);
     }
-
-    protected void createCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Cookie cookie = new Cookie(&quot;name&quot;, &quot;value&quot;);
-        resp.addCookie(cookie);
-        System.out.println(&quot;Cookie created&quot;);
-        resp.getWriter().write(&quot;Cookie created&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Cookie值修改&lt;/h4&gt;
+&lt;p&gt;方案一&lt;/p&gt;
+&lt;p&gt;1.创建一个要修改的同名Cookie对象&lt;/p&gt;
+&lt;p&gt;2.在构造器，同时赋予新的Cookie值&lt;/p&gt;
+&lt;p&gt;3.调用response.addCookie(Cookie)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void updateCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie cookie = new Cookie(&quot;name1&quot;, &quot;newValue&quot;);
+    resp.addCookie(cookie);
+    resp.getWriter().write(&quot;修改cookie完成 &amp;lt;br/&amp;gt;&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;方案二&lt;/p&gt;
+&lt;p&gt;1.查找到需要修改的Cookie对象&lt;/p&gt;
+&lt;p&gt;2.调用setValue()方法赋予新值&lt;/p&gt;
+&lt;p&gt;3.调用resp.addCookie(cookie)保存修改&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void updateCookie(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie[] cookies = req.getCookies();
+    Cookie target = CookieUtils.findCookie(cookies, &quot;name1&quot;);
+    if (target != null) {
+        target.setValue(&quot;newValue&quot;);
+        resp.addCookie(target);
+        resp.getWriter().write(&quot;修改cookie完成 &amp;lt;br/&amp;gt;&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;Cookie中对应的值不可以包含空格 方括号 圆括号 逗号 等号 双引号 斜杠 问好 冒号 分号 空值 中文，如果需要使用则要使用Base64编码处理&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;Cookie生命控制&lt;/h4&gt;
+&lt;p&gt;Cookie的生命控制指的是如何管理Cookie什么时候被销毁&lt;/p&gt;
+&lt;p&gt;setMaxAge()&lt;/p&gt;
+&lt;p&gt;正数，表示指定秒数后过期&lt;/p&gt;
+&lt;p&gt;负数，表示浏览器关闭的时候Cookie被删除（默认为-1）&lt;/p&gt;
+&lt;p&gt;零，表示马上删除Cookie&lt;/p&gt;
+&lt;p&gt;创建一个10秒有效的Cookie&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void defaultLife(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie cookie = new Cookie(&quot;name&quot;, &quot;default&quot;);
+    cookie.setMaxAge(10);
+    resp.addCookie(cookie);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;删除对应的Cookie&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void defaultLife(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie[] cookies = req.getCookies();
+    Cookie target = CookieUtils.findCookie(cookies, &quot;name1&quot;);
+    if (target != null) {
+        target.setMaxAge(0);
+        resp.addCookie(target);
+        System.out.println(&quot;目标Cookie已被删除&quot;);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -55,7 +160,7 @@ public class Servlet01 extends HttpServlet {
 &lt;h4&gt;实现方式&lt;/h4&gt;
 &lt;p&gt;1-3：前端显示界面完成上传功能&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
-    &amp;lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
+    &amp;lt;form action=&quot;http://localhost:8080/EL/photoUpload&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
         用户名称：&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
         头像：&amp;lt;input type=&quot;file&quot; name=&quot;photo&quot;&amp;gt;&amp;lt;br/&amp;gt;
         &amp;lt;input type=&quot;submit&quot; value=&quot;上传&quot;&amp;gt;

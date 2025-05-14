@@ -1,21 +1,207 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(Cookie，Session)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</guid><description>Cookie，Session</description><pubDate>Tue, 13 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(Filter，json，ajax)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filter/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filter/</guid><description>Filter，json，ajax</description><pubDate>Wed, 14 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;Filter&lt;/h2&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;过滤器：是JavaWeb的三大组件之一（Servlet，Listener，Filter）&lt;/li&gt;
+&lt;li&gt;过滤器是JavaEE的规范，也就是接口&lt;/li&gt;
+&lt;li&gt;Filter过滤器作用是：拦截请求，过滤响应&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;基本使用&lt;/h3&gt;
+&lt;h4&gt;JSP页面实现&lt;/h4&gt;
+&lt;p&gt;要求web工程下有一个admin目录，这个admin目录下的所有资源都要求登录后才可以使用&lt;/p&gt;
+&lt;p&gt;根据之前的情况分析，我们需要将登陆的信息存储在Cookie中，如果其中的键user值为null，则没有登陆，跳转至登录页面，而又user信息，则跳转至目标资源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;Index&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;%
+    Object user = session.getAttribute(&quot;user&quot;);
+    if (user == null) {
+        request.getRequestDispatcher(&quot;/login.jsp&quot;).forward(request,response);
+        return;
+    }
+%&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这样一种方式是有局限性的，没有办法跳到图片，html页面，而且当直接用对应的路径访问也可以访问到权限资源，我们这个时候就可以使用Filter过滤器来完成&lt;/p&gt;
+&lt;h4&gt;Filter实现&lt;/h4&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;使用步骤：&lt;/p&gt;
+&lt;p&gt;1.我们创建一个继承于import javax.servlet.Filter的过滤器类&lt;/p&gt;
+&lt;p&gt;2.实现拦截方法doFilter&lt;/p&gt;
+&lt;p&gt;3.配置拦截路径&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.filter;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+@WebFilter(&quot;/admin/*&quot;)//配置拦截路径
+public class AdminFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpSession session = request.getSession();
+        Object user = session.getAttribute(&quot;user&quot;);
+        if (user == null) {
+            servletRequest.getRequestDispatcher(&quot;/login.jsp&quot;).forward(servletRequest, servletResponse);
+            return;
+        } else {
+            //让程序继续向下访问目标资源
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样做就会拦截Session中user为空的客户端访问&lt;/p&gt;
+&lt;p&gt;我们成功登录的逻辑通过Servlet完成，当成功将session域的user设置对应的用户名，当Session的user非空即可访问被拦截限制的资源&lt;/p&gt;
+&lt;p&gt;登录JSP界面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;form action=&quot;http://localhost:8080/Fliter/login&quot; method=&quot;get&quot;&amp;gt;
+    用户名称&amp;lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;${cookie.username.value}&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    密码&amp;lt;input type=&quot;password&quot; name=&quot;password&quot; value=&quot;${cookie.password.value}&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    &amp;lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;登录Servlet&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/login&quot;)
+public class Login extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(&quot;doGet&quot;);
+        resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
+        HttpSession session = req.getSession();
+        String username = req.getParameter(&quot;username&quot;);
+        String password = req.getParameter(&quot;password&quot;);
+        if(username.equals(&quot;admin&quot;) &amp;amp;&amp;amp; password.equals(&quot;123456&quot;)){
+            System.out.println(&quot;login success&quot;);
+            session.setAttribute(&quot;user&quot;, username);
+            resp.getWriter().write(&quot;&amp;lt;h1&amp;gt;Login Success&amp;lt;/h1&amp;gt;&quot;);
+        } else {
+            System.out.println(&quot;login failed&quot;);
+            req.getRequestDispatcher(&quot;/login.jsp&quot;).forward(req, resp);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;生命周期&lt;/h3&gt;
+&lt;p&gt;Filter的生命周期包含几个方法：1.构造器方法 2.nit初始化方法  3.doFilter方法  4.destory销毁方法&lt;/p&gt;
+&lt;p&gt;在Web工程启动的时候，1、2两部就已经被执行（Filter被创建）&lt;/p&gt;
+&lt;p&gt;当在访问被拦截资源的时候的时候，调用3方法（每次）&lt;/p&gt;
+&lt;p&gt;当停止Web工程的时候执行&lt;/p&gt;
+&lt;h3&gt;FilterConfig类&lt;/h3&gt;
+&lt;p&gt;是Filter过滤器的配置文件类&lt;/p&gt;
+&lt;p&gt;Tomcat每次创建Filter的时候，同时也会创建一个FilterConfig类，包含了Filter配置文件的配置信息&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;作用：获取filter过滤器的配置内容&lt;/p&gt;
+&lt;p&gt;1.获取Filter的名称 filter-name内容&lt;/p&gt;
+&lt;p&gt;2.获取Filter中配置init-param初始化参数&lt;/p&gt;
+&lt;p&gt;3.获取ServletContext对象&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;运用注解设置过滤器的名称初始化参数的设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebFilter(
+        filterName = &quot;myFilter&quot;,
+        urlPatterns = {&quot;/admin/*&quot;},
+        initParams = {
+                @WebInitParam(name = &quot;param1&quot;, value = &quot;value1&quot;),
+                @WebInitParam(name = &quot;param2&quot;, value = &quot;value2&quot;)
+        }
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;获取过滤器名称以及初始化参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void init(FilterConfig filterConfig) throws ServletException {
+    System.out.println(filterConfig.getFilterName());//myFilter
+    System.out.println(filterConfig.getInitParameter(&quot;param1&quot;));//value1
+    System.out.println(filterConfig.getInitParameter(&quot;param2&quot;));//value2
+    Filter.super.init(filterConfig);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Filter拦截路径&lt;/h3&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;有三种匹配方式，Filter只关心请求的地址是否匹配，不关心资源存在&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;精确匹配&lt;/h4&gt;
+&lt;p&gt;请求地址必须为 http://localhost:8080/path/admin/1.jsp&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;/admin/1.jsp&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;目录匹配&lt;/h4&gt;
+&lt;p&gt;对应目录下的所有资源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;/admin/*&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;后缀名匹配&lt;/h4&gt;
+&lt;p&gt;请求地址必须以.html结尾&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;*.html&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;FilterChain过滤器链&lt;/h3&gt;
+&lt;p&gt;FilterChain：多个过滤器如何一起工作&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/152.png&quot; alt=&quot;152&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记（Cookie，Session）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</guid><description>Cookie，Session会话</description><pubDate>Tue, 13 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Cookie&lt;/h2&gt;
 &lt;p&gt;Cookie大小不超过4KB&lt;/p&gt;
 &lt;p&gt;Cookie是服务器通知客户端保存键值对的一种技术&lt;/p&gt;
 &lt;p&gt;客户端拥有Cookie后每次请求都发送Cookie信息给服务器&lt;/p&gt;
 &lt;h3&gt;Cookie使用&lt;/h3&gt;
 &lt;p&gt;通过请求连接访问createCookie方法&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%--
+  Created by IntelliJ IDEA.
+  User: 71460
+  Date: 2025/5/12
+  Time: 20:52
+  To change this template use File | Settings | File Templates.
+--%&amp;gt;
+&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;Cookie&amp;amp;Session&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
 &amp;lt;div&amp;gt;
     &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=createCookie&quot;
        target=&quot;_blank&quot;
        style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
         Cookie创建
     &amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=getCookie&quot;
+       target=&quot;_blank&quot;
+       style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
+        Cookie获取
+    &amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=updateCookie&quot;
+       target=&quot;_blank&quot;
+       style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
+        Cookie值修改
+    &amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=defaultLife&quot;
+       target=&quot;_blank&quot;
+       style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
+        Cookie生命期
+    &amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;http://localhost:8080/Cookie/CookieServlet?action=testPath&quot;
+       target=&quot;_blank&quot;
+       style=&quot;text-decoration: none; color: blue;&quot;&amp;gt;
+        CookiePath测试
+    &amp;lt;/a&amp;gt;
 &amp;lt;/div&amp;gt;
 &amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Servlet get方法逻辑重写&lt;/p&gt;
+&lt;p&gt;Servlet get方法逻辑重写，通过action提交信息，来判断请求的功能&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     resp.setContentType(&quot;text/html;charset=UTF-8&quot;);
     System.out.println(&quot;doGet&quot;);
@@ -24,10 +210,13 @@
         createCookie(req, resp); // 调用 createCookie 方法
     } else if (&quot;getCookie&quot;.equals(action)) {
         getCookie(req, resp);
-
     } else if (&quot;updateCookie&quot;.equals(action)) {
         updateCookie(req, resp);
-    }else {
+    } else if (&quot;defaultLife&quot;.equals(action)) {
+        defaultLife(req, resp);
+    } else if (&quot;testPath&quot;.equals(action)) {
+        testPath(req, resp);
+    } else {
         System.out.println(&quot;doGet (default)&quot;);
         resp.getWriter().write(&quot;Default GET request&quot;);
     }
@@ -148,6 +337,175 @@ if (target != null) {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;设置path属性&lt;/h4&gt;
+&lt;p&gt;Cookie的path属性可以有效地过滤哪些Cookie可以发送给服务器，哪一些不发送，path属性是通过请求的地址来进行有效的过滤，例如有如下的两个Cookie&lt;/p&gt;
+&lt;p&gt;CookieA  	path=/工程路径&lt;/p&gt;
+&lt;p&gt;CookieB  	path=/工程路径/doc&lt;/p&gt;
+&lt;p&gt;请求地址为：http://localhost:8080/工程路径/a.html&lt;/p&gt;
+&lt;p&gt;这个时候发送CookieA，而CookieB不发送&lt;/p&gt;
+&lt;p&gt;请求地址为：http://localhost:8080/工程路径/abc/a.html&lt;/p&gt;
+&lt;p&gt;这个时候发送CookieA，CookieB都发送（只看是否包含path属性）&lt;/p&gt;
+&lt;p&gt;我们可以手动设置path属性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void testPath(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Cookie cookie1 = new Cookie(&quot;path1&quot;, &quot;value1&quot;);
+    cookie1.setPath(req.getContextPath() + &quot;/abc&quot;);
+    resp.addCookie(cookie1);
+    System.out.println(&quot;创建带有path路径的Cookie1&quot;);
+    Cookie cookie2 = new Cookie(&quot;path2&quot;, &quot;value2&quot;);
+    resp.addCookie(cookie2);
+    System.out.println(&quot;创建不有path路径的Cookie2&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当网址中没有路径/abc路径的时候不会使客户端获取到cookie1&lt;/p&gt;
+&lt;p&gt;我们新建一个在 http://localhost:8080/Cookie/abc/testPath.jsp 的jsp文件，发现这个页面可以获取到cookie1&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;通过设置Cookie的path属性，我们可以实现一些功能&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;隔离不同路径的Cookie&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，网站有两个独立功能模块：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/admin&lt;/code&gt; 路径下的管理后台&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/user&lt;/code&gt; 路径下的用户中心
+通过设置 &lt;code&gt;path=/admin&lt;/code&gt; 和 &lt;code&gt;path=/user&lt;/code&gt;，可防止两个模块的Cookie互相干扰，提升安全性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;避免资源请求携带无关Cookie&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;静态资源（如图片、CSS）通常存放在 &lt;code&gt;/static&lt;/code&gt; 路径。若Cookie的 &lt;code&gt;path&lt;/code&gt; 不包含此路径，浏览器请求资源时不会附带这些Cookie，减少网络开销。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多应用共享域名时的隔离&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;同一域名下部署多个应用（如 &lt;code&gt;example.com/app1&lt;/code&gt; 和 &lt;code&gt;example.com/app2&lt;/code&gt;），通过不同 &lt;code&gt;path&lt;/code&gt; 隔离各自的会话Cookie，防止数据冲突。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精细化权限控制&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;敏感路径（如 &lt;code&gt;/settings&lt;/code&gt;）的Cookie可限制仅在该路径下发送，降低信息泄露风险。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;综合使用&lt;/h3&gt;
+&lt;p&gt;用户免密登录&lt;/p&gt;
+&lt;p&gt;在我们日常访问各大网站的时候，我们在登陆过一次后，往往之后就不需要使用账号密码再次登录，我们可以使用Cookie实现&lt;/p&gt;
+&lt;p&gt;在LoginServlet程序中我们使用如下的流程实现&lt;/p&gt;
+&lt;p&gt;1.获取用户名和密码&lt;/p&gt;
+&lt;p&gt;2.判断用户名和密码是否正确&lt;/p&gt;
+&lt;p&gt;正确允许登录，错误不允许登录&lt;/p&gt;
+&lt;p&gt;如果正确将用户名和密码保存为Cookie发送给客户端&lt;/p&gt;
+&lt;p&gt;jsp客户端，将输入值默认输入cookie值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%--
+  Created by IntelliJ IDEA.
+  User: 71460
+  Date: 2025/5/13
+  Time: 16:51
+  To change this template use File | Settings | File Templates.
+--%&amp;gt;
+&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;Login&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form action=&quot;http://localhost:8080/Cookie/login&quot; method=&quot;get&quot;&amp;gt;
+        用户名称&amp;lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;${cookie.username.value}&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        密码&amp;lt;input type=&quot;password&quot; name=&quot;password&quot; value=&quot;${cookie.password.value}&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Servlet登录程序，当密码正确时账号密码存入Cookie，并重定向到对应页面，失败时，重写定位到登录界面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/login&quot;)
+public class LoginServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter(&quot;username&quot;);
+        String password = req.getParameter(&quot;password&quot;);
+        if(username.equals(&quot;lory&quot;) &amp;amp;&amp;amp; password.equals(&quot;123456&quot;)){
+            Cookie cookie1 = new Cookie(&quot;username&quot;, username);
+            cookie1.setMaxAge(60*60*24);
+            resp.addCookie(cookie1);
+            Cookie cookie2 = new Cookie(&quot;password&quot;, password);
+            cookie2.setMaxAge(60*60*24);
+            resp.addCookie(cookie2);
+            System.out.println(&quot;Login Success&quot;);
+            resp.sendRedirect(&quot;index.jsp&quot;);
+        } else {
+            System.out.println(&quot;Invalid username or password&quot;);
+            resp.sendRedirect(&quot;login.jsp&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Session&lt;/h2&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;什么是&lt;strong&gt;Session&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Session是会话，用于维护一个客户端和服务器之间关联的一种技术&lt;/li&gt;
+&lt;li&gt;Session是一个接口（HttpSession）&lt;/li&gt;
+&lt;li&gt;每个客户端都有自己的Session会话&lt;/li&gt;
+&lt;li&gt;Session会话中经常用于保存用户登录之后的信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;创建获取Session对象&lt;/h3&gt;
+&lt;h4&gt;调用方法&lt;/h4&gt;
+&lt;p&gt;创建和获取Session都是调用同一个API获取&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;request.getSession()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第一次创建，第二次以及之后获取之前创建的Session&lt;/p&gt;
+&lt;p&gt;那么如何判断Session对象是创建出的还是获取的呢？&lt;/p&gt;
+&lt;p&gt;我们通过如下的方法获取&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;session.isNew()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;true代表初次创建的，而false代表是获取到的Session&lt;/p&gt;
+&lt;p&gt;每个会话都会有一个身份证号，即ID，这个ID是唯一的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;session.getId()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;代码实现&lt;/h4&gt;
+&lt;p&gt;通过createSession获取到session对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void createSession(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    HttpSession session = req.getSession();
+    System.out.println(session.isNew());
+    System.out.println(session.getId());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;false
+E40645D73ABF4618B37B7FF0363A6E1C
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Session域对象存取数据&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;protected void setAndGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    HttpSession session = req.getSession();
+    session.setAttribute(&quot;key1&quot;, &quot;value1&quot;);
+    session.setAttribute(&quot;key2&quot;, &quot;value2&quot;);
+    Object key1 = session.getAttribute(&quot;key1&quot;);
+    Object key2 = session.getAttribute(&quot;key2&quot;);
+    System.out.println(&quot;key1: &quot; + key1
+    + &quot; key2: &quot; + key2);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Session生命周期&lt;/h3&gt;
+&lt;p&gt;session超时指的是客户端两次请求间隔的最大时长（负数不会超时）&lt;/p&gt;
+&lt;p&gt;setMaxnactiveInterval方法：设置Session的超时时间，超过指定的时长Session就会被销毁&lt;/p&gt;
+&lt;p&gt;getMaxnactiveInterval方法：获取Session的超时时间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;protected void SessionLife(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.getMaxInactiveInterval();//默认为1800s
+        session.setMaxInactiveInterval(60*60);
+        session.getMaxInactiveInterval();
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;默认的超时时间长短可以在Tomcat的配置中进行修改&lt;/p&gt;
+&lt;p&gt;invalidate方法：使得Session被销毁&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;服务器在接收客户端的请求（无Cookie的情况下），会创建一个Session对象，并创建一个Cookie对象，装入一个JSESSIONID:sessionId键值对，最后将Cookie对象返回给服务器，此后每一次客户端在请求服务器的时候都会附带的Cookie中始终有Session的Id标识。&lt;/p&gt;
+&lt;p&gt;在需要Session会话的时候，服务器会通过Cookie的SessionId找到创建完成的Session对象返回使用。&lt;/p&gt;
+&lt;p&gt;所以当将对于客户端的Cookie的JSESSIONID键删除的情况下，即使服务器有客户端的Session对象，它任然会创建出一个新的Session对象&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
 </content:encoded></item><item><title>JavaWeb笔记（文件上传）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</guid><description>JavaWeb文件传输</description><pubDate>Mon, 12 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;文件传输&lt;/h2&gt;
 &lt;p&gt;文件上传和下载是非常常见的功能，很多的系统中或者软件中都经常使用文件的上传和下载&lt;/p&gt;
@@ -340,7 +698,7 @@ public class Download extends HttpServlet {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;今天课多，学的内容较少，但是额外抽出时间整理了一下网络编程第二个大作业的思路（JSP+Servlet+Bean实现图书管理系统），准备攒一个简易版本网络程序，就当综合使用下JavaWeb部分的知识&lt;/p&gt;
 &lt;p&gt;明天打算，进入Cookie和Session部分的学习&lt;/p&gt;
-</content:encoded></item><item><title>JavaWeb笔记(EL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</guid><description>EL表达式</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
+</content:encoded></item><item><title>JavaWeb笔记(EL，JSTL)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0eljstl/</guid><description>EL表达式，标签库</description><pubDate>Sun, 11 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JSP&lt;/h1&gt;
 &lt;p&gt;这两天事情确实有一点多，但好在也是顺利完成了，昨晚上还抽空更新了一下主页的样式，把就博客给迁移到了 Fuwari 新的主题上，看着确实稍微顺眼一点，今天没什么多的事情，就学一下EL表达式，JSTL标签库部分的知识&lt;/p&gt;
 &lt;h2&gt;EL表达式&lt;/h2&gt;
 &lt;p&gt;EL表达式全称是：Expression Language，是表达式语言&lt;/p&gt;

@@ -1,8 +1,8 @@
 ---
-title: JavaWeb笔记(EL)
+title: JavaWeb笔记(EL，JSTL)
 published: 2025-05-11
 updated: 2025-05-11
-description: 'EL表达式'
+description: 'EL表达式，标签库'
 image: ''
 tags: [JavaWeb]
 category: 'JavaWeb'

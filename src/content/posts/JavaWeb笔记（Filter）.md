@@ -1,8 +1,8 @@
 ---
-title: JavaWeb笔记(Filter，json，ajax)
+title: JavaWeb笔记(Filter，json，ajax，i18n)
 published: 2025-05-14
 updated: 2025-05-14
-description: 'Filter，json，ajax'
+description: 'Filter，json，ajax，i18n'
 image: ''
 tags: [JavaWeb]
 category: 'JavaWeb'
@@ -240,3 +240,211 @@ public void init(FilterConfig filterConfig) throws ServletException {
 FilterChain：多个过滤器如何一起工作
 
 ![152](../images/152.png)
+
+
+
+## JSON
+
+:::note
+
+JSON是一种轻量级的数据交换格式（和XML比较），易于人的阅读，同时易于机器的读写，采用的是完全独立于语言的文本格式，被多种语言支持，成为了理想的数据交换语言（服务器与客户端）
+
+:::
+
+
+
+### 基本使用
+
+JSON是由键值对组成，并由大括号包围，每个键由“”引起，键值之间使用冒号分隔，多组键值对之间使用逗号进行分割
+
+```html
+<script type="text/javascript">
+    var jsonObj = {
+        "key1": 12,
+        "key2": "value2",
+        "key3": true,
+        "key4": [11,33,"arr",false],
+        "key5": {
+            "key1": "value1",
+            "key2": "value2",
+        },
+    };
+</script>
+```
+
+值可以是各种类型，甚至可以是json类型本身，以及json数组
+
+其中json其实是一个object对象，json中的key可以理解为是对象中的一个属性，json中的key访问就和访问对象的属性一样，jsonObj.key
+
+```html
+alert(jsonObj.key1);
+alert(jsonObj.key2);
+alert(jsonObj.key3);
+alert(jsonObj.key4[1]);
+alert(jsonObj.key5.key1);
+```
+
+访问和对象基本没什么不同
+
+
+
+### 常用方法
+
+:::note
+
+json的存在有两种形式
+
+1.对象的形式，json对象（需要操作的时候使用）
+
+2.字符串的形式存在，称为json字符串（在数据交换的时候使用）
+
+这两种格式可以相互转换
+
+:::
+
+JSON.stringify()：将json对象转换为json字符串（类似toString）
+
+JSON.parse()：把json字符串转为json对象
+
+```html
+var stringify = JSON.stringify(jsonObj);
+alert(stringify);
+```
+
+string输出结果
+
+```json
+{"key1":12,"key2":"value2","key3":true,"key4":[11,33,"arr",false],"key5":{"key1":"value1","key2":"value2"}}
+```
+
+json输出结果
+
+```java
+var json = JSON.parse(stringify);
+alert(json);//[object Object]
+```
+
+
+
+### Java使用JSON
+
+我们在Java中使用JSON之前需要先导入Googel的Gson库，使用Maven进行导入
+
+```html
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.10.1</version>
+</dependency>
+```
+
+测试使用
+
+建立一个Person对象作为Bean
+
+```java
+public class Person {
+    private String name;
+    private int age;
+
+    public Person() {}
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+
+
+#### 普通类转化
+
+toJson方法可以将Bean对象转为字符串
+
+fromJson方法传入对应的json字符串以及类对象可以转为类对象的实例
+
+```java
+public class JsonTest {
+    public static void main(String[] args) {
+        Person person = new Person("Lory", 18);
+        Gson gson = new Gson();//创建对象实例
+        String json = gson.toJson(person);
+        System.out.println(json);//{"name":"Lory","age":18}
+        Person another = gson.fromJson(json, Person.class);//放入转为的类型
+        System.out.println(another.getAge() + " " + another.getName());//18 Lory
+    }
+}
+```
+
+
+
+#### List类集合转化
+
+对于LIst集合而言，我们也可以将其通过转化toJson方法转化为Json字符串，而将Json字符串转换为对应类型则较为复杂，需要在使用fromJson转化前，实现一个继承于TypeToken类的一个格式类，其中的泛型传入<List<Person>>（或者<ArrayList<Person>>），再将这个类型zhuanwei
+
+```java
+public class JsonTest {
+    public static void main(String[] args) {
+        List<Person> persons = new ArrayList<>();
+        Person person1 = new Person("Lory", 18);
+        Person person2 = new Person("Marry", 22);
+        persons.add(person1);
+        persons.add(person2);
+        Gson gson = new Gson();
+        String json = gson.toJson(persons);
+        System.out.println(json);//[{"name":"Lory","age":18},{"name":"Marry","age":22}]
+
+        List<Person> list = gson.fromJson(json, new PersionListType().getType());
+        System.out.println(list);
+    }
+}
+
+class PersionListType extends TypeToken<List<Person>> {
+}
+```
+
+
+
+#### Map类集合转化
+
+```java
+public class JsonTest {
+    public static void main(String[] args) {
+        Map<String, Person> persons = new HashMap<>();
+        Person person1 = new Person("Lory", 18);
+        Person person2 = new Person("Marry", 22);
+        persons.put("num1", person1);
+        persons.put("num2", person2);
+        System.out.println(persons);//{num1=Person{name='Lory', age=18}, num2=Person{name='Marry', age=22}}
+        Gson gson = new Gson();
+        String json = gson.toJson(persons);
+        System.out.println(json);//{"num1":{"name":"Lory","age":18},"num2":{"name":"Marry","age":22}}
+        Map<String, Person> map = gson.fromJson(json, new PersionMapType().getType());
+        System.out.println(map.get("num1"));//Person{name='Lory', age=18}
+    }
+}
+
+class PersionMapType extends TypeToken<Map<String, Person>> {
+}
+```
+
+这里其实更推荐使用内部类，更加简洁一点

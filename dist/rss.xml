@@ -1,4 +1,546 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(Filter，json，ajax，i18n)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filter/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filter/</guid><description>Filter，json，ajax，i18n</description><pubDate>Wed, 14 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(ajax，i18n)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</guid><description>ajax，i18n</description><pubDate>Thu, 15 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+&lt;h2&gt;AJAX&lt;/h2&gt;
+&lt;p&gt;Asynchronous Javascript And XML异步JavaScript与XML&lt;/p&gt;
+&lt;p&gt;是一种创建交互式网页应用的网页开发技术，通过这样一种技术，我们可以在不刷新网页的情况下进行数据的局部更新，提高网页运行的效率&lt;/p&gt;
+&lt;h3&gt;基本使用&lt;/h3&gt;
+&lt;p&gt;我们通过如下的js代码在jsp中设置ajax访问的方法，通过click事件调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;title&amp;gt;AJAX&amp;lt;/title&amp;gt;
+    &amp;lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;
+        function ajaxRequest() {
+            var xhr = new XMLHttpRequest();
+            xhr.open(&quot;GET&quot;, &quot;http://localhost:8080/AJAX/ajax&quot;, true);//设置请求，如果是false则进行同步阻塞，直到完成返回之后，再执行后续代码
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var Person = JSON.parse(xhr.responseText);
+                        var name = Person.name;
+                        var age = Person.id;
+                        alert(name + &quot; age is &quot; + age);
+                    }
+                }
+            }
+            xhr.send();//发送请求
+        }
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;button onclick=&quot;ajaxRequest()&quot;&amp;gt;ajax请求&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而ajax访问的对象是AJAX的Servlet程序，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/ajax&quot;)
+public class AJAX extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Person person = new Person(1, &quot;Jack&quot;);
+        Gson gson = new Gson();
+        String json = gson.toJson(person);
+        System.out.println(json);
+        resp.getWriter().write(json);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如此可以在不刷新页面的情况下获取到访问数据并且显示出来&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AJAX特点说明&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;局部更新：浏览器地址栏不会发生变化，局部更新不会舍弃页面的内容&lt;/p&gt;
+&lt;h3&gt;jQuery使用Ajax&lt;/h3&gt;
+&lt;p&gt;客户端JSP编程在实际使用的时候，Ajax请求，和数据的处理有些复杂，我们一般不使用原生的ajax请求，而是使用jQuery提供的封装来完成Ajax请求上传以及Ajax数据的获取&lt;/p&gt;
+&lt;h4&gt;ajax方法&lt;/h4&gt;
+&lt;p&gt;url：表示请求的地址&lt;/p&gt;
+&lt;p&gt;type：表示请求的类型（post/get）&lt;/p&gt;
+&lt;p&gt;data：表示发送给服务器的数据&lt;/p&gt;
+&lt;p&gt;success：请求响应，响应的回调函数&lt;/p&gt;
+&lt;p&gt;dataType：响应的数据类型&lt;/p&gt;
+&lt;p&gt;如果是设置响应类型为text需要手动运用JSON进行解析，但是如果是设置为json则会自动解析&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&quot;https://code.jquery.com/jquery-3.6.0.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;
+    $(function() {
+       $(&quot;#ajax1&quot;).click(function() {
+          $.ajax({
+              url:&quot;http://localhost:8080/AJAX/ajax&quot;,
+              data:&quot;action=test&quot;,
+              type:&apos;GET&apos;,
+              success:function(data){
+                  alert(data);
+                  var person = JSON.parse(data);
+                  $(&quot;#msg&quot;).html(person.id + &quot; &quot; + person.name);
+              },
+              dataType:&apos;text&apos; //常用的有xml，text，json
+          });
+       });
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当数据类型dataType为json的时候，不需要手动的对于data进行转化，程序自动完成解析，直接调用data.field即可获取到对应的属性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&quot;#ajax1&quot;).click(function() {
+   $.ajax({
+       url:&quot;http://localhost:8080/AJAX/ajax&quot;,
+       data:&quot;action=test&quot;,
+       type:&apos;GET&apos;,
+       success:function(data){
+           $(&quot;#msg&quot;).html(data.id + &quot; &quot; + data.name);
+       },
+       dataType:&apos;json&apos; //常用的有xml，text，json
+   });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;get和post方法&lt;/h4&gt;
+&lt;p&gt;url ：请求的url地址&lt;/p&gt;
+&lt;p&gt;data：发送的数据&lt;/p&gt;
+&lt;p&gt;callback：发送成功的回调函数&lt;/p&gt;
+&lt;p&gt;type：返回的数据类型&lt;/p&gt;
+&lt;p&gt;相比于ajax方法少了请求类型的参数&lt;/p&gt;
+&lt;p&gt;对于get请求调用$.get参数	post请求替换即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;
+    $(function () {
+        $(&quot;#ajax1&quot;).click(function () {
+            var url = &quot;http://localhost:8080/AJAX/ajax&quot;;
+            var data = &quot;action=test&quot;;
+            function callback(data) {
+                $(&quot;#msg&quot;).html(data.id + &quot; &quot; + data.name);
+            }
+            var type = &quot;json&quot;;
+            $.get(url, data, callback, type);
+        });
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;getJSON方法&lt;/h4&gt;
+&lt;p&gt;相比较于get以及post方法不需要传入type参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;
+    $(function () {
+        $(&quot;#ajax1&quot;).click(function () {
+            var url = &quot;http://localhost:8080/AJAX/ajax&quot;;
+            var data = &quot;action=test&quot;;
+            function callback(data) {
+                $(&quot;#msg&quot;).html(data.id + &quot; &quot; + data.name);
+            }
+            $.getJSON(url, data, callback);
+        });
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;serialize方法&lt;/h4&gt;
+&lt;p&gt;serialize可以把表单中所有的表单项内容获取到，以name=value&amp;amp;name=value的形式进行拼接，提交发送给服务器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;
+    $(function () {
+        $(&quot;#ajax1&quot;).click(function () {
+            var url = &quot;http://localhost:8080/AJAX/ajax&quot;;
+            var data = &quot;action=test&quot;;
+            function callback(data) {
+                $(&quot;#msg&quot;).html(data.id + &quot; &quot; + data.name);
+            }
+            var serialize = $(&quot;#form1&quot;).serialize();
+            alert(serialize);
+            $.getJSON(url, data + &quot;&amp;amp;&quot; + serialize, callback);
+        });
+    });
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Person person = new Person(1, &quot;Jack&quot;);
+    Gson gson = new Gson();
+    String json = gson.toJson(person);
+    System.out.println(json);
+    System.out.println(req.getParameter(&quot;name&quot;));
+    resp.getWriter().write(json);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;i18n国际化&lt;/h2&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;i18n国际化是指同一个网站可以支持多种不同的语言，以方便不同的国家，不同语种用户的访问，最简单的方式是制作不同语言的的网页，例如苹果公司就是这么做的&lt;/p&gt;
+&lt;p&gt;然而这样一种方式不适合所有的公司，我们想要一个相同的网站，而不同人访问的时候可以根据用户所在的地区显示不同的语言文字，而网站的布局样式等不发生改变，就产生了国际化（internationalization）简称i18n。&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;国际化三要素&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Locale对象&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Locale表示不同的时区，位置，语言&lt;/p&gt;
+&lt;p&gt;zh_CN	中国，中文&lt;/p&gt;
+&lt;p&gt;en_US 	英文，美国&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Properties配置&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将这样一些配置的属性放在Properties属性配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;国际化配置文件的命名规则
+baseName_locale.properties
+例如中文：i18n_zh_CN.properties
+例如中文：i18n_en_US.properties
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;ResourceBundle资源包&lt;/h3&gt;
+&lt;p&gt;读取Locale对象和Properties配置&lt;/p&gt;
+&lt;p&gt;ResourceBundle.getBundle：根据给定的baseName和Locale读取相应的配置信息，得到文字信息&lt;/p&gt;
+&lt;p&gt;ResourceBundle.getString：通过key得到不同国家的语言信息&lt;/p&gt;
+&lt;h3&gt;基础实例&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class I18N {
+    public static void main(String[] args) {
+        Locale locale = Locale.getDefault();
+        System.out.println(locale);//zh_CN
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;注意将配置文件存放在resources文件夹下&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;中文配置文件i18n_zh_CN.properties&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;username=用户名
+password=密码
+sex=性别
+age=年龄
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;英文配置文件i18n_en_US.properties&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;username=username
+password=password
+sex=sex
+age=age
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过Locale对象创建的资源包对象，我们可以通过键的形式获取值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class I18N {
+    public static void main(String[] args) {
+        Locale us = Locale.US;//获取美国的Locale对象
+        ResourceBundle bundle = ResourceBundle.getBundle(&quot;i18n&quot;, us);
+        //通过指定的basename和Locale兑现得到Bundle对象
+        System.out.println(bundle.getString(&quot;username&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;在IDEA的配置中默认使用的是&lt;strong&gt;ISO-8859-1&lt;/strong&gt;编码格式编码配置文件，但是该格式不支持中文，我们需要将其设置为UTF-8，通过工具进行Unicode转义&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;native2ascii -encoding UTF-8 i18n_zh_CN.properties i18n_zh_CN_encoded.properties
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;替换为生成的配置文件，即可正常使用&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class I18N {
+    public static void main(String[] args) {
+        Locale us = Locale.CHINA;
+        ResourceBundle bundle = ResourceBundle.getBundle(&quot;i18n&quot;, us);
+        //通过指定的basename和Locale兑现得到Bundle对象
+        System.out.println(bundle.getString(&quot;username&quot;));//姓名
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;请求头实现国际化&lt;/h3&gt;
+&lt;p&gt;Accept-Language请求头可以通过浏览器设置各个语言的权重，JSP页面也可以通过这一些请求头调对应的资源包，加载对应的语言信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;%
+        Locale locale = Locale.getDefault();
+        ResourceBundle i18n = ResourceBundle.getBundle(&quot;i18n&quot;, locale);
+    %&amp;gt;
+    &amp;lt;form action=&quot;/login&quot; method=&quot;post&quot;&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;username&quot;)%&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;password&quot;)%&amp;gt;&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;age&quot;)%&amp;gt;&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;sex&quot;)%&amp;gt;&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;选择语言类型实现&lt;/h3&gt;
+&lt;p&gt;通过超链接标签访问自身jsp页面并附带参数信息，按照获取到的信息设置locale对象，加载对应语言资源包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;%
+        Locale locale = null;
+        String country = request.getParameter(&quot;country&quot;);
+        if(&quot;cn&quot;.equals(country)) {
+            locale = Locale.CHINA;
+        } else if (&quot;usa&quot;.equals(country)) {
+            locale = Locale.US;
+        } else {
+            locale = Locale.US;
+        }
+        ResourceBundle i18n = ResourceBundle.getBundle(&quot;i18n&quot;, locale);
+    %&amp;gt;
+    &amp;lt;a href=&quot;login.jsp?country=cn&quot;&amp;gt;中文&amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;login.jsp?country=usa&quot;&amp;gt;english&amp;lt;/a&amp;gt;
+    &amp;lt;form action=&quot;/login&quot; method=&quot;post&quot;&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;username&quot;)%&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;password&quot;)%&amp;gt;&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;age&quot;)%&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;age&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;%=i18n.getString(&quot;sex&quot;)%&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;sex&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;JSTL标签库实现&lt;/h3&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;1.使用标签设置locale信息&lt;/p&gt;
+&lt;p&gt;2.使用标签设置baseName&lt;/p&gt;
+&lt;p&gt;3.使用标签输出国际化信息&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;fmt:setLocale value=&quot;${param.locale}&quot;/&amp;gt;
+    &amp;lt;fmt:setBundle basename=&quot;i18n&quot;/&amp;gt;
+    &amp;lt;a href=&quot;login.jsp?locale=zh_CN&quot;&amp;gt;中文&amp;lt;/a&amp;gt;
+    &amp;lt;a href=&quot;login.jsp?locale=en_US&quot;&amp;gt;english&amp;lt;/a&amp;gt;
+    &amp;lt;form action=&quot;/login&quot; method=&quot;post&quot;&amp;gt;
+        &amp;lt;fmt:message key=&quot;username&quot;/&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;username&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;fmt:message key=&quot;password&quot;/&amp;gt;&amp;lt;input type=&quot;password&quot; name=&quot;password&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;fmt:message key=&quot;age&quot;/&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;age&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;fmt:message key=&quot;sex&quot;/&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;sex&quot;&amp;gt;&amp;lt;br/&amp;gt;
+        &amp;lt;input type=&quot;submit&quot;&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;JavaWeb完结撒花！！！&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+</content:encoded></item><item><title>图书管理系统</title><link>https://thrinisty.github.io/posts/java-web%E7%9A%84%E9%A2%86%E5%9F%9F%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java-web%E7%9A%84%E9%A2%86%E5%9F%9F%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</guid><description>JavaWeb简易项目</description><pubDate>Thu, 15 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java Web的领域数据管理系统&lt;/h1&gt;
+&lt;p&gt;是网络编程的第二次大作业，非常的简陋，而且没有做异常处理，全当水作业了&lt;/p&gt;
+&lt;h2&gt;一、目的&lt;/h2&gt;
+&lt;p&gt;1．熟悉Java Web的基本功能和使用方法。&lt;/p&gt;
+&lt;p&gt;2．掌握如何使用JSP、JavaBean、Servlet等进行Web应用程序开发。&lt;/p&gt;
+&lt;p&gt;3．学习Java Web网络编程的分析与设计方法。&lt;/p&gt;
+&lt;h2&gt;二、环境&lt;/h2&gt;
+&lt;p&gt;1．PC一台。&lt;/p&gt;
+&lt;p&gt;2．IDEA编程软件&lt;/p&gt;
+&lt;h2&gt;三、要求&lt;/h2&gt;
+&lt;p&gt;使用Java Web，设计与实现一个领域数据管理系统，要求使用实现特定领域数据的在线访问、显示及数据管理，在实验中完成需求获取、系统分析、系统设计各阶段的基本任务。&lt;/p&gt;
+&lt;h4&gt;任务一：（已实现）&lt;/h4&gt;
+&lt;p&gt;设计与实现一个基于JSP+Servlet+JavaBean的领域数据管理系统，要求支持：&lt;/p&gt;
+&lt;p&gt;1）支持用户注册与登录模块；&lt;/p&gt;
+&lt;p&gt;2）支持特定领域数据的在线访问、可视化展示；&lt;/p&gt;
+&lt;p&gt;3）支持特定领域数据的增、删、改、查操作；&lt;/p&gt;
+&lt;p&gt;4）支持使用Mysql数据库对领域数据进行存储管理；&lt;/p&gt;
+&lt;p&gt;5）开发的系统利用Tomcat进行部署应用。&lt;/p&gt;
+&lt;h4&gt;任务二：（框架还在学习中，任务二尚未完成）&lt;/h4&gt;
+&lt;p&gt;在任务一的基础上选做。使用Java Web相关开发框架，设计实现更加复杂的领域数据管理功能模块，实现较友好美观的前端Web界面，提升持久化数据管理以及系统运行性能。&lt;/p&gt;
+&lt;h2&gt;四、步骤&lt;/h2&gt;
+&lt;p&gt;1.分析领域数据管理程序的需求，绘制流程图，设计Web系统。&lt;/p&gt;
+&lt;p&gt;设计一个图书馆的管理系统，允许登录用户进行对于书本数据库的增删改查&lt;/p&gt;
+&lt;p&gt;流程图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/153.png&quot; alt=&quot;153&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;2.分析主要功能的实现，利用JSP进行系统开发。&lt;/p&gt;
+&lt;p&gt;实现登录注册功能（通过过滤器Filter完成）&lt;/p&gt;
+&lt;p&gt;实现在线访问（通过JSP页面显示）&lt;/p&gt;
+&lt;p&gt;支持数据的增删改查（Servlet+BeanDao）&lt;/p&gt;
+&lt;p&gt;支持数据库存储（MySQL）&lt;/p&gt;
+&lt;p&gt;3.学习MVC设计模式，采取层次化设计模型，设计领域数据管理功能。&lt;/p&gt;
+&lt;p&gt;工程通过JSP+Servlet+BasicDao构建层次化设计模式，完成响应功能&lt;/p&gt;
+&lt;p&gt;4.完成任务一&lt;/p&gt;
+&lt;h3&gt;过滤器&lt;/h3&gt;
+&lt;p&gt;通过过滤没有登录的用户，禁止其访问admin文件夹下的资源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebFilter(&quot;/admin/*&quot;)
+public class LoginFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpSession session = request.getSession();
+        Object user = session.getAttribute(&quot;user&quot;);
+        if (user == null) {
+            servletRequest.getRequestDispatcher(&quot;/login.jsp&quot;).forward(servletRequest, servletResponse);
+            return;
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;BasicDao&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;package com.bean;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+
+import java.sql.Connection;
+import java.util.List;
+
+public class BasicDao&amp;lt;T&amp;gt; {//使用泛型指定具体类型
+    private QueryRunner qr = new QueryRunner();
+
+    //开发通用的dml方法，针对任意的表
+    public int update(String sql, Object... parameters) {
+        Connection connection = null;
+        try {
+            connection = JDBCUtilsDruid.getConnection();
+            return qr.update(connection, sql, parameters);
+            //返回受影响的行数，执行语句
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            JDBCUtilsDruid.close(null, null, connection);
+        }
+    }
+
+    //返回对个查询对象
+    public List&amp;lt;T&amp;gt; queryMulti(String sql, Class&amp;lt;T&amp;gt; cls, Object... parameters) {
+        Connection connection = null;
+        try {
+            connection = JDBCUtilsDruid.getConnection();
+            return qr.query(connection, sql, new BeanListHandler&amp;lt;T&amp;gt;(cls), parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            JDBCUtilsDruid.close(null, null, connection);
+        }
+    }
+
+    //返回查询单行结果
+    public T querySingle(String sql, Class&amp;lt;T&amp;gt; cls, Object... parameters) {
+        Connection connection = null;
+        try {
+            connection = JDBCUtilsDruid.getConnection();
+            return qr.query(connection, sql, new BeanHandler&amp;lt;T&amp;gt;(cls), parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            JDBCUtilsDruid.close(null, null, connection);
+        }
+    }
+
+    //查询单行单列的方法
+    public Object queryScalar(String sql, Object... parameters) {
+        Connection connection = null;
+        try {
+            connection = JDBCUtilsDruid.getConnection();
+            return qr.query(connection, sql, new ScalarHandler(), parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            JDBCUtilsDruid.close(null, null, connection);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Druid连接池&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;package com.bean;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class JDBCUtilsDruid {
+    private static DataSource ds;
+
+    static {
+        Properties properties = new Properties();
+        InputStream input;
+        input = JDBCUtilsDruid.class.getClassLoader().getResourceAsStream(&quot;config.properties&quot;);
+        try {
+            if (input == null) {
+                throw new RuntimeException(&quot;无法找到配置文件 config.properties&quot;);
+            }
+            properties.load(input);
+            ds = DruidDataSourceFactory.createDataSource(properties);
+        } catch (Exception e) {
+            throw new RuntimeException(&quot;初始化数据库连接池失败&quot;, e);
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException e) {
+                System.out.println(&quot;关闭失败&quot;);
+            }
+        }
+    }
+
+    public static Connection getConnection() {
+        try {
+            return ds.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void close(ResultSet result, Statement statement, Connection connection) {
+        try {
+            if (result != null) {
+                result.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Book对象与User对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Book {
+    private int id;
+    private String title;
+    private String author;
+    private double price;
+	//省略各种构造器以及方法
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class User {
+    private String username;
+    private String password;
+    //省略各种构造器以及方法
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Servlet处理程序&lt;/h3&gt;
+&lt;p&gt;这里以查询为例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@WebServlet(&quot;/query&quot;)
+public class Query extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BookDao bookDao = new BookDao();
+        String sql = &quot;select * from book&quot;;
+        List&amp;lt;Book&amp;gt; books = bookDao.queryMulti(sql, Book.class);
+        // 将数据存入request属性
+        req.setAttribute(&quot;books&quot;, books);
+        // 转发到JSP页面
+        req.getRequestDispatcher(&quot;/admin/query.jsp&quot;).forward(req, resp);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;JSP前端设计&lt;/h3&gt;
+&lt;p&gt;由于MVC的设计模式，前端很少实现响应的数据功能，只负责View显示，由大模型可以高效生成美观的的JSP页面，&lt;/p&gt;
+&lt;p&gt;只需要在各个JSP页面跳转之间进行设计，访问的Servlet程序功能按钮，以及从Request域中获取响应的数据即可，这里以change.jsp为例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;h1&amp;gt;Add New Book&amp;lt;/h1&amp;gt;
+
+&amp;lt;form action=&quot;../insert&quot; method=&quot;get&quot;&amp;gt;
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+    &amp;lt;label for=&quot;id&quot;&amp;gt;Book ID:&amp;lt;/label&amp;gt;
+    &amp;lt;input type=&quot;text&quot; id=&quot;id&quot; name=&quot;id&quot; required&amp;gt;
+  &amp;lt;/div&amp;gt;
+
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+    &amp;lt;label for=&quot;name&quot;&amp;gt;Book Name:&amp;lt;/label&amp;gt;
+    &amp;lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot; required&amp;gt;
+  &amp;lt;/div&amp;gt;
+
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+    &amp;lt;label for=&quot;author&quot;&amp;gt;Author:&amp;lt;/label&amp;gt;
+    &amp;lt;input type=&quot;text&quot; id=&quot;author&quot; name=&quot;author&quot; required&amp;gt;
+  &amp;lt;/div&amp;gt;
+
+  &amp;lt;div class=&quot;form-group&quot;&amp;gt;
+    &amp;lt;label for=&quot;price&quot;&amp;gt;Price:&amp;lt;/label&amp;gt;
+    &amp;lt;input type=&quot;number&quot; id=&quot;price&quot; name=&quot;price&quot; step=&quot;0.01&quot; min=&quot;0&quot; required&amp;gt;
+  &amp;lt;/div&amp;gt;
+
+  &amp;lt;button type=&quot;submit&quot; class=&quot;submit-btn&quot;&amp;gt;Add Book&amp;lt;/button&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;5.分析实验，总结实验心得，撰写报告。&lt;/p&gt;
+&lt;p&gt;实验综合性较强，可以很好的巩固JavaWeb的各个知识点，这一次实验完成了一个简易的书籍管理系统，&lt;/p&gt;
+&lt;p&gt;但是在异常处理方面上较为简陋，没有很好的处理SQL语句报错的异常处理，直接捕获抛出&lt;/p&gt;
+&lt;p&gt;而且还是有很多的地方可以进行改进，例如在获取数据的时候其实可以通过Ajax请求访问，局部更新数据来实现更好的运行效率以及用户体验&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记(Filter，json)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filterjson/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0filterjson/</guid><description>Filter，json</description><pubDate>Wed, 14 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Filter&lt;/h2&gt;
 &lt;p&gt;:::note&lt;/p&gt;
 &lt;ul&gt;
@@ -294,6 +836,7 @@ class PersionMapType extends TypeToken&amp;lt;Map&amp;lt;String, Person&amp;gt;&
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;这里其实更推荐使用内部类，更加简洁一点&lt;/p&gt;
+&lt;p&gt;最近在设计以及实现网络的大作业，学到的内容较少，预计明天完成AJAX以及i18n的学习，以及网络编程的大作业的实现（标为粗糙），应该也会整理一个报告出来&lt;/p&gt;
 </content:encoded></item><item><title>JavaWeb笔记（Cookie，Session）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0cookiesession/</guid><description>Cookie，Session会话</description><pubDate>Tue, 13 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Cookie&lt;/h2&gt;
 &lt;p&gt;Cookie大小不超过4KB&lt;/p&gt;

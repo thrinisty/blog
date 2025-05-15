@@ -1,8 +1,8 @@
 ---
-title: JavaWeb笔记(Filter，json，ajax，i18n)
+title: JavaWeb笔记(Filter，json)
 published: 2025-05-14
 updated: 2025-05-14
-description: 'Filter，json，ajax，i18n'
+description: 'Filter，json'
 image: ''
 tags: [JavaWeb]
 category: 'JavaWeb'
@@ -448,3 +448,5 @@ class PersionMapType extends TypeToken<Map<String, Person>> {
 ```
 
 这里其实更推荐使用内部类，更加简洁一点
+
+最近在设计以及实现网络的大作业，学到的内容较少，预计明天完成AJAX以及i18n的学习，以及网络编程的大作业的实现（标为粗糙），应该也会整理一个报告出来

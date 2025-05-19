@@ -2,7 +2,7 @@
 title: Spring笔记（Spring基础介绍）
 published: 2025-05-16
 updated: 2025-05-16
-description: 'Spring基础介绍，开闭，依赖倒置，控制反转'
+description: 'Spring基础介绍，开闭，依赖倒置'
 image: './photo/spring.png'
 tags: [Spring]
 category: 'Spring'

@@ -1,4 +1,401 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Spring基础介绍）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</guid><description>Spring基础介绍，开闭，依赖倒置，控制反转</description><pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（创建对象，注入依赖，Set注入，构造注入）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><description>创建对象，注入依赖，Set注入，构造注入</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;p&gt;Maven引入SpringFrameWork依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-context&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;6.1.14&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;程序示例&lt;/h2&gt;
+&lt;h3&gt;xml配置文件&lt;/h3&gt;
+&lt;p&gt;按照spring要求创建配置xml文件&lt;/p&gt;
+&lt;p&gt;在配置文件中进行对于User实例的创建&lt;/p&gt;
+&lt;p&gt;id：唯一标识&lt;/p&gt;
+&lt;p&gt;class：创建对象的全路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;user&quot; class=&quot;com.thrinisty.bean.User&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;通过Spring创建对象&lt;/h3&gt;
+&lt;p&gt;在获取上下文的时候，可以传入多个配置文件，创建使用所有配置文件中的类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.test;
+
+import com.thrinisty.bean.User;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class FirstTest {
+    @Test
+    public void test() {
+        //获取Spring容器，其中ApplicationContext是接口，
+        //由ClassPathXmlApplicationContext实现从配置文件获取上下文
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;bean.xml&quot;);
+        //根据id获取bean对象
+        User user = (User)(context.getBean(&quot;userBean&quot;));
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过Spring调用util中的工具类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;date&quot; class=&quot;java.util.Date&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Date date = (Date) (context.getBean(&quot;date&quot;));
+//Date date = context.getBean(&quot;date&quot;, Date.class);
+//不需要强制类型转化（传入第二个类对象参数）
+System.out.println(date);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当没有获取到bean对象（没有对应id）抛出异常&lt;/p&gt;
+&lt;p&gt;如果bean配置文件不再资源文件夹中，通过 FileSystemXmlApplicationContext 指定路径获取&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ApplicationContext context = new FileSystemXmlApplicationContext(&quot;d:/temp.xml&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;继承关系&lt;/h4&gt;
+&lt;p&gt;其中BeanFactory是Spring中的顶级对象，其余的类基本继承这个对象&lt;/p&gt;
+&lt;p&gt;根据底层代码，可以得出 Spring 的控制反转IoC是通过 XML解析 + 工厂模式 + 反射机制实现的&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/156.png&quot; alt=&quot;156&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;细节&lt;/h4&gt;
+&lt;p&gt;在getBean之前，类的构造器方法就已经被执行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ApplicationContext context = new ClassPathXmlApplicationContext(&quot;bean.xml&quot;,&quot;beanNew.xml&quot;);
+//Person person = context.getBean(&quot;person&quot;, Person.class);
+//System.out.println(person);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Person constructor
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;依赖注入&lt;/h2&gt;
+&lt;h3&gt;set注入&lt;/h3&gt;
+&lt;p&gt;基于set方法，底层通过set方法利用反射完成注入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface UserService {
+    void saveUser();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserServiceImpl implements UserService {
+    private UserDao userDao;
+
+    @Override
+    public void saveUser() {
+        System.out.println(&quot;Service调用UserDao&quot;);
+        userDao.insert();
+    }
+
+    //set方法
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public interface UserDao {
+    void insert();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserDaoImpl implements UserDao {
+    @Override
+    public void insert() {
+        System.out.println(&quot;数据库保存用户信息&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过xml配置管理bean&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;userDaoBean&quot; class=&quot;com.thrinisty.dao.UserDaoImpl&quot;/&amp;gt;
+    &amp;lt;bean id=&quot;userServiceBean&quot; class=&quot;com.thrinisty.service.UserServiceImpl&quot;&amp;gt;
+        &amp;lt;property name=&quot;userDao&quot; ref=&quot;userDaoBean&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过property指定set方法，再指定传入的参数（ref传入BeanID）&lt;/p&gt;
+&lt;p&gt;如此将service和dao两个对象通过set注入，即可通过service调用dao方法&lt;/p&gt;
+&lt;p&gt;我们创建一个新的VipDao，我们我们在不修改原先代码的情况下，可以通过xml spring配置文件设置VipDao对象，再通过property标签传入set方法，以及传入的VipBean对象id就可以达到IoC的目的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;userDaoVip&quot; class=&quot;com.thrinisty.dao.UserDaoVip&quot;/&amp;gt;
+&amp;lt;bean id=&quot;userServiceBean&quot; class=&quot;com.thrinisty.service.UserServiceImpl&quot;&amp;gt;
+    &amp;lt;property name=&quot;userDao&quot; ref=&quot;userDaoVip&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserDaoVip implements UserDao {
+    @Override
+    public void insert() {
+        System.out.println(&quot;数据库保存VIP用户信息&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;构造注入&lt;/h3&gt;
+&lt;p&gt;新创建一个继承于UserService接口的类，有一个构造方法，试图通过构造注入两个UserDao接口的实例userDaoImpl与UserDaoVip&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class CustomerService implements UserService{
+    private UserDao userDaoImpl;
+    private UserDao UserDaoVip;
+
+    public CustomerService(UserDao userDaoImpl, UserDao userDaoVip) {
+        this.userDaoImpl = userDaoImpl;
+        UserDaoVip = userDaoVip;
+    }
+
+    @Override
+    public void saveUser() {
+        System.out.println(&quot;顾客调用Dao&quot;);
+        userDaoImpl.insert();
+        UserDaoVip.insert();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;配置文件&lt;/p&gt;
+&lt;p&gt;配置两个UserDao的Bean对象&lt;/p&gt;
+&lt;p&gt;通过constructor-arg传入各个参数，赋值为两个Bean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;userDaoBean&quot; class=&quot;com.thrinisty.dao.UserDaoImpl&quot;/&amp;gt;
+    &amp;lt;bean id=&quot;userDaoVip&quot; class=&quot;com.thrinisty.dao.UserDaoVip&quot;/&amp;gt;
+
+    &amp;lt;bean id=&quot;customerServiceBean&quot; class=&quot;com.thrinisty.service.CustomerService&quot;&amp;gt;
+        &amp;lt;constructor-arg index=&quot;0&quot; ref=&quot;userDaoBean&quot;/&amp;gt;
+        &amp;lt;constructor-arg index=&quot;1&quot; ref=&quot;userDaoVip&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void ConstructTest() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;beans.xml&quot;);
+    UserService userService= context.getBean(&quot;customerServiceBean&quot;, CustomerService.class);
+    userService.saveUser();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Set注入专题&lt;/h2&gt;
+&lt;p&gt;在实际使用中主要使用Set注入的方式&lt;/p&gt;
+&lt;h3&gt;内/外部Bean&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class OrderDao implements UserDao {
+    @Override
+    public void insert() {
+        System.out.println(&quot;OrderDao.insert&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class OrderService implements UserService {
+    UserDao userDao;
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    @Override
+    public void saveUser() {
+        System.out.println(&quot;调用OrderDao&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;orderDao&quot; class=&quot;com.thrinisty.dao.OrderDao&quot;/&amp;gt;
+&amp;lt;!--    注入外部bean--&amp;gt;
+    &amp;lt;bean id=&quot;orderService&quot; class=&quot;com.thrinisty.service.OrderService&quot;&amp;gt;
+        &amp;lt;property name=&quot;userDao&quot; ref=&quot;orderDao&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;!--注入内部Bean--&amp;gt;
+    &amp;lt;bean id=&quot;orderServiceAnother&quot; class=&quot;com.thrinisty.service.OrderService&quot;&amp;gt;
+        &amp;lt;property name=&quot;userDao&quot;&amp;gt;
+            &amp;lt;bean class=&quot;com.thrinisty.dao.OrderDao&quot;/&amp;gt;
+        &amp;lt;/property&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void OrderDaoTest() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;order.xml&quot;);
+    UserService userService = context.getBean(&quot;orderService[Another]&quot;, OrderService.class);
+    userService.saveUser();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;都可以达到预期的目的&lt;/p&gt;
+&lt;h3&gt;注入简单类型&lt;/h3&gt;
+&lt;p&gt;简单类型：八种包装类，Sring类型，枚举类型，日期类，Class类，时间时区类型，Class类型&lt;/p&gt;
+&lt;p&gt;User对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User {
+    private String username;
+    private String password;
+    private int age;
+    //省略各个set方法
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;spring配置文件，通过value赋予值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;user&quot; class=&quot;com.thrinisty.bean.User&quot;&amp;gt;
+    &amp;lt;property name=&quot;age&quot; value=&quot;18&quot;/&amp;gt;
+    &amp;lt;property name=&quot;password&quot; value=&quot;123456&quot;/&amp;gt;
+    &amp;lt;property name=&quot;username&quot; value=&quot;张三&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    User user = context.getBean(&quot;user&quot;, User.class);
+    System.out.println(user);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;其余的示例&lt;/h4&gt;
+&lt;p&gt;其中日期当作简单类型的时候格式要求严格，一般不以简单格式注入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;simple&quot; class=&quot;com.thrinisty.bean.Simple&quot;&amp;gt;
+    &amp;lt;property name=&quot;age&quot; value=&quot;10&quot;/&amp;gt;
+    &amp;lt;property name=&quot;age2&quot; value=&quot;20&quot;/&amp;gt;
+    &amp;lt;property name=&quot;username&quot; value=&quot;username&quot;/&amp;gt;
+    &amp;lt;property name=&quot;c&quot; value=&quot;c&quot;/&amp;gt;
+    &amp;lt;property name=&quot;c2&quot; value=&quot;d&quot;/&amp;gt;
+    &amp;lt;property name=&quot;flag&quot; value=&quot;true&quot;/&amp;gt;
+    &amp;lt;property name=&quot;flag2&quot; value=&quot;false&quot;/&amp;gt;
+    &amp;lt;property name=&quot;season&quot; value=&quot;SPRING&quot;/&amp;gt;
+    &amp;lt;property name=&quot;clazz&quot; value=&quot;java.io.File&quot;/&amp;gt;
+    &amp;lt;property name=&quot;date&quot; value=&quot;Mon May 19 21:28:03 CST 2025&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Simple {
+    private int age;
+    private Integer age2;
+    private boolean flag;
+    private Boolean flag2;
+    private char c;
+    private Character c2;
+    private Season season;
+    private String username;
+    private Class clazz;
+    private Date date;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test2() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Simple simple = context.getBean(&quot;simple&quot;, Simple.class);
+    System.out.println(simple);
+    //Simple{age=10, age2=20, flag=true, flag2=false, c=c, c2=d, season=SPRING, username=&apos;username&apos;, clazz=class java.io.File, date=Tue May 20 11:28:03 CST 2025}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们之前在学习JDBC配置文件的时候是通过properties配置文件通过Properties类通过键值的方式获取配置信息，而学了SpringSet注入后，我们可以不进行复制，将复制的工作交给Spring通过xml中property注入value完成&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;级联属性赋值是一种机制，可以在被注入的对象中对于诸如的对象参数进行赋值，使用级联属性赋值的时候需要注意以下两点&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;提供注入对象的get方法&lt;/li&gt;
+&lt;li&gt;顺序不可以颠倒，要先注入对象，在进行对对象赋值&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（子集，汉明距离，反转二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>子集（二进制实现），汉明距离（位运算），反转二叉树（递归）</description><pubDate>Mon, 19 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;子集&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，数组中的元素 &lt;strong&gt;互不相同&lt;/strong&gt; 。返回该数组所有可能的子集（幂集）。&lt;/p&gt;
+&lt;p&gt;解集 &lt;strong&gt;不能&lt;/strong&gt; 包含重复的子集。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回解集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0]
+输出：[[],[0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;根据返回类型判断返回值为存放List集合的大List集合&lt;/li&gt;
+&lt;li&gt;存放进入list中的数据对应其mask的二进制表示形式&lt;/li&gt;
+&lt;li&gt;在内部循环中逐个判断是否将对应元素存入小List集合&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; subsets(int[] nums) {
+        result.clear();
+        int n = nums.length;
+        for (int mask = 0; mask &amp;lt; (1 &amp;lt;&amp;lt; n); mask++) {
+            list.clear();
+            for (int i = 0; i &amp;lt; n; i++) {
+                if((mask &amp;amp; (1 &amp;lt;&amp;lt; i)) != 0) {
+                    list.add(nums[i]);
+                }
+            }
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;汉明距离&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;两个整数之间的 &lt;a href=&quot;https://baike.baidu.com/item/%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB&quot;&gt;汉明距离&lt;/a&gt; 指的是这两个数字对应二进制位不同的位置的数目。&lt;/p&gt;
+&lt;p&gt;给你两个整数 &lt;code&gt;x&lt;/code&gt; 和 &lt;code&gt;y&lt;/code&gt;，计算并返回它们之间的汉明距离。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 1, y = 4
+输出：2
+解释：
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+上面的箭头指出了对应二进制位不同的位置。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 3, y = 1
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;​	两个数的二进制不同的位通过取按位异或，再通过bitCount记录1个数即可&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;使用Integer类静态方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hammingDistance(int x, int y) {
+        return Integer.bitCount(x ^ y);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自己实现计算1个数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hammingDistance(int x, int y) {
+        int target = x ^ y;
+        int result = 0;
+        while(target != 0) {
+            result += (target &amp;amp; 1);
+            target = target &amp;gt;&amp;gt; 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;反转二叉树&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;给你一棵二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，翻转这棵二叉树，并返回其根节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/157.jpg&quot; alt=&quot;157&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [4,2,7,1,3,6,9]
+输出：[4,7,2,9,6,3,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/158.jpg&quot; alt=&quot;158&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [2,1,3]
+输出：[2,3,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        root.left = right;
+        root.right = left;
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（Spring基础介绍）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</guid><description>Spring基础介绍，开闭，依赖倒置</description><pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;p&gt;Spring6框架的学习，我本来使用的是尚硅谷23年的Spring6课程，但是这套课程看了几集发现讲的有些无趣，没有去深入的挖掘一些方法的实现，也没有讲清楚为什么要使用Spring框架来进行开发，优势在哪里，下午发现了动力节点的Spring课程（21h），现在开始学习，预计8天完成&lt;/p&gt;
 &lt;p&gt;&amp;lt;iframe
 width=&quot;100%&quot;
@@ -2959,6 +3356,9 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
 </content:encoded></item><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>LeetCode刷题笔记（模板）</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;子集&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Tomcat&lt;/h2&gt;
 &lt;p&gt;JavaWeb：所用通过Java语言编写可以通过浏览器访问的程序的总称，基于请求和响应来开发的&lt;/p&gt;

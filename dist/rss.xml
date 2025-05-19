@@ -1,4 +1,194 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>JavaWeb笔记(ajax，i18n)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</guid><description>ajax，i18n</description><pubDate>Thu, 15 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Spring基础介绍）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</guid><description>Spring基础介绍，开闭，依赖倒置，控制反转</description><pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;p&gt;Spring6框架的学习，我本来使用的是尚硅谷23年的Spring6课程，但是这套课程看了几集发现讲的有些无趣，没有去深入的挖掘一些方法的实现，也没有讲清楚为什么要使用Spring框架来进行开发，优势在哪里，下午发现了动力节点的Spring课程（21h），现在开始学习，预计8天完成&lt;/p&gt;
+&lt;p&gt;&amp;lt;iframe
+width=&quot;100%&quot;
+height=&quot;468&quot;
+src=&quot;//player.bilibili.com/player.html?bvid=BV1Ft4y1g7Fb&amp;amp;p=1&amp;amp;autoplay=false&quot;
+scrolling=&quot;no&quot;
+border=&quot;0&quot;
+frameborder=&quot;no&quot;
+framespacing=&quot;0&quot;
+allowfullscreen=&quot;true&quot;&amp;gt;
+&amp;lt;/iframe&amp;gt;&lt;/p&gt;
+&lt;h2&gt;Spring&lt;/h2&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;Spring框架是一款轻量级（不需要依赖于其他的组件）的开源框架，解决了企业应用开发的复杂性，除了自己提供功能外，还提供整合其他技术和框架的能力&lt;/p&gt;
+&lt;p&gt;广义上：Spring泛指以Spring Framework为核心的Spring技术栈&lt;/p&gt;
+&lt;p&gt;狭义上：Spring特指Spring Framework，通常称为Spring框架&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/154.png&quot; alt=&quot;154&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;IoC与AOP&lt;/h2&gt;
+&lt;p&gt;Spring有两个核心的模块：IoC和AOP&lt;/p&gt;
+&lt;p&gt;Inverse of Control：译为“控制反转”，指把创建的对象过程交给Spring进行管理&lt;/p&gt;
+&lt;p&gt;Aspect Oriented Programming：译为“面向切面的编程”，AOP用来封装多个类的公共行为，将那些与业务无关，却为业务模块所共同调用的逻辑封装起来，减少系统的重复代码，降低模块间的耦合度，另外，AOP还解决一些系统层面上的问题，如日志，事务，权限等。&lt;/p&gt;
+&lt;h2&gt;入门示例&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;通过Spring创建对象&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;引入spring相关依赖&lt;/li&gt;
+&lt;li&gt;创建类，定义属性和方法&lt;/li&gt;
+&lt;li&gt;按照spring要求创建xml配置文件&lt;/li&gt;
+&lt;li&gt;在配置文件中配置相关信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;引入相关依赖&lt;/h3&gt;
+&lt;h4&gt;springframework&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-context&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;6.1.14&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::tips&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过 &lt;code&gt;@Component&lt;/code&gt; 声明组件&lt;/li&gt;
+&lt;li&gt;用 &lt;code&gt;@Autowired&lt;/code&gt; 自动注入依赖&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;@Configuration&lt;/code&gt; 定义配置类&lt;/li&gt;
+&lt;li&gt;通过 &lt;code&gt;ApplicationContext&lt;/code&gt; 获取和管理 Bean&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h4&gt;JUnit依赖&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- JUnit Jupiter API (测试编写) --&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.junit.jupiter&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;junit-jupiter-api&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;5.3.1&amp;lt;/version&amp;gt;
+    &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+&amp;lt;!-- JUnit Jupiter Engine (测试执行) --&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.junit.jupiter&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;junit-jupiter-engine&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;5.3.1&amp;lt;/version&amp;gt;
+    &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;建立Spring配置文件&lt;/h3&gt;
+&lt;p&gt;定义一个User类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.spring6;
+public class User {
+    public void add() {
+        System.out.println(&quot;add&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;xml配置文件&lt;/h3&gt;
+&lt;p&gt;按照spring要求创建配置xml文件&lt;/p&gt;
+&lt;p&gt;在配置文件中进行对于User实例的创建&lt;/p&gt;
+&lt;p&gt;id：唯一标识&lt;/p&gt;
+&lt;p&gt;class：创建对象的全路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;user&quot; class=&quot;com.spring6.User&quot;&amp;gt;&amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;进行测试&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class TestUser {
+    @Test
+    public void testUserObject() {
+        //加载spring配置文件，对象创建
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext(&quot;bean.xml&quot;);
+
+        //获取创建的对象
+        User user = (User)context.getBean(&quot;user&quot;);
+        System.out.println(user);//com.spring6.User@51bd8b5c
+
+        //使用对象调用方法进行测试
+        user.add();//add
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以正常创建对象实例（反射）并且调用&lt;/p&gt;
+&lt;h2&gt;引入Spring&lt;/h2&gt;
+&lt;h3&gt;OCP开闭原则&lt;/h3&gt;
+&lt;p&gt;是软件开发原则中最基本的一个原则：开闭原则&lt;/p&gt;
+&lt;p&gt;对于拓展开放，对于修改关闭&lt;/p&gt;
+&lt;p&gt;在拓展扩展系统功能的时候，没有修改以前写完的代码，就是符合OCP原则，如果修改了之前稳定的程序，修改了之前的程序，之前的程序都需要重新测试，非常麻烦&lt;/p&gt;
+&lt;p&gt;例如我们使用接口操作Dao对象的具体实现类，添加了一个新的Dao实现类，我们任然需要在调用Dao对象的程序中将原先的实例程序进行修改，违反了OCP原则&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface UserDao {
+    void deleteUser();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserDaoImplForMySQL implements UserDao {
+    @Override
+    public void deleteUser() {
+        System.out.println(&quot;数据操作层&quot;);
+        System.out.println(&quot;Delete User&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserServiceImpl implements UserService {
+    private UserDao userDao = new UserDaoImplForMySQL();
+    //这里需要修改
+    //private UserDao userDao = new UserDaoImplForNoSQL();
+    @Override
+    public void deleteRequest() {
+        System.out.println(&quot;业务层&quot;);
+        userDao.deleteUser();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;DIP依赖倒置原则&lt;/h3&gt;
+&lt;p&gt;定义：上层不再调用下层&lt;/p&gt;
+&lt;p&gt;核心：面向抽象编程，接口编程，不面向具体编程&lt;/p&gt;
+&lt;p&gt;视图层调用了服务层，服务层调用了数据操作层&lt;/p&gt;
+&lt;p&gt;上层的层级因为需要调用下层的对象以及方法，依赖于下层，违背了依赖倒置原则&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;上层Service&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class UserServiceImpl implements UserService {
+    private UserDao userDao = new UserDaoImplForMySQL();
+    //这里使用了具体的下层方法 UserDaoImplForMySQL 存在依赖
+    @Override
+    public void deleteRequest() {
+        System.out.println(&quot;业务层&quot;);
+        userDao.deleteUser();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;下层Dao&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class UserDaoImplForMySQL implements UserDao {
+    @Override
+    public void deleteUser() {
+        System.out.println(&quot;数据操作层&quot;);
+        System.out.println(&quot;Delete User&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们需要解决以上的两个问题，我们需要删除用new创建的对象，将对象的创建维护的权利交付出去，这也就是我们所谓的控制反转&lt;/p&gt;
+&lt;h3&gt;IoC控制反转&lt;/h3&gt;
+&lt;p&gt;反转的是：不在程序中采用硬编码的方式new对象，不在程序中采用硬编码的方式维护对象的关系&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class UserAction {
+    private UserService userService;//不再创建对象
+    @Test
+    public void deleteAction() {
+        System.out.println(&quot;显示层&quot;);
+        userService.deleteRequest();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class UserServiceImpl implements UserService {
+    private UserDao userDao;//不再创建对象
+    @Override
+    public void deleteRequest() {
+        System.out.println(&quot;业务层&quot;);
+        userDao.deleteUser();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时候代码不能运行（因为对象间的关系没有建立，会发生空指针异常），我们还需要把创建的对象过程和对象间的关系交给Spring进行管理（依赖注入Dependency Injection 是控制反转的实现）&lt;/p&gt;
+&lt;p&gt;依赖是两个对象之间的关系，而注入是一种手段可以产生对象关系&lt;/p&gt;
+&lt;p&gt;可以通过构造方法注入（通过构造方法设置接口值），或者Set方法注入（通过Set方法设置接口值）&lt;/p&gt;
+&lt;h2&gt;Spring中的八大模块&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;../images/155.png&quot; alt=&quot;155&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中的Spring Core是Spring最为核心的模块，所有的模块都是基于Spring Core开发的，而AOP是次核心的，剩余6个模块都是基于AOP + Spring Core的&lt;/p&gt;
+&lt;p&gt;SSM三大框架：Spring SpringMVC MyBatis&lt;/p&gt;
+&lt;p&gt;Spring Web模块：可以集成例如Struts，WebWork等MVC框架&lt;/p&gt;
+&lt;p&gt;Spring Dao：通过Spring进行对于数据库的增删改查&lt;/p&gt;
+&lt;p&gt;Spring ORM：可以集成常见的ORM持久层框架（MyBatis）&lt;/p&gt;
+</content:encoded></item><item><title>JavaWeb笔记(ajax，i18n)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0ajaxi18n/</guid><description>ajax，i18n</description><pubDate>Thu, 15 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;AJAX&lt;/h2&gt;
 &lt;p&gt;Asynchronous Javascript And XML异步JavaScript与XML&lt;/p&gt;
 &lt;p&gt;是一种创建交互式网页应用的网页开发技术，通过这样一种技术，我们可以在不刷新网页的情况下进行数据的局部更新，提高网页运行的效率&lt;/p&gt;
@@ -285,6 +475,7 @@ age=age
 &lt;p&gt;:::&lt;/p&gt;
 </content:encoded></item><item><title>图书管理系统</title><link>https://thrinisty.github.io/posts/java-web%E7%9A%84%E9%A2%86%E5%9F%9F%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java-web%E7%9A%84%E9%A2%86%E5%9F%9F%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</guid><description>JavaWeb简易项目</description><pubDate>Thu, 15 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java Web的领域数据管理系统&lt;/h1&gt;
 &lt;p&gt;是网络编程的第二次大作业，非常的简陋，而且没有做异常处理，全当水作业了&lt;/p&gt;
+&lt;p&gt;远程仓库地址：https://github.com/thrinisty/BookManager.git&lt;/p&gt;
 &lt;h2&gt;一、目的&lt;/h2&gt;
 &lt;p&gt;1．熟悉Java Web的基本功能和使用方法。&lt;/p&gt;
 &lt;p&gt;2．掌握如何使用JSP、JavaBean、Servlet等进行Web应用程序开发。&lt;/p&gt;
@@ -2767,7 +2958,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
-</content:encoded></item><item><title>JavaWeb笔记(模板)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>JavaWeb笔记模板</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 </content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Tomcat&lt;/h2&gt;
 &lt;p&gt;JavaWeb：所用通过Java语言编写可以通过浏览器访问的程序的总称，基于请求和响应来开发的&lt;/p&gt;

@@ -4,14 +4,16 @@ published: 2025-05-15
 updated: 2025-05-15
 description: 'JavaWeb简易项目'
 image: ''
-tags: []
-category: ''
+tags: [JavaWeb]
+category: 'JavaWeb'
 draft: false 
 ---
 
 # Java Web的领域数据管理系统
 
 是网络编程的第二次大作业，非常的简陋，而且没有做异常处理，全当水作业了
+
+远程仓库地址：https://github.com/thrinisty/BookManager.git
 
 ## 一、目的
 

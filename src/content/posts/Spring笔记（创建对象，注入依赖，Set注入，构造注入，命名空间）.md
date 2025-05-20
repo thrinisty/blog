@@ -1,8 +1,8 @@
 ---
-title: Spring笔记（创建对象，注入依赖，Set注入，构造注入）
-published: 2025-05-20
-updated: 2025-05-20
-description: '创建对象，注入依赖，Set注入，构造注入'
+title: Spring笔记（创建对象，注入依赖，Set注入，构造注入，命名空间）
+published: 2025-05-19
+updated: 2025-05-19
+description: '创建对象，注入依赖，Set注入，构造注入，命名空间'
 image: ''
 tags: [Spring]
 category: 'Frame'
@@ -417,3 +417,234 @@ public void test2() {
 2. 顺序不可以颠倒，要先注入对象，在进行对对象赋值
 
 :::
+
+### 注入复杂类型
+
+#### 数组注入
+
+```java
+public class YuQian {
+    private String[] hobbies;
+```
+
+```html
+<bean id="yuQian" class="com.thrinisty.bean.YuQian">
+    <property name="hobbies">
+        <array>
+            <value>抽烟</value>
+            <value>喝酒</value>
+            <value>烫头</value>
+        </array>
+    </property>
+</bean>
+```
+
+
+
+#### List/Set注入
+
+```java
+public class Person {
+    private List<String> names;
+    private Set<String> addresses;
+```
+
+```html
+<bean id="person" class="com.thrinisty.bean.Person">
+    <property name="names">
+        <list>
+            <value>张三</value>
+            <value>张1</value>
+            <value>张2</value>
+        </list>
+    </property>
+    <property name="addresses">
+        <set>
+            <value>北京</value>
+            <value>上海</value>
+            <value>深圳</value>
+        </set>
+    </property>
+</bean>
+```
+
+
+
+#### Map注入
+
+```java
+private Map<Integer, String> phoneNumbers;
+```
+
+```html
+<property name="phoneNumbers">
+    <map>
+        <entry key="1" value="123"/>
+        <entry key="2" value="23"/>
+        <entry key="3" value="13"/>
+        <entry key="4" value="12"/>
+    </map>
+</property>
+```
+
+:::tip
+
+不是简单类型使用key-ref,vallue-ref传入bean对象即可
+
+:::
+
+#### Properties注入
+
+```java
+private Properties properties;
+```
+
+```html
+<property name="properties">
+    <props>
+        <prop key="driver">com.utils</prop>
+        <prop key="url">localhost:123</prop>
+        <prop key="user">lory</prop>
+    </props>
+</property>
+```
+
+
+
+#### 注入null、空字符串
+
+手动注入null
+
+```html
+<property name="names">
+    <list>
+        <null/>
+        <null/>
+        <null/>
+    </list>
+</property>
+```
+
+```
+names=[null, null, null]
+```
+
+注入空字符串
+
+不填写value项内容即可
+
+```html
+<property name="names">
+    <list>
+        <value/>
+        <value/>
+        <value/>
+    </list>
+</property>
+```
+
+
+
+#### 注入特殊字符
+
+使用实体符号代替 < 
+
+```html
+<value>&lt;</value>
+```
+
+使用<![CDATA[]]>
+
+```html
+<value><![CDATA[<]]></value>
+```
+
+
+
+## 命名空间注入
+
+### p命名空间
+
+目的：简化配置
+
+第一步：在spring配置文件头部添加spring配置p命名空间
+
+```java
+public class Dog {
+    private String name;
+    private int age;
+    private Date birthday;
+```
+
+第二步：使用p命名空间
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="dog" class="com.thrinisty.bean.Dog" p:name="来福" p:age="3" p:birthday-ref="birth"/>
+    <bean id="birth" class="java.util.Date"/>
+</beans>
+```
+
+
+
+### c命名空间
+
+简化构造注入
+
+两种方式，通过参数下表或者参数名称
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="dog" class="com.thrinisty.bean.Dog" c:_0="来福" c:_1="3" c:_2-ref="birth"/>
+    <bean id="birth" class="java.util.Date"/>
+</beans>
+```
+
+```html
+<bean id="dog" class="com.thrinisty.bean.Dog" c:name="来福" c:age="3" c:birthday-ref="birth"/>
+<bean id="birth" class="java.util.Date"/>
+```
+
+
+
+### Util命名空间
+
+主要针对集合的复用
+
+util命名空间可以对配置进行复用
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <util:properties id="prop">
+        <prop key="driver">com.utils.driver</prop>
+        <prop key="url">localhost:123</prop>
+        <prop key="username">root</prop>
+        <prop key="password">123456</prop>
+    </util:properties>
+
+    <bean id="s01" class="com.thrinisty.jdbc.Source01">
+        <property name="properties" ref="prop"/>
+    </bean>
+
+    <bean id="s02" class="com.thrinisty.jdbc.Source02">
+        <property name="properties" ref="prop"/>
+    </bean>
+</beans>
+```
+
+可以使用util命名空间中定义的properties配置，在后续的使用中只需要property标签传入定义的配置bean即可

@@ -1,4 +1,237 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（创建对象，注入依赖，Set注入，构造注入）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><description>创建对象，注入依赖，Set注入，构造注入</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（自动装配）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/</guid><description>自动装配</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;h2&gt;自动装配&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（全排列，合并二叉树，比特位计数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</guid><description>全排列，合并二叉树，比特位计数</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;子集&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个不含重复数字的数组 &lt;code&gt;nums&lt;/code&gt; ，返回其 &lt;em&gt;所有可能的全排列&lt;/em&gt; 。你可以 &lt;strong&gt;按任意顺序&lt;/strong&gt; 返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1]
+输出：[[0,1],[1,0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1]
+输出：[[1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;回溯法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; permute(int[] nums) {
+        List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            list.add(nums[i]);
+        }
+        backtrack(n, list, result, 0);
+        return result;
+    }
+
+    public void backtrack(int n, List&amp;lt;Integer&amp;gt; list, List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result, int first) {
+        if(first == n) {
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+            //当first=n时，list没有元素可供交换
+        }
+        for(int i = first; i &amp;lt; n; i++) {
+            Collections.swap(list, first, i);
+            //交换元素
+            backtrack(n, list, result, first + 1);
+            //递归调用方法，全排列交换后的first后的内容
+            Collections.swap(list , first, i);
+            //恢复原排列
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;合并二叉树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两棵二叉树： &lt;code&gt;root1&lt;/code&gt; 和 &lt;code&gt;root2&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，&lt;strong&gt;不为&lt;/strong&gt; null 的节点将直接作为新二叉树的节点。&lt;/p&gt;
+&lt;p&gt;返回合并后的二叉树。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意:&lt;/strong&gt; 合并过程必须从两个树的根节点开始。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/159.jpg&quot; alt=&quot;159&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+输出：[3,4,5,5,4,null,7]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root1 = [1], root2 = [1,2]
+输出：[2,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1 == null) {
+            return root2;
+        }
+        if(root2 == null) {
+            return root1;
+        }
+        TreeNode merge = new TreeNode();
+        merge.val = root1.val + root2.val;
+        merge.left = mergeTrees(root1.left, root2.left);
+        merge.right = mergeTrees(root1.right, root2.right);
+        return merge;      
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;比特位计数&lt;/h1&gt;
+&lt;h2&gt;题目表述&lt;/h2&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，对于 &lt;code&gt;0 &amp;lt;= i &amp;lt;= n&lt;/code&gt; 中的每个 &lt;code&gt;i&lt;/code&gt; ，计算其二进制表示中 &lt;strong&gt;&lt;code&gt;1&lt;/code&gt; 的个数&lt;/strong&gt; ，返回一个长度为 &lt;code&gt;n + 1&lt;/code&gt; 的数组 &lt;code&gt;ans&lt;/code&gt; 作为答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 2
+输出：[0,1,1]
+解释：
+0 --&amp;gt; 0
+1 --&amp;gt; 1
+2 --&amp;gt; 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 5
+输出：[0,1,1,2,1,2]
+解释：
+0 --&amp;gt; 0
+1 --&amp;gt; 1
+2 --&amp;gt; 10
+3 --&amp;gt; 11
+4 --&amp;gt; 100
+5 --&amp;gt; 101
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] countBits(int n) {
+        int[] result = new int[n + 1];
+        for(int i = 0; i &amp;lt;= n; i++) {
+            result[i] = count(i);
+        }
+        return result;
+    }
+
+    public int count(int num) {
+        int result = 0;
+        while(num != 0) {
+            result += (1 &amp;amp; num);
+            num = num &amp;gt;&amp;gt; 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（子集，汉明距离，反转二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>子集（二进制实现），汉明距离（位运算），反转二叉树（递归）</description><pubDate>Mon, 19 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;子集&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，数组中的元素 &lt;strong&gt;互不相同&lt;/strong&gt; 。返回该数组所有可能的子集（幂集）。&lt;/p&gt;
+&lt;p&gt;解集 &lt;strong&gt;不能&lt;/strong&gt; 包含重复的子集。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回解集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0]
+输出：[[],[0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;根据返回类型判断返回值为存放List集合的大List集合&lt;/li&gt;
+&lt;li&gt;存放进入list中的数据对应其mask的二进制表示形式&lt;/li&gt;
+&lt;li&gt;在内部循环中逐个判断是否将对应元素存入小List集合&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; subsets(int[] nums) {
+        result.clear();
+        int n = nums.length;
+        for (int mask = 0; mask &amp;lt; (1 &amp;lt;&amp;lt; n); mask++) {
+            list.clear();
+            for (int i = 0; i &amp;lt; n; i++) {
+                if((mask &amp;amp; (1 &amp;lt;&amp;lt; i)) != 0) {
+                    list.add(nums[i]);
+                }
+            }
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;汉明距离&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;两个整数之间的 &lt;a href=&quot;https://baike.baidu.com/item/%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB&quot;&gt;汉明距离&lt;/a&gt; 指的是这两个数字对应二进制位不同的位置的数目。&lt;/p&gt;
+&lt;p&gt;给你两个整数 &lt;code&gt;x&lt;/code&gt; 和 &lt;code&gt;y&lt;/code&gt;，计算并返回它们之间的汉明距离。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 1, y = 4
+输出：2
+解释：
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+上面的箭头指出了对应二进制位不同的位置。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 3, y = 1
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;​	两个数的二进制不同的位通过取按位异或，再通过bitCount记录1个数即可&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;使用Integer类静态方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hammingDistance(int x, int y) {
+        return Integer.bitCount(x ^ y);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自己实现计算1个数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hammingDistance(int x, int y) {
+        int target = x ^ y;
+        int result = 0;
+        while(target != 0) {
+            result += (target &amp;amp; 1);
+            target = target &amp;gt;&amp;gt; 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;反转二叉树&lt;/h2&gt;
+&lt;h3&gt;题目描述&lt;/h3&gt;
+&lt;p&gt;给你一棵二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，翻转这棵二叉树，并返回其根节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/157.jpg&quot; alt=&quot;157&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [4,2,7,1,3,6,9]
+输出：[4,7,2,9,6,3,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/158.jpg&quot; alt=&quot;158&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [2,1,3]
+输出：[2,3,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;题解&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        root.left = right;
+        root.right = left;
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（创建对象，注入依赖，Set注入，构造注入，命名空间）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E6%B3%A8%E5%85%A5%E4%BE%9D%E8%B5%96set%E6%B3%A8%E5%85%A5%E6%9E%84%E9%80%A0%E6%B3%A8%E5%85%A5%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E6%B3%A8%E5%85%A5%E4%BE%9D%E8%B5%96set%E6%B3%A8%E5%85%A5%E6%9E%84%E9%80%A0%E6%B3%A8%E5%85%A5%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/</guid><description>创建对象，注入依赖，Set注入，构造注入，命名空间</description><pubDate>Mon, 19 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;p&gt;Maven引入SpringFrameWork依赖&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
     &amp;lt;groupId&amp;gt;org.springframework&amp;lt;/groupId&amp;gt;
@@ -283,118 +516,160 @@ public void test2() {
 &lt;li&gt;顺序不可以颠倒，要先注入对象，在进行对对象赋值&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;:::&lt;/p&gt;
-</content:encoded></item><item><title>LeetCode刷题（子集，汉明距离，反转二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>子集（二进制实现），汉明距离（位运算），反转二叉树（递归）</description><pubDate>Mon, 19 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;子集&lt;/h2&gt;
-&lt;h3&gt;题目描述&lt;/h3&gt;
-&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，数组中的元素 &lt;strong&gt;互不相同&lt;/strong&gt; 。返回该数组所有可能的子集（幂集）。&lt;/p&gt;
-&lt;p&gt;解集 &lt;strong&gt;不能&lt;/strong&gt; 包含重复的子集。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回解集。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
-输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+&lt;h3&gt;注入复杂类型&lt;/h3&gt;
+&lt;h4&gt;数组注入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class YuQian {
+    private String[] hobbies;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [0]
-输出：[[],[0]]
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;yuQian&quot; class=&quot;com.thrinisty.bean.YuQian&quot;&amp;gt;
+    &amp;lt;property name=&quot;hobbies&quot;&amp;gt;
+        &amp;lt;array&amp;gt;
+            &amp;lt;value&amp;gt;抽烟&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;喝酒&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;烫头&amp;lt;/value&amp;gt;
+        &amp;lt;/array&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;题解&lt;/h3&gt;
+&lt;h4&gt;List/Set注入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;public class Person {
+    private List&amp;lt;String&amp;gt; names;
+    private Set&amp;lt;String&amp;gt; addresses;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;person&quot; class=&quot;com.thrinisty.bean.Person&quot;&amp;gt;
+    &amp;lt;property name=&quot;names&quot;&amp;gt;
+        &amp;lt;list&amp;gt;
+            &amp;lt;value&amp;gt;张三&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;张1&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;张2&amp;lt;/value&amp;gt;
+        &amp;lt;/list&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property name=&quot;addresses&quot;&amp;gt;
+        &amp;lt;set&amp;gt;
+            &amp;lt;value&amp;gt;北京&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;上海&amp;lt;/value&amp;gt;
+            &amp;lt;value&amp;gt;深圳&amp;lt;/value&amp;gt;
+        &amp;lt;/set&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Map注入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;private Map&amp;lt;Integer, String&amp;gt; phoneNumbers;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;property name=&quot;phoneNumbers&quot;&amp;gt;
+    &amp;lt;map&amp;gt;
+        &amp;lt;entry key=&quot;1&quot; value=&quot;123&quot;/&amp;gt;
+        &amp;lt;entry key=&quot;2&quot; value=&quot;23&quot;/&amp;gt;
+        &amp;lt;entry key=&quot;3&quot; value=&quot;13&quot;/&amp;gt;
+        &amp;lt;entry key=&quot;4&quot; value=&quot;12&quot;/&amp;gt;
+    &amp;lt;/map&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;:::tip&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;根据返回类型判断返回值为存放List集合的大List集合&lt;/li&gt;
-&lt;li&gt;存放进入list中的数据对应其mask的二进制表示形式&lt;/li&gt;
-&lt;li&gt;在内部循环中逐个判断是否将对应元素存入小List集合&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;不是简单类型使用key-ref,vallue-ref传入bean对象即可&lt;/p&gt;
 &lt;p&gt;:::&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
-    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+&lt;h4&gt;Properties注入&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;private Properties properties;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;property name=&quot;properties&quot;&amp;gt;
+    &amp;lt;props&amp;gt;
+        &amp;lt;prop key=&quot;driver&quot;&amp;gt;com.utils&amp;lt;/prop&amp;gt;
+        &amp;lt;prop key=&quot;url&quot;&amp;gt;localhost:123&amp;lt;/prop&amp;gt;
+        &amp;lt;prop key=&quot;user&quot;&amp;gt;lory&amp;lt;/prop&amp;gt;
+    &amp;lt;/props&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;注入null、空字符串&lt;/h4&gt;
+&lt;p&gt;手动注入null&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;property name=&quot;names&quot;&amp;gt;
+    &amp;lt;list&amp;gt;
+        &amp;lt;null/&amp;gt;
+        &amp;lt;null/&amp;gt;
+        &amp;lt;null/&amp;gt;
+    &amp;lt;/list&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;names=[null, null, null]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注入空字符串&lt;/p&gt;
+&lt;p&gt;不填写value项内容即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;property name=&quot;names&quot;&amp;gt;
+    &amp;lt;list&amp;gt;
+        &amp;lt;value/&amp;gt;
+        &amp;lt;value/&amp;gt;
+        &amp;lt;value/&amp;gt;
+    &amp;lt;/list&amp;gt;
+&amp;lt;/property&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;注入特殊字符&lt;/h4&gt;
+&lt;p&gt;使用实体符号代替 &amp;lt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;value&amp;gt;&amp;amp;lt;&amp;lt;/value&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用&amp;lt;![CDATA[]]&amp;gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;value&amp;gt;&amp;lt;![CDATA[&amp;lt;]]&amp;gt;&amp;lt;/value&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;命名空间注入&lt;/h2&gt;
+&lt;h3&gt;p命名空间&lt;/h3&gt;
+&lt;p&gt;目的：简化配置&lt;/p&gt;
+&lt;p&gt;第一步：在spring配置文件头部添加spring配置p命名空间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Dog {
+    private String name;
+    private int age;
+    private Date birthday;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二步：使用p命名空间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;dog&quot; class=&quot;com.thrinisty.bean.Dog&quot; p:name=&quot;来福&quot; p:age=&quot;3&quot; p:birthday-ref=&quot;birth&quot;/&amp;gt;
+    &amp;lt;bean id=&quot;birth&quot; class=&quot;java.util.Date&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;c命名空间&lt;/h3&gt;
+&lt;p&gt;简化构造注入&lt;/p&gt;
+&lt;p&gt;两种方式，通过参数下表或者参数名称&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+       xmlns:c=&quot;http://www.springframework.org/schema/c&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&amp;gt;
+    &amp;lt;bean id=&quot;dog&quot; class=&quot;com.thrinisty.bean.Dog&quot; c:_0=&quot;来福&quot; c:_1=&quot;3&quot; c:_2-ref=&quot;birth&quot;/&amp;gt;
+    &amp;lt;bean id=&quot;birth&quot; class=&quot;java.util.Date&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;dog&quot; class=&quot;com.thrinisty.bean.Dog&quot; c:name=&quot;来福&quot; c:age=&quot;3&quot; c:birthday-ref=&quot;birth&quot;/&amp;gt;
+&amp;lt;bean id=&quot;birth&quot; class=&quot;java.util.Date&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Util命名空间&lt;/h3&gt;
+&lt;p&gt;主要针对集合的复用&lt;/p&gt;
+&lt;p&gt;util命名空间可以对配置进行复用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:util=&quot;http://www.springframework.org/schema/util&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd&quot;&amp;gt;
+    
+    &amp;lt;util:properties id=&quot;prop&quot;&amp;gt;
+        &amp;lt;prop key=&quot;driver&quot;&amp;gt;com.utils.driver&amp;lt;/prop&amp;gt;
+        &amp;lt;prop key=&quot;url&quot;&amp;gt;localhost:123&amp;lt;/prop&amp;gt;
+        &amp;lt;prop key=&quot;username&quot;&amp;gt;root&amp;lt;/prop&amp;gt;
+        &amp;lt;prop key=&quot;password&quot;&amp;gt;123456&amp;lt;/prop&amp;gt;
+    &amp;lt;/util:properties&amp;gt;
 
-    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; subsets(int[] nums) {
-        result.clear();
-        int n = nums.length;
-        for (int mask = 0; mask &amp;lt; (1 &amp;lt;&amp;lt; n); mask++) {
-            list.clear();
-            for (int i = 0; i &amp;lt; n; i++) {
-                if((mask &amp;amp; (1 &amp;lt;&amp;lt; i)) != 0) {
-                    list.add(nums[i]);
-                }
-            }
-            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
-        }
-        return result;
-    }
-}
+    &amp;lt;bean id=&quot;s01&quot; class=&quot;com.thrinisty.jdbc.Source01&quot;&amp;gt;
+        &amp;lt;property name=&quot;properties&quot; ref=&quot;prop&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+    &amp;lt;bean id=&quot;s02&quot; class=&quot;com.thrinisty.jdbc.Source02&quot;&amp;gt;
+        &amp;lt;property name=&quot;properties&quot; ref=&quot;prop&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;汉明距离&lt;/h2&gt;
-&lt;h3&gt;题目描述&lt;/h3&gt;
-&lt;p&gt;两个整数之间的 &lt;a href=&quot;https://baike.baidu.com/item/%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB&quot;&gt;汉明距离&lt;/a&gt; 指的是这两个数字对应二进制位不同的位置的数目。&lt;/p&gt;
-&lt;p&gt;给你两个整数 &lt;code&gt;x&lt;/code&gt; 和 &lt;code&gt;y&lt;/code&gt;，计算并返回它们之间的汉明距离。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：x = 1, y = 4
-输出：2
-解释：
-1   (0 0 0 1)
-4   (0 1 0 0)
-       ↑   ↑
-上面的箭头指出了对应二进制位不同的位置。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：x = 3, y = 1
-输出：1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;题解&lt;/h3&gt;
-&lt;p&gt;:::tip&lt;/p&gt;
-&lt;p&gt;​	两个数的二进制不同的位通过取按位异或，再通过bitCount记录1个数即可&lt;/p&gt;
-&lt;p&gt;:::&lt;/p&gt;
-&lt;p&gt;使用Integer类静态方法&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int hammingDistance(int x, int y) {
-        return Integer.bitCount(x ^ y);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;自己实现计算1个数&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int hammingDistance(int x, int y) {
-        int target = x ^ y;
-        int result = 0;
-        while(target != 0) {
-            result += (target &amp;amp; 1);
-            target = target &amp;gt;&amp;gt; 1;
-        }
-        return result;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;反转二叉树&lt;/h2&gt;
-&lt;h3&gt;题目描述&lt;/h3&gt;
-&lt;p&gt;给你一棵二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，翻转这棵二叉树，并返回其根节点。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/157.jpg&quot; alt=&quot;157&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [4,2,7,1,3,6,9]
-输出：[4,7,2,9,6,3,1]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/158.jpg&quot; alt=&quot;158&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [2,1,3]
-输出：[2,3,1]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = []
-输出：[]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;题解&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public TreeNode invertTree(TreeNode root) {
-        if (root == null) {
-            return null;
-        }
-        TreeNode left = invertTree(root.left);
-        TreeNode right = invertTree(root.right);
-        root.left = right;
-        root.right = left;
-        return root;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以使用util命名空间中定义的properties配置，在后续的使用中只需要property标签传入定义的配置bean即可&lt;/p&gt;
 </content:encoded></item><item><title>Spring笔记（Spring基础介绍）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</guid><description>Spring基础介绍，开闭，依赖倒置</description><pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;p&gt;Spring6框架的学习，我本来使用的是尚硅谷23年的Spring6课程，但是这套课程看了几集发现讲的有些无趣，没有去深入的挖掘一些方法的实现，也没有讲清楚为什么要使用Spring框架来进行开发，优势在哪里，下午发现了动力节点的Spring课程（21h），现在开始学习，预计8天完成&lt;/p&gt;
 &lt;p&gt;&amp;lt;iframe
@@ -3356,7 +3631,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
 </content:encoded></item><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
-</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>LeetCode刷题笔记（模板）</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;子集&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>Leet</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;子集&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;

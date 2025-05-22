@@ -5,7 +5,7 @@ updated: 2025-05-16
 description: 'Spring基础介绍，开闭，依赖倒置'
 image: './photo/spring.png'
 tags: [Spring]
-category: 'Spring'
+category: 'Frame'
 draft: false 
 ---
 

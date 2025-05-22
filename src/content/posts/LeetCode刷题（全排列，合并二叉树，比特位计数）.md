@@ -9,7 +9,7 @@ category: 'LeetCode'
 draft: false 
 ---
 
-# 子集
+# 全排列
 
 ## 题目描述
 

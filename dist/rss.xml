@@ -1,4 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（旋转图像，将二叉树转为累加树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E8%BD%AC%E4%B8%BA%E7%B4%AF%E5%8A%A0%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E8%BD%AC%E4%B8%BA%E7%B4%AF%E5%8A%A0%E6%A0%91/</guid><description>旋转图像，将二叉树转为累加树</description><pubDate>Thu, 22 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;旋转图像&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（乘积数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</guid><description>除自生以外数组的乘积</description><pubDate>Fri, 23 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;除自生以外数组的乘积&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt;，返回 数组 &lt;code&gt;answer&lt;/code&gt; ，其中 &lt;code&gt;answer[i]&lt;/code&gt; 等于 &lt;code&gt;nums&lt;/code&gt; 中除 &lt;code&gt;nums[i]&lt;/code&gt; 之外其余各元素的乘积 。&lt;/p&gt;
+&lt;p&gt;题目数据 &lt;strong&gt;保证&lt;/strong&gt; 数组 &lt;code&gt;nums&lt;/code&gt;之中任意元素的全部前缀元素和后缀的乘积都在 &lt;strong&gt;32 位&lt;/strong&gt; 整数范围内。&lt;/p&gt;
+&lt;p&gt;请 **不要使用除法，**且在 &lt;code&gt;O(n)&lt;/code&gt; 时间复杂度内完成此题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,2,3,4]
+输出: [24,12,8,6]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [-1,1,0,-3,3]
+输出: [0,0,9,0,0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;用传统的求数组乘积的方法，在数组中存在0的时候失效，因为使用除法/0会导致异常，我们构造两个辅助数组，分别计算出该位置左右两侧所有的数相乘结果，在使用两个数组逐个相乘即可得出答案&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] L = new int[n];
+        int[] R = new int[n];
+        int[] result = new int[n];
+        L[0] = 1;
+        for (int i = 1; i &amp;lt; n; i++) {
+            L[i] = L[i - 1] * nums[i - 1];
+        }
+        R[n - 1] = 1;
+        for (int i = n - 2; i &amp;gt;= 0; i--) {
+            R[i] = R[i + 1] * nums[i + 1]; 
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            result[i] = L[i] * R[i];
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还可以进一步改善，不创建辅助数组，直接在结果数组中进行操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] result = new int[n];
+
+        //用结果数组存储每个数左侧的乘积
+        result[0] = 1; 
+        for (int i = 1; i &amp;lt; n; i++) {
+            result[i] = result[i - 1] * nums[i - 1];
+        }
+
+        //右侧的乘积结果使用遍历R表示，初始为1
+        int R = 1;
+        for (int i = n - 1; i &amp;gt;= 0; i--) {
+            result[i] *= R;
+            R *= nums[i];
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;根据身高重建队列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;假设有打乱顺序的一群人站成一个队列，数组 &lt;code&gt;people&lt;/code&gt; 表示队列中一些人的属性（不一定按顺序）。每个 &lt;code&gt;people[i] = [hi, ki]&lt;/code&gt; 表示第 &lt;code&gt;i&lt;/code&gt; 个人的身高为 &lt;code&gt;hi&lt;/code&gt; ，前面 &lt;strong&gt;正好&lt;/strong&gt; 有 &lt;code&gt;ki&lt;/code&gt; 个身高大于或等于 &lt;code&gt;hi&lt;/code&gt; 的人。&lt;/p&gt;
+&lt;p&gt;请你重新构造并返回输入数组 &lt;code&gt;people&lt;/code&gt; 所表示的队列。返回的队列应该格式化为数组 &lt;code&gt;queue&lt;/code&gt; ，其中 &lt;code&gt;queue[j] = [hj, kj]&lt;/code&gt; 是队列中第 &lt;code&gt;j&lt;/code&gt; 个人的属性（&lt;code&gt;queue[0]&lt;/code&gt; 是排在队列前面的人）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+解释：
+编号为 0 的人身高为 5 ，没有身高更高或者相同的人排在他前面。
+编号为 1 的人身高为 7 ，没有身高更高或者相同的人排在他前面。
+编号为 2 的人身高为 5 ，有 2 个身高更高或者相同的人排在他前面，即编号为 0 和 1 的人。
+编号为 3 的人身高为 6 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+编号为 4 的人身高为 4 ，有 4 个身高更高或者相同的人排在他前面，即编号为 0、1、2、3 的人。
+编号为 5 的人身高为 7 ，有 1 个身高更高或者相同的人排在他前面，即编号为 1 的人。
+因此 [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] 是重新构造后的队列。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先运用sort传入内部类，进行定制排序（将升高按照从大到小排列，相同时前面人数多的放在后面），实现后面的人放入集合不影响前面的队形&lt;/p&gt;
+&lt;p&gt;这样的话按照顺序遍历int二维数组，将每个一维数组按照前面存在的人数进行放入（以及放入的人都比这个人要高）即可实现，最后将List集合转化为数组返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, new Comparator&amp;lt;int[]&amp;gt;() {
+            public int compare(int[] people1, int[] people2) {
+                if(people1[0] != people2[0]) {
+                    return people2[0] - people1[0];
+                } 
+                return people1[1] - people2[1];
+            }
+        });
+        List&amp;lt;int[]&amp;gt; ans = new ArrayList&amp;lt;&amp;gt;();
+        for(int [] person : people) {
+            ans.add(person[1], person);
+        }
+        int[][] result = new int[ans.size()][2];
+        ans.toArray(result);
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（旋转图像，将二叉树转为累加树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E8%BD%AC%E4%B8%BA%E7%B4%AF%E5%8A%A0%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E8%BD%AC%E4%B8%BA%E7%B4%AF%E5%8A%A0%E6%A0%91/</guid><description>旋转图像，将二叉树转为累加树</description><pubDate>Thu, 22 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;旋转图像&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个 &lt;em&gt;n&lt;/em&gt; × &lt;em&gt;n&lt;/em&gt; 的二维矩阵 &lt;code&gt;matrix&lt;/code&gt; 表示一个图像。请你将图像顺时针旋转 90 度。&lt;/p&gt;
 &lt;p&gt;你必须在**&lt;a href=&quot;https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt; 原地&lt;/a&gt;** 旋转图像，这意味着你需要直接修改输入的二维矩阵。&lt;strong&gt;请不要&lt;/strong&gt; 使用另一个矩阵来旋转图像。&lt;/p&gt;

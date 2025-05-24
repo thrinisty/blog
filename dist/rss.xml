@@ -1,8 +1,107 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Bean实例化）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</guid><description>Bean的多种实例化方式</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Bean实例化）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</guid><description>Bean的多种实例化方式</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;p&gt;​	之前的Spring的学习计划因为考试和作业被稍微耽搁了一下，原本计划是到30号以后再继续学习的，但是最近稍微忙了一下，把编译原理理论给复习完了（其实上课听了的话不会话太长时间）&lt;/p&gt;
 &lt;p&gt;​	考试在28号，打算在27号和28号的两天早上再做一做题目热手，24-26号这三天还是可以抽得出时间稍微学习一下。&lt;/p&gt;
 &lt;h2&gt;Bean实例化&lt;/h2&gt;
-</content:encoded></item><item><title>LeetCode刷题（反转链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</guid><description>反转链表</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表&lt;/h1&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;Spring为Bean提供了多种实例化的方式，通常包括四种&lt;/p&gt;
+&lt;p&gt;1.通过构造方式创建实例化&lt;/p&gt;
+&lt;p&gt;2.通过简单工厂模式实例化&lt;/p&gt;
+&lt;p&gt;3.通过factory-bean实例化&lt;/p&gt;
+&lt;p&gt;4.通过FactoryBean接口实例化&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;构造方法创建&lt;/h3&gt;
+&lt;p&gt;通过静态方法创建Bean&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;personBean&quot; class=&quot;com.thrinisty.bean.Person&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过context利用配置文件中的Bean对象，自动调用无参构造器创建对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test01() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Person person = context.getBean(&quot;personBean&quot;, Person.class);
+    person.fun();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;简单工厂模式实例化&lt;/h3&gt;
+&lt;p&gt;通过factoryStar Bean对象，指定createStar方法创建Star实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;factoryStar&quot; class=&quot;com.thrinisty.bean.StarFactory&quot; factory-method=&quot;createStar&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class StarFactory {
+    //简单工厂
+    //静态工厂方法
+    public static Star createStar() {
+        return new Star();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序，传入工厂类，底层根据配置调用构造Star的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test02() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Star star = context.getBean(&quot;factoryStar&quot;, Star.class);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;FactoryBean实例化&lt;/h3&gt;
+&lt;p&gt;工厂方法模式实例化&lt;/p&gt;
+&lt;p&gt;相比于简单工厂，通过实例方法构建对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class GunFactory {
+    //工厂模式方法，是实例方法
+    public Gun createGun() {
+        return new Gun();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;spring配置：先创建工厂bean对象，使用Bean对象的对应方法&lt;/p&gt;
+&lt;p&gt;分别通过factory-bean和factory-method指定&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;gunFactory&quot; class=&quot;com.thrinisty.bean.GunFactory&quot;/&amp;gt;
+&amp;lt;bean id=&quot;getFactory&quot; factory-bean=&quot;gunFactory&quot; factory-method=&quot;createGun&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test03() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Gun gun = context.getBean(&quot;getFactory&quot;, Gun.class);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;FactoryBean接口&lt;/h3&gt;
+&lt;p&gt;当编写的Bean实现了FactoryBean接口，就可以不用指定factory-bean和factory-method，可以简化配置&lt;/p&gt;
+&lt;p&gt;实现FactoryBean接口的工厂类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class DogFactoryBean implements FactoryBean&amp;lt;Dog&amp;gt; {
+    @Override
+    public Dog getObject() throws Exception {
+        return new Dog();
+    }
+
+    @Override
+    public Class&amp;lt;?&amp;gt; getObjectType() {
+        return Dog.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return FactoryBean.super.isSingleton();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;spring配置，相比于前一种方式不需要传入实例Bean对象以及对应方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;dogBean&quot; class=&quot;com.thrinisty.bean.DogFactoryBean&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test04() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Dog dog = context.getBean(&quot;dogBean&quot;, Dog.class);
+    System.out.println(dog);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过工厂Factory相比较于直接从全路径获取Class对象，可以进行加工操作，有一些自己的优势&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;BeanFactory与FactoryBean的区别&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;BeanFactory： Spring IoC中的顶级对象，译为Bean工厂，负责创建Bean对象&lt;/li&gt;
+&lt;li&gt;FactoryBean：是一个Bean，是一个可以辅助Spring实例化Bean对象的一个Bean对象，而在Spring中Bean分为普通Bean与工厂Bean&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（反转链表，二叉树展开，独立数字）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</guid><description>反转链表，二叉树展开，独立数字</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你反转链表，并返回反转后的链表。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
@@ -361,7 +460,126 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（自动装配，Bean作用域，工厂模式）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/</guid><description>自动装配，引用外部配置文件，Bean作用域，工厂模式</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（全排列，合并二叉树，比特位计数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</guid><description>全排列，合并二叉树，比特位计数</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;全排列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个不含重复数字的数组 &lt;code&gt;nums&lt;/code&gt; ，返回其 &lt;em&gt;所有可能的全排列&lt;/em&gt; 。你可以 &lt;strong&gt;按任意顺序&lt;/strong&gt; 返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1]
+输出：[[0,1],[1,0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1]
+输出：[[1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;回溯法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; permute(int[] nums) {
+        List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            list.add(nums[i]);
+        }
+        backtrack(n, list, result, 0);
+        return result;
+    }
+
+    public void backtrack(int n, List&amp;lt;Integer&amp;gt; list, List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result, int first) {
+        if(first == n) {
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+            //当first=n时，list没有元素可供交换
+        }
+        for(int i = first; i &amp;lt; n; i++) {
+            Collections.swap(list, first, i);
+            //交换元素
+            backtrack(n, list, result, first + 1);
+            //递归调用方法，全排列交换后的first后的内容
+            Collections.swap(list , first, i);
+            //恢复原排列
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;合并二叉树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两棵二叉树： &lt;code&gt;root1&lt;/code&gt; 和 &lt;code&gt;root2&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，&lt;strong&gt;不为&lt;/strong&gt; null 的节点将直接作为新二叉树的节点。&lt;/p&gt;
+&lt;p&gt;返回合并后的二叉树。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意:&lt;/strong&gt; 合并过程必须从两个树的根节点开始。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/159.jpg&quot; alt=&quot;159&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+输出：[3,4,5,5,4,null,7]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root1 = [1], root2 = [1,2]
+输出：[2,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1 == null) {
+            return root2;
+        }
+        if(root2 == null) {
+            return root1;
+        }
+        TreeNode merge = new TreeNode();
+        merge.val = root1.val + root2.val;
+        merge.left = mergeTrees(root1.left, root2.left);
+        merge.right = mergeTrees(root1.right, root2.right);
+        return merge;      
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;比特位计数&lt;/h1&gt;
+&lt;h2&gt;题目表述&lt;/h2&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，对于 &lt;code&gt;0 &amp;lt;= i &amp;lt;= n&lt;/code&gt; 中的每个 &lt;code&gt;i&lt;/code&gt; ，计算其二进制表示中 &lt;strong&gt;&lt;code&gt;1&lt;/code&gt; 的个数&lt;/strong&gt; ，返回一个长度为 &lt;code&gt;n + 1&lt;/code&gt; 的数组 &lt;code&gt;ans&lt;/code&gt; 作为答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 2
+输出：[0,1,1]
+解释：
+0 --&amp;gt; 0
+1 --&amp;gt; 1
+2 --&amp;gt; 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 5
+输出：[0,1,1,2,1,2]
+解释：
+0 --&amp;gt; 0
+1 --&amp;gt; 1
+2 --&amp;gt; 10
+3 --&amp;gt; 11
+4 --&amp;gt; 100
+5 --&amp;gt; 101
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] countBits(int n) {
+        int[] result = new int[n + 1];
+        for(int i = 0; i &amp;lt;= n; i++) {
+            result[i] = count(i);
+        }
+        return result;
+    }
+
+    public int count(int num) {
+        int result = 0;
+        while(num != 0) {
+            result += (1 &amp;amp; num);
+            num = num &amp;gt;&amp;gt; 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（自动装配，Bean作用域，工厂模式）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8Dbean%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8Dbean%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</guid><description>自动装配，引用外部配置文件，Bean作用域，工厂模式</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;自动装配&lt;/h2&gt;
 &lt;p&gt;基于set实现&lt;/p&gt;
 &lt;p&gt;Spring还可以完成自动化的注入，又被称为自动装配，可以根据名字进行自动装配，也可以根据类型进行自动装配&lt;/p&gt;
@@ -625,125 +843,6 @@ com.thrinisty.bean.SpringBean@1f702edb
 &lt;p&gt;缺点：类的复杂性增加，类的数量大&lt;/p&gt;
 &lt;p&gt;这两天除了Spring的学习以外，还而外的抽出时间刷了下LeetCode的Hot100，之前没有系统性地刷过题，于是计划按照通过率，从简单到难按顺序一步一步来，这段时间至少每日一题，保持一下编程的手感&lt;/p&gt;
 &lt;p&gt;另外，这段时间忙着机器学习的大作业（5.30），以及编译原理实验（5.24），还要复习编译原理理论考试（5.28），网络编程理论考试，不是很能抽得出时间完成Spring的学习，我想等到端午节后再继续Spring的学习&lt;/p&gt;
-</content:encoded></item><item><title>LeetCode刷题（全排列，合并二叉树，比特位计数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91%E6%AF%94%E7%89%B9%E4%BD%8D%E8%AE%A1%E6%95%B0/</guid><description>全排列，合并二叉树，比特位计数</description><pubDate>Tue, 20 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;全排列&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给定一个不含重复数字的数组 &lt;code&gt;nums&lt;/code&gt; ，返回其 &lt;em&gt;所有可能的全排列&lt;/em&gt; 。你可以 &lt;strong&gt;按任意顺序&lt;/strong&gt; 返回答案。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
-输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [0,1]
-输出：[[0,1],[1,0]]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1]
-输出：[[1]]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;回溯法：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; permute(int[] nums) {
-        List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
-        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
-        
-        int n = nums.length;
-        for(int i = 0; i &amp;lt; n; i++) {
-            list.add(nums[i]);
-        }
-        backtrack(n, list, result, 0);
-        return result;
-    }
-
-    public void backtrack(int n, List&amp;lt;Integer&amp;gt; list, List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result, int first) {
-        if(first == n) {
-            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
-            //当first=n时，list没有元素可供交换
-        }
-        for(int i = first; i &amp;lt; n; i++) {
-            Collections.swap(list, first, i);
-            //交换元素
-            backtrack(n, list, result, first + 1);
-            //递归调用方法，全排列交换后的first后的内容
-            Collections.swap(list , first, i);
-            //恢复原排列
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;合并二叉树&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你两棵二叉树： &lt;code&gt;root1&lt;/code&gt; 和 &lt;code&gt;root2&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，&lt;strong&gt;不为&lt;/strong&gt; null 的节点将直接作为新二叉树的节点。&lt;/p&gt;
-&lt;p&gt;返回合并后的二叉树。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注意:&lt;/strong&gt; 合并过程必须从两个树的根节点开始。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/159.jpg&quot; alt=&quot;159&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
-输出：[3,4,5,5,4,null,7]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root1 = [1], root2 = [1,2]
-输出：[2,2]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
-        if(root1 == null) {
-            return root2;
-        }
-        if(root2 == null) {
-            return root1;
-        }
-        TreeNode merge = new TreeNode();
-        merge.val = root1.val + root2.val;
-        merge.left = mergeTrees(root1.left, root2.left);
-        merge.right = mergeTrees(root1.right, root2.right);
-        return merge;      
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;比特位计数&lt;/h1&gt;
-&lt;h2&gt;题目表述&lt;/h2&gt;
-&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，对于 &lt;code&gt;0 &amp;lt;= i &amp;lt;= n&lt;/code&gt; 中的每个 &lt;code&gt;i&lt;/code&gt; ，计算其二进制表示中 &lt;strong&gt;&lt;code&gt;1&lt;/code&gt; 的个数&lt;/strong&gt; ，返回一个长度为 &lt;code&gt;n + 1&lt;/code&gt; 的数组 &lt;code&gt;ans&lt;/code&gt; 作为答案。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：n = 2
-输出：[0,1,1]
-解释：
-0 --&amp;gt; 0
-1 --&amp;gt; 1
-2 --&amp;gt; 10
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：n = 5
-输出：[0,1,1,2,1,2]
-解释：
-0 --&amp;gt; 0
-1 --&amp;gt; 1
-2 --&amp;gt; 10
-3 --&amp;gt; 11
-4 --&amp;gt; 100
-5 --&amp;gt; 101
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int[] countBits(int n) {
-        int[] result = new int[n + 1];
-        for(int i = 0; i &amp;lt;= n; i++) {
-            result[i] = count(i);
-        }
-        return result;
-    }
-
-    public int count(int num) {
-        int result = 0;
-        while(num != 0) {
-            result += (1 &amp;amp; num);
-            num = num &amp;gt;&amp;gt; 1;
-        }
-        return result;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（子集，汉明距离，反转二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%90%E9%9B%86%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB%E5%8F%8D%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>子集（二进制实现），汉明距离（位运算），反转二叉树（递归）</description><pubDate>Mon, 19 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;子集&lt;/h2&gt;
 &lt;h3&gt;题目描述&lt;/h3&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，数组中的元素 &lt;strong&gt;互不相同&lt;/strong&gt; 。返回该数组所有可能的子集（幂集）。&lt;/p&gt;
@@ -1133,14 +1232,7 @@ public void test2() {
     //Simple{age=10, age2=20, flag=true, flag2=false, c=c, c2=d, season=SPRING, username=&apos;username&apos;, clazz=class java.io.File, date=Tue May 20 11:28:03 CST 2025}
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;我们之前在学习JDBC配置文件的时候是通过properties配置文件通过Properties类通过键值的方式获取配置信息，而学了SpringSet注入后，我们可以不进行复制，将复制的工作交给Spring通过xml中property注入value完成&lt;/p&gt;
-&lt;p&gt;:::warning&lt;/p&gt;
-&lt;p&gt;级联属性赋值是一种机制，可以在被注入的对象中对于诸如的对象参数进行赋值，使用级联属性赋值的时候需要注意以下两点&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;提供注入对象的get方法&lt;/li&gt;
-&lt;li&gt;顺序不可以颠倒，要先注入对象，在进行对对象赋值&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;我们之前在学习JDBC配置文件的时候是通过properties配置文件通过Properties类通过键值的方式获取配置信息，而学了SpringSet注入后，我们可以不进行赋值，将赋值的工作交给Spring通过xml中property注入value完成&lt;/p&gt;
 &lt;h3&gt;注入复杂类型&lt;/h3&gt;
 &lt;h4&gt;数组注入&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;public class YuQian {

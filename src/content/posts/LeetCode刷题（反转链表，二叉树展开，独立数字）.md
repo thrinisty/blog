@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（反转链表）
+title: LeetCode刷题（反转链表，二叉树展开，独立数字）
 published: 2025-05-24
 updated: 2025-05-24
-description: '反转链表'
+description: '反转链表，二叉树展开，独立数字'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

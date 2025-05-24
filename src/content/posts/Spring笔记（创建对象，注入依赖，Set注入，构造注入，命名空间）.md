@@ -407,16 +407,9 @@ public void test2() {
 }
 ```
 
-我们之前在学习JDBC配置文件的时候是通过properties配置文件通过Properties类通过键值的方式获取配置信息，而学了SpringSet注入后，我们可以不进行复制，将复制的工作交给Spring通过xml中property注入value完成
+我们之前在学习JDBC配置文件的时候是通过properties配置文件通过Properties类通过键值的方式获取配置信息，而学了SpringSet注入后，我们可以不进行赋值，将赋值的工作交给Spring通过xml中property注入value完成
 
-:::warning
 
-级联属性赋值是一种机制，可以在被注入的对象中对于诸如的对象参数进行赋值，使用级联属性赋值的时候需要注意以下两点
-
-1. 提供注入对象的get方法
-2. 顺序不可以颠倒，要先注入对象，在进行对对象赋值
-
-:::
 
 ### 注入复杂类型
 

@@ -1,4 +1,130 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（乘积数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</guid><description>除自生以外数组的乘积</description><pubDate>Fri, 23 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;除自生以外数组的乘积&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Bean实例化）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</guid><description>Bean的多种实例化方式</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;p&gt;​	之前的Spring的学习计划因为考试和作业被稍微耽搁了一下，原本计划是到30号以后再继续学习的，但是最近稍微忙了一下，把编译原理理论给复习完了（其实上课听了的话不会话太长时间）&lt;/p&gt;
+&lt;p&gt;​	考试在28号，打算在27号和28号的两天早上再做一做题目热手，24-26号这三天还是可以抽得出时间稍微学习一下。&lt;/p&gt;
+&lt;h2&gt;Bean实例化&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（反转链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</guid><description>反转链表</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你反转链表，并返回反转后的链表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/162.jpg&quot; alt=&quot;162&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/163.jpg&quot; alt=&quot;163&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2]
+输出：[2,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设立一个哨兵节点result，其之后的链表为我们需要存储的结果&lt;/p&gt;
+&lt;p&gt;通过p指针依次遍历head链表，将遍历到的每一个节点通过头插法插入result中即可实现链表反转&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode reverseList(ListNode head) {
+       ListNode result = new ListNode();
+       ListNode p = head;
+       ListNode temp;
+       while(p != null) {
+        temp = p.next;
+        p.next = result.next;
+        result.next = p;
+        p = temp;
+       }
+       return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二叉树展开为链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你二叉树的根结点 &lt;code&gt;root&lt;/code&gt; ，请你将它展开为一个单链表：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;展开后的单链表应该同样使用 &lt;code&gt;TreeNode&lt;/code&gt; ，其中 &lt;code&gt;right&lt;/code&gt; 子指针指向链表中下一个结点，而左子指针始终为 &lt;code&gt;null&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;展开后的单链表应该与二叉树 &lt;a href=&quot;https://baike.baidu.com/item/%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86/6442839?fr=aladdin&quot;&gt;&lt;strong&gt;先序遍历&lt;/strong&gt;&lt;/a&gt; 顺序相同。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/164.jpg&quot; alt=&quot;164&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2,5,3,4,null,6]
+输出：[1,null,2,null,3,null,4,null,5,null,6]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [0]
+输出：[0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;通过先序遍历，将二叉树的节点放置于List链表中，再遍历List链表，将节点一次通过右孩子连接，而左孩子置为空&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void flatten(TreeNode root) {
+        List&amp;lt;TreeNode&amp;gt; list = new ArrayList();
+        fun(root, list);
+        int n = list.size();
+        for(int i = 1; i &amp;lt; n; i++) {
+            TreeNode node1 = list.get(i - 1);
+            TreeNode node2 = list.get(i);
+            node1.left = null;
+            node1.right = node2;
+        }
+    }
+
+    public void fun(TreeNode root, List&amp;lt;TreeNode&amp;gt; list) {
+        if(root == null) {
+            return;
+        }
+        list.add(root);
+        fun(root.left, list);
+        fun(root.right, list);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;只出现一次的数字&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;非空&lt;/strong&gt; 整数数组 &lt;code&gt;nums&lt;/code&gt; ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。&lt;/p&gt;
+&lt;p&gt;你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1 ：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**nums = [2,2,1]&lt;/p&gt;
+&lt;p&gt;**输出：**1&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 2 ：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**nums = [4,1,2,1,2]&lt;/p&gt;
+&lt;p&gt;**输出：**4&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 3 ：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**nums = [1]&lt;/p&gt;
+&lt;p&gt;**输出：**1&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;第一种：最直观暴力的方式，遍历nums数组，依次判断list集合中是否存在相同的数字，有则删除，没有则放入，最后剩下的那一个就是只出现过一次的数字，这种解法的思想有点类似于 抽乌龟 卡牌游戏&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int singleNumber(int[] nums) {
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(list.contains(nums[i])) {
+                list.remove(new Integer(nums[i]));
+            } else{
+                list.add(nums[i]);
+            }
+        }
+        return list.get(0);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种：通过异或位运算求解，涉及到了数学方法，非常简单，大致思路是证明，2n + 1个数组的集体求异或，利用交换律，可以得出结果就是 0 ^ (target) = target 即我们需要的结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            result = result ^ nums[i];
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（乘积数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</guid><description>除自生以外数组的乘积</description><pubDate>Fri, 23 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;除自生以外数组的乘积&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt;，返回 数组 &lt;code&gt;answer&lt;/code&gt; ，其中 &lt;code&gt;answer[i]&lt;/code&gt; 等于 &lt;code&gt;nums&lt;/code&gt; 中除 &lt;code&gt;nums[i]&lt;/code&gt; 之外其余各元素的乘积 。&lt;/p&gt;
 &lt;p&gt;题目数据 &lt;strong&gt;保证&lt;/strong&gt; 数组 &lt;code&gt;nums&lt;/code&gt;之中任意元素的全部前缀元素和后缀的乘积都在 &lt;strong&gt;32 位&lt;/strong&gt; 整数范围内。&lt;/p&gt;
